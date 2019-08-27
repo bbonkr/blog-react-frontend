@@ -2,7 +2,7 @@ import produce from 'immer';
 
 export const initialState = {
     currentUrl: '', // 현재 URL 참조 eg.) /users/@test/posts/post-slug
-    baseUrl: 'https://sample-blog.bbon.me', // 현재 URL 호스트 이름 eg.) https://localhost:5000
+    baseUrl: 'http://localhost:5000', // 현재 URL 호스트 이름 eg.) https://localhost:5000
 };
 
 export const SET_CURRENT_URL = 'SET_CURRENT_URL';

@@ -62,7 +62,7 @@ module.exports = withBundleAnalyzer(
                 ];
 
                 if (prod) {
-                    config.plugins.push(new CompressionPlugin());
+                    plugins.push(new CompressionPlugin());
                 }
 
                 // config.module.rules.push({
@@ -80,15 +80,15 @@ module.exports = withBundleAnalyzer(
                         ...config.module,
                         rules: [
                             ...config.module.rules,
-                            // {
-                            //     loader: 'webpack-ant-icon-loader',
-                            //     enforce: 'pre',
-                            //     include: [
-                            //         require.resolve(
-                            //             '@ant-design/icons/lib/dist',
-                            //         ),
-                            //     ],
-                            // },
+                            {
+                                loader: 'webpack-ant-icon-loader',
+                                enforce: 'pre',
+                                include: [
+                                    require.resolve(
+                                        '@ant-design/icons/lib/dist',
+                                    ),
+                                ],
+                            },
                         ],
                     },
                     plugins: plugins,

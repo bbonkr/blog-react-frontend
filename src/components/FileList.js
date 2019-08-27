@@ -13,7 +13,8 @@ import {
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import StackGrid from 'react-stack-grid';
-import sizeMe from 'react-sizeme';
+// import sizeMe from 'react-sizeme';
+import {withSize} from 'react-sizeme';
 import {
     UPLOAD_MY_MEDIA_FILES_CALL,
     LOAD_MY_MEDIA_FILES_CALL,
@@ -274,4 +275,6 @@ FileList.porpTypes = {
     onSelect: PropTypes.func,
 };
 
-export default sizeMe()(FileList);
+// export default sizeMe()(FileList);
+
+export default withSize({ noPlaceholder: true })(FileList);

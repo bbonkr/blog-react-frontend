@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import App, { Container } from 'next/app';
 import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
@@ -19,6 +19,7 @@ import { SET_CURRENT_URL, SET_BASE_URL } from '../reducers/settings';
 import '../styles/styles.scss';
 // const normalizeReturnUrl = stringHelper.normalizeReturnUrl;
 
+/*
 const NodeBlog = ({ Component, store, pageProps, returnUrl }) => {
     // console.log('pageProps', pageProps);
     // FIXME:
@@ -118,7 +119,11 @@ NodeBlog.getInitialProps = async context => {
     let pageProps = {};
 
     const state = ctx.store.getState();
+    // console.log(ctx.req.headers);
+    // const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
     const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
+    
+
     const { me } = state.user;
     const { baseUrl } = state.settings;
 
@@ -145,8 +150,11 @@ NodeBlog.getInitialProps = async context => {
 
     axios.defaults.baseURL = apiBaseUrl;
 
+    console.log(`cookie: ${cookie}`);
+
     // HTTP 요청시 쿠키 추가
     if (ctx.isServer && cookie) {
+        
         axios.defaults.headers.Cookie = cookie;
 
         if (!me) {
@@ -185,6 +193,140 @@ NodeBlog.getInitialProps = async context => {
 
     return { pageProps, returnUrl: url };
 };
+*/
+
+class NodeBlog extends App {
+    static async getInitialProps(context) {
+        
+        const { ctx, Component } = context;
+    
+        let pageProps = {};
+    
+        const state = ctx.store.getState();
+        const cookie = ctx.isServer ? ctx.req.headers.cookie : '';        
+    
+        const { me } = state.user;
+        let url = '';
+    
+        // HTTP 요청시 쿠키 추가
+        if (ctx.isServer && cookie) {
+            
+            axios.defaults.headers.Cookie = cookie;
+    
+            if (!me) {
+                ctx.store.dispatch({
+                    type: ME_CALL,
+                });
+            }
+        }
+
+        if (Component.getInitialProps) {
+            pageProps = (await Component.getInitialProps(ctx)) || {};
+        }
+    
+        if (pageProps.doNotSetCurrentUrl) {
+            // signIn page
+            url = ctx.query.returnUrl;
+        } else {
+            url = ctx.isServer
+                ? ctx.req.url
+                : !!ctx.asPath
+                ? ctx.asPath
+                : normalizeReturnUrl(ctx.pathname, ctx.query);
+    
+            ctx.store.dispatch({
+                type: SET_CURRENT_URL,
+                data: url,
+            });
+        }
+    
+        return { pageProps, returnUrl: url };
+    }
+
+    render(){
+        const { Component, store, pageProps, returnUrl } = this.props;
+        const fbAdmin = process.env.FB_ADMIN;
+        const siteName = process.env.SITE_NAME || 'nodeblog';
+        return (
+            <Fragment>
+                <Provider store={store}>
+                    <Helmet
+                        title="NodeBlog"
+                        htmlAttributes={{ lang: 'ko' }}
+                        meta={[
+                            { charset: 'UTF-8' },
+                            {
+                                name: 'viewport',
+                                content:
+                                    'width=device-width,minimum-scale=1,initial-scale=1',
+                            },
+                            { 'http-equiv': 'X-UA-Compatible', content: 'IE-edge' },
+                            { name: 'description', content: siteName },
+                            { name: 'og:title', content: siteName },
+                            { name: 'og:site_name', content: '' },
+                            { name: 'og:description', content: siteName },
+                            { name: 'og:type', content: 'website' },
+                            { name: 'fb:admins', content: fbAdmin },
+                            {
+                                name: 'og:site_name',
+                                content: siteName,
+                            },
+                        ]}
+                        link={[
+                            {
+                                rel: 'shortcut icon',
+                                href: '/favicon.ico',
+                                type: 'image/x-icon',
+                            },
+                            {
+                                rel: 'apple-touch-icon',
+                                href: '/bbon-icon.png',
+                                sizes: '512x512',
+                            },
+                            {
+                                rel: 'me',
+                                href: 'https://www.facebook.com/bbonkr',
+                            },
+                            {
+                                rel: 'author',
+                                type: 'text/plain',
+                                href: '/humans.txt',
+                            },
+                            {
+                                rel: 'stylesheet',
+                                href:
+                                    'https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.css',
+                            },
+                            {
+                                rel: 'stylesheet',
+                                href:
+                                    'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css',
+                                type: 'text/css',
+                                charset: 'UTF-8',
+                            },
+                            {
+                                rel: 'stylesheet',
+                                href:
+                                    'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css',
+                                type: 'text/css',
+                                charset: 'UTF-8',
+                            },
+                        ]}
+                        script={[
+                            {
+                                src:
+                                    'https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.js',
+                            },
+                        ]}
+                    />
+                    <AppLayout>
+                        <Component {...pageProps} returnUrl={returnUrl} />
+                    </AppLayout>
+                </Provider>
+            </Fragment>
+        );
+    }
+}
 
 NodeBlog.propTypes = {
     Component: PropTypes.elementType.isRequired,

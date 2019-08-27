@@ -24,6 +24,8 @@ import {
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
+// import { withAuthSync } from '../../utils/auth';
+
 import { LOAD_STAT_GENERAL_CALL, LOAD_STAT_READ_CALL } from '../../reducers/me';
 
 const Me = () => {
@@ -138,3 +140,4 @@ Me.getInitialProps = async context => {
 };
 
 export default withAuth(Me);
+// export default withAuthSync(Me);

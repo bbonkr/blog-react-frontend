@@ -14,12 +14,12 @@
         "styledComponents",
         "styles",
         "utils",
-        "index.js",
+        "server.js",
         "next.config.js",
         "nodemon.json"
     ],
     "ignore": ["*.test.js", "__snapshots__"],
-    "exec": "node app.js",
+    "exec": "node server.js",
     "ext": "js json jsx",
     "delay": 2500
 }

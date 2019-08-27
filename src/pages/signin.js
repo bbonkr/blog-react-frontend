@@ -13,6 +13,7 @@ import {
     ErrorMessageWrapper,
 } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
+// import {login} from '../utils/auth';
 
 const INPUT_EMAIL_PLACEHOLDER = 'Your email Address';
 const INPUT_PASSWORD_PLACEHOLDER = 'Your password';
@@ -32,15 +33,17 @@ const SignIn = ({ returnUrl }) => {
 
     useEffect(() => {
         if (me && me.id) {
-            // console.log('returnUrl', returnUrl);
+            console.log('returnUrl', returnUrl);
             Router.push(!!returnUrl ? returnUrl : '/');
+
+            
         } else {
             setEmail('');
             setEmailError('');
             setPassword('');
             setPasswordError('');
         }
-    }, [me, returnUrl]);
+    }, [me]);
 
     useEffect(() => {
         setEmail('');

@@ -12,7 +12,8 @@ import LinkUsersPosts from './LinkUsersPosts';
 import UserAvatar from './UserAvatar';
 import IconLike from './IconLike';
 import StackGrid from 'react-stack-grid';
-import sizeMe from 'react-sizeme';
+// import sizeMe from 'react-sizeme';
+import {withSize} from 'react-sizeme';
 
 const FullWidthButton = styled(Button)`
     width: 100%;
@@ -20,33 +21,35 @@ const FullWidthButton = styled(Button)`
 
 const ListExcerpt = ({ posts, loading, hasMore, loadMoreHandler, size }) => {
     const { me } = useSelector(s => s.user);
-    // console.log('======> posts count: ', (posts && posts.length) || 0);
-
+    const { width } = size;
     const [cardWidth, setCardWidth] = useState('100%');
 
     useEffect(() => {
-        const { width } = size;
-
         let columnWidth = '100%';
+   
+        // const { width } = size;
+        if(width){
+     
+            if (width > 576) {
+                columnWidth = '50%';
+            }
 
-        if (width > 576) {
-            columnWidth = '50%';
-        }
+            if (width > 768) {
+                columnWidth = '33.33%';
+            }
 
-        if (width > 768) {
-            columnWidth = '33.33%';
-        }
+            if (width > 992) {
+                columnWidth = '25.0%';
+            }
 
-        if (width > 992) {
-            columnWidth = '25.0%';
-        }
-
-        if (width > 1200) {
-            columnWidth = '20%';
+            if (width > 1200) {
+                columnWidth = '20%';
+            }            
         }
 
         setCardWidth(columnWidth);
-    }, [size]);
+
+    }, [width]);
 
     return (
         <article>
@@ -55,7 +58,7 @@ const ListExcerpt = ({ posts, loading, hasMore, loadMoreHandler, size }) => {
                     columnWidth={cardWidth}
                     gutterWidth={16}
                     gutterHeight={16}
-                    enableSSR={true}
+                    enableSSR={false}
                     monitorImagesLoaded={true}>
                     {posts.map(post => {
                         const { title, excerpt, createdAt } = post;
@@ -168,8 +171,9 @@ ListExcerpt.propTypes = {
     hasMore: PropTypes.bool.isRequired,
     loadMoreHandler: PropTypes.func.isRequired,
     size: PropTypes.shape({
-        width: PropTypes.number.isRequired,
+        width: PropTypes.number,
     }),
 };
 
-export default sizeMe()(ListExcerpt);
+// export default sizeMe()(ListExcerpt);
+export default withSize({ noPlaceholder: true })(ListExcerpt);

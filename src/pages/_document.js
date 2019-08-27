@@ -11,6 +11,7 @@ class NodeBlogDocument extends Document {
             styleSheet.collectStyles(<App {...props} />),
         );
         const styleTags = styleSheet.getStyleElement();
+
         return { ...page, helmet: Helmet.renderStatic(), styleTags };
     }
 
@@ -31,9 +32,9 @@ class NodeBlogDocument extends Document {
             <html {...htmlAttrs}>
                 <head>
                     {Object.values(helmet).map(el => el.toComponent())}
-                    {this.props.styleTags}
+                    
                     {cssFiles.map((css, index) => {
-                        console.log('=========> css file: ', css);
+                        // console.log('=========> css file: ', css);
                         return (
                             <link
                                 key={`${css}`}
@@ -44,6 +45,7 @@ class NodeBlogDocument extends Document {
                             />
                         );
                     })}
+                    {this.props.styleTags && this.props.styleTags.map(v=>v)}
                 </head>
                 <body {...bodyAttrs}>
                     <Main />

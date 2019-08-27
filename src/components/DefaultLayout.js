@@ -26,15 +26,19 @@ const ContentRight = styled(Col)`
  * 기본 레이아웃 컴포넌트입니다.
  *
  * @param {element} 자식 요소
- * @param {string}
  */
 const DefaultLayout = ({ children }) => {
     const dispatch = useDispatch();
 
     const [searchModalVisible, setSearchModalVisible] = useState(false);
     const [searchKeywordText, setSearchKeywordText] = useState('');
+    const [isLoggedIn, setIsLoggedIn]  =useState(false);
     const { me } = useSelector(s => s.user);
     const { currentUrl } = useSelector(state => state.settings);
+
+    useEffect(()=>{
+        setIsLoggedIn(!!me);
+    }, [me]);
 
     const onClickShowSearchModal = useCallback(e => {
         setSearchKeywordText('');
@@ -86,14 +90,14 @@ const DefaultLayout = ({ children }) => {
                         defaultSelectedKeys={['home']}
                         style={{ lineHeight: '64px' }}>
                         <Menu.Item key="home">
-                            <Link href="/">
-                                <a>NodeBlog</a>
-                            </Link>
+                                <Link href="/">
+                                    <a>NodeBlog</a>
+                                </Link>
                         </Menu.Item>
                         <Menu.Item key="profile">
-                            <Link href="/me">
-                                <a>Profile</a>
-                            </Link>
+                                <Link href="/me">
+                                    <a>Profile</a>
+                                </Link>
                         </Menu.Item>
                         <Menu.Item key="search">
                             <Button
@@ -103,7 +107,7 @@ const DefaultLayout = ({ children }) => {
                                 Search
                             </Button>
                         </Menu.Item>
-                        {!me && (
+                        {!isLoggedIn && (
                             <Menu.Item
                                 key="signin"
                                 style={{ textAlign: 'right' }}>
@@ -118,7 +122,7 @@ const DefaultLayout = ({ children }) => {
                                 </Link>
                             </Menu.Item>
                         )}
-                        {!me && (
+                        {!isLoggedIn && (
                             <Menu.Item
                                 key="signup"
                                 style={{ textAlign: 'right' }}>
@@ -127,7 +131,7 @@ const DefaultLayout = ({ children }) => {
                                 </Link>
                             </Menu.Item>
                         )}
-                        {me && (
+                        {isLoggedIn && (
                             <SubMenu
                                 key="user"
                                 title={<UserAvatar user={me} />}>

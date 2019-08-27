@@ -8,7 +8,7 @@ import {
     actionChannel,
     throttle,
 } from 'redux-saga/effects';
-import axios from 'axios';
+import {http} from './httpHelper';
 import {
     SIGN_IN_CALL,
     SIGN_IN_DONE,
@@ -46,7 +46,7 @@ import {
 } from '../reducers/user';
 
 function getMyInfoApi() {
-    return axios.get('/me', { withCredentials: true });
+    return http.get('/me');
 }
 
 function* getMyInfo(action) {
@@ -72,14 +72,15 @@ function* watchGetMyInfo() {
 
 function signInApi(data) {
 
-    console.log(`base url: ${axios.defaults.baseURL}`);
-
-    return axios.post('/account/signin', data);
+    return http.post('/account/signin', data);
 }
 
 function* signIn(action) {
     try {
         const result = yield call(signInApi, action.data);
+
+        console.log('response: ==> ', result);
+
         yield put({
             type: SIGN_IN_DONE,
             data: result.data,
@@ -100,7 +101,7 @@ function* watchSignIn() {
 }
 
 function signOutApi() {
-    return axios.post('/account/signout', {}, { withCredentials: true });
+    return http.post('/account/signout', {});
 }
 
 function* signOut(action) {
@@ -126,7 +127,7 @@ function* watchSignOut() {
 }
 
 function signUpApi(formData) {
-    return axios.post('/user', formData, {});
+    return http.post('/user', formData);
 }
 
 function* signUp(action) {
@@ -151,9 +152,7 @@ function* watchSignUp() {
 }
 
 function changePasswordApi(formData) {
-    return axios.patch('/user/changepassword', formData, {
-        withCredentials: true,
-    });
+    return http.patch('/user/changepassword', formData);
 }
 
 function* changePassword(action) {
@@ -178,7 +177,7 @@ function* watchChangePassword() {
 }
 
 function changeInfoApi(formData) {
-    return axios.patch('/user/info', formData, { withCredentials: true });
+    return http.patch('/user/info', formData);
 }
 
 function* changeInfo(action) {
@@ -203,7 +202,7 @@ function* watchChangeInfo() {
 }
 
 function verifyEmailApi(formData) {
-    return axios.post('/user/verifyemail', formData, { withCredentials: true });
+    return http.post('/user/verifyemail', formData);
 }
 
 function* verifyEmail(action) {
@@ -228,7 +227,7 @@ function* wacthVerifyEmail() {
 }
 
 function makeVerifyEmaiApi() {
-    return axios.post('/user/makeverifyemail', {}, { withCredentials: true });
+    return http.post('/user/makeverifyemail', {});
 }
 
 function* makeVerifyEmail(action) {
@@ -253,9 +252,7 @@ function* watchMakeVerifyEmail() {
 }
 
 function requestResetPasswordApi(formData) {
-    return axios.post('/user/requestresetpassword', formData, {
-        withCredentials: true,
-    });
+    return http.post('/user/requestresetpassword', formData);
 }
 
 function* requestResetPassword(action) {
@@ -280,9 +277,7 @@ function* watchRequestResetPassword() {
 }
 
 function resetPasswordApi(formData) {
-    return axios.post('/user/resetpassword', formData, {
-        withCredentials: true,
-    });
+    return http.post('/user/resetpassword', formData);
 }
 
 function* resetPassword(action) {
@@ -307,7 +302,7 @@ function* watchResetPassword() {
 }
 
 function unregisterApi(formData) {
-    return axios.post('/user/unregister', formData, { withCredentials: true });
+    return http.post('/user/unregister', formData);
 }
 
 function* unregister(action) {

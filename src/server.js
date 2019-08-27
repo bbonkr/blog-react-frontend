@@ -10,7 +10,7 @@ const dev = process.env.NODE_ENV !== 'production';
 const prod = process.env.NODE_ENV === 'production';
 
 const app = next({ dev });
-const handle = app.getRequestHandler();
+const requestHandler = app.getRequestHandler();
 
 dotenv.config();
 
@@ -24,22 +24,6 @@ app.prepare().then(() => {
 
     // logging https://github.com/expressjs/morgan
     server.use(morgan('dev'));
-
-    server.use('/', express.static(path.join(__dirname, 'public')));
-    server.use(express.json());
-    server.use(express.urlencoded({ extended: true }));
-    server.use(cookieParser(process.env.COOKIE_SECRET));
-    server.use(
-        expressSession({
-            resave: false,
-            saveUninitialized: false,
-            secret: process.env.COOKIE_SECRET,
-            cookie: {
-                httpOnly: true,
-                secure: false,
-            },
-        }),
-    );
 
     server.get('/category/:slug', (req, res) => {
         return app.render(req, res, '/category', { slug: req.params.slug });
@@ -61,16 +45,6 @@ app.prepare().then(() => {
         });
     });
 
-    // server.get('/post/:slug', (req, res) => {
-    //     return app.render(req, res, '/post', { slug: req.params.slug });
-    // });
-
-    // server.get('/users/:user/posts', (req, res) => {
-    //     return app.render(req, res, '/users/posts', {
-    //         user: req.params.user,
-    //     });
-    // });
-
     server.get('/users/:user/posts', (req, res) => {
         return app.render(req, res, '/users/posts', {
             user: req.params.user,
@@ -91,13 +65,13 @@ app.prepare().then(() => {
         });
     });
 
-    // expressApp.get('/me/write/:id', (req, res) => {
-    //     return nextApp.render(req, res, '/me/write', { id: req.params.id });
-    // });
+    server.get('*', (req, res) => requestHandler(req, res));
 
-    server.get('*', (req, res) => handle(req, res));
+    server.listen(port, err => {
+        if(err){
+            throw err;
+        }
 
-    server.listen(port, '0.0.0.0', () => {
         console.log(`server is running on ${protocol}://${host}:${port}`);
     });
 });
