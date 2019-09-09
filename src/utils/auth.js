@@ -1,7 +1,3 @@
-/**
-사용되지 않습니다.
-*/
-
 import React from 'react';
 import Router from 'next/router';
 import { Spin } from 'antd';
