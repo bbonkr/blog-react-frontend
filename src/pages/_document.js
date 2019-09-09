@@ -61,7 +61,7 @@ class NodeBlogDocument extends Document {
 
 NodeBlogDocument.propTypes = {
     helmet: PropTypes.object.isRequired,
-    styleTags: PropTypes.object.isRequired,
+    styleTags: PropTypes.array.isRequired,
 };
 
 export default NodeBlogDocument;
