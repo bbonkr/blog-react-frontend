@@ -1,10 +1,12 @@
 const webpack = require('webpack');
+const withTypescript = require('@zeit/next-typescript');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: process.env.ANALYZE === 'true',
 });
 const CompressionPlugin = require('compression-webpack-plugin');
 const withCSS = require('@zeit/next-css');
 const withSass = require('@zeit/next-sass');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 function HACK_removeMinimizeOptionFromCssLoaders(config) {
     console.warn(
@@ -23,31 +25,8 @@ function HACK_removeMinimizeOptionFromCssLoaders(config) {
 
 module.exports = withBundleAnalyzer(
     withCSS(
-        withSass({
-            // withSass
-            // sassLoaderOptions: {
-            //     includePaths: ['styles'],
-            // },
-
-            // withBundleAnalyzer
-            // analyzeServer: ['server', 'both'].includes(
-            //     process.env.BUNDLE_ANALYZE,
-            // ),
-            // analyzeBrowser: ['browser', 'both'].includes(
-            //     process.env.BUNDLE_ANALYZE,
-            // ),
-            // bundleAnalyzerConfig: {
-            //     server: {
-            //         analyzerMode: 'static',
-            //         reportFilename: 'bundles/server.html',
-            //     },
-
-            //     browser: {
-            //         analyzerMode: 'static',
-            //         reportFilename: 'bundles/client.html',
-            //     },
-            // },
-
+        withSass(
+            withTypescript({
             distDir: '.next',
             webpack(config) {
                 // console.log('config', config);
@@ -59,6 +38,7 @@ module.exports = withBundleAnalyzer(
                         /moment[/\\]locale$/,
                         /^\.\/ko$/,
                     ),
+                    new ForkTsCheckerWebpackPlugin(),
                 ];
 
                 if (prod) {
@@ -94,6 +74,6 @@ module.exports = withBundleAnalyzer(
                     plugins: plugins,
                 };
             },
-        }),
+        })),
     ),
 );
