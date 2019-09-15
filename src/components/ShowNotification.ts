@@ -3,7 +3,7 @@ import { notification } from 'antd';
 export interface IShowNotificationProps {
     title: string;
     message: string;
-    onClick?: ()=> void;
+    onClick?: () => void;
     icon?: string;
 }
 

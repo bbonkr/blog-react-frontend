@@ -9,16 +9,16 @@ const Settings: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title="Settings" />
+                <PageHeader title='Settings' />
                 <Divider />
                 <div>
                     <div>
                         <Typography.Title level={3}>
                             Change account information
                         </Typography.Title>
-                        <Link href="/me/changeinfo">
+                        <Link href='/me/changeinfo'>
                             <a>
-                                <Button type="default">
+                                <Button type='default'>
                                     Change account information
                                 </Button>
                             </a>
@@ -29,9 +29,9 @@ const Settings: FunctionComponent = () => {
                         <Typography.Title level={3}>
                             Change password
                         </Typography.Title>
-                        <Link href="/me/changepassword">
+                        <Link href='/me/changepassword'>
                             <a>
-                                <Button type="default">Change password</Button>
+                                <Button type='default'>Change password</Button>
                             </a>
                         </Link>
                     </div>
@@ -40,9 +40,9 @@ const Settings: FunctionComponent = () => {
                         <Typography.Title level={3}>
                             Unregister
                         </Typography.Title>
-                        <Link href="/me/unregister">
+                        <Link href='/me/unregister'>
                             <a>
-                                <Button type="danger">Unregister</Button>
+                                <Button type='danger'>Unregister</Button>
                             </a>
                         </Link>
                     </div>

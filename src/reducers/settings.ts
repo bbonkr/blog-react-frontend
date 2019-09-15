@@ -15,7 +15,7 @@ export const initialState: ISettingState = {
 // export const SET_BASE_URL = 'SET_BASE_URL';
 
 const reducer = (state: ISettingState = initialState, action) =>
-    produce(state, draft => {
+    produce(state, (draft) => {
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
         switch (action.type) {
             case actionTypes.SET_BASE_URL:

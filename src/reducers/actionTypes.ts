@@ -1,5 +1,5 @@
 export enum actionTypes {
-    // category 
+    // category
     LOAD_CATEGORIES_CALL = 'LOAD_CATEGORIES_CALL',
 LOAD_CATEGORIES_DONE = 'LOAD_CATEGORIES_DONE',
 LOAD_CATEGORIES_FAIL = 'LOAD_CATEGORIES_FAIL',

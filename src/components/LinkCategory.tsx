@@ -1,16 +1,18 @@
 import React, { FunctionComponent } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Icon } from 'antd';
 import styled from 'styled-components';
+import { IUserModel } from 'typings/IUserModel';
+import { ICategoryModel } from 'typings/ICategoryModel';
 
 const LinkWrapper = styled.span`
     margin-right: 1em;
 `;
 
 export interface ILinkCategoryProps {
-    user: any; // todo type user
-    category: any; // todo type category
+    user: IUserModel;
+    category: ICategoryModel;
 }
 
 /**
@@ -19,7 +21,10 @@ export interface ILinkCategoryProps {
  * @param {string} 분류 이름
  * @param {string} 분류 슬러그
  */
-const LinkCategory: FunctionComponent<ILinkCategoryProps> = ({ user, category }) => {
+const LinkCategory: FunctionComponent<ILinkCategoryProps> = ({
+    user,
+    category,
+}) => {
     const { username } = user;
     const { name, slug } = category;
     const displayUsername = `@${username}`;
@@ -33,16 +38,16 @@ const LinkCategory: FunctionComponent<ILinkCategoryProps> = ({ user, category })
                 }}
                 as={`/users/${displayUsername}/categories/${slug}/posts`}>
                 <a>
-                    <Icon type="container" /> <span>{name}</span>
+                    <Icon type='container' /> <span>{name}</span>
                 </a>
             </Link>
         </LinkWrapper>
     );
 };
 
-LinkCategory.propTypes = {
-    user: PropTypes.object.isRequired,
-    category: PropTypes.object.isRequired,
-};
+// LinkCategory.propTypes = {
+//     user: PropTypes.object.isRequired,
+//     category: PropTypes.object.isRequired,
+// };
 
 export default LinkCategory;

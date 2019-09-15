@@ -1,14 +1,19 @@
-import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    FunctionComponent,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Layout, Menu, Icon, Avatar, Drawer } from 'antd';
+import { Layout, Menu, Icon, Drawer } from 'antd';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import UserAvatar from './UserAvatar';
 import { IMeState } from '../reducers/me';
 import { IRootState } from 'reducers';
 import { IUserState } from 'reducers/user';
-import { actionTypes } from 'reducers/actionTypes';
-const { Header, Content, Sider } = Layout;
+import { actionTypes } from '../reducers/actionTypes';
+const { Sider } = Layout;
 
 const menusSide = [
     {
@@ -82,8 +87,10 @@ export interface IMeLayoutPorps {
 
 const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
     const dispatch = useDispatch();
-    const { me } = useSelector<IRootState, IUserState>(state => state.user);
-    const { sideMenuCollapsed } = useSelector<IRootState, IMeState>(s => s.me);
+    const { me } = useSelector<IRootState, IUserState>((state) => state.user);
+    const { sideMenuCollapsed } = useSelector<IRootState, IMeState>(
+        (s) => s.me,
+    );
 
     // const [menuCollapsed, setMenuCollapsed] = useState(false);
     const [selectedMenuKeys, setSelectedMenuKeys] = useState([]);
@@ -96,7 +103,7 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
             if (index > 0) {
                 pathnameOnly = pathnameOnly.slice(0, index);
             }
-            let paths = pathnameOnly.split('/').filter(c => !!c);
+            const paths = pathnameOnly.split('/').filter((c) => !!c);
 
             let key = 'dashboard';
             if (paths.length > 0) {
@@ -108,7 +115,7 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
     }, [me]);
 
     const onCollapse = useCallback(
-        (collapsed, type) => {
+        (collapsed) => {
             // setMenuCollapsed(collapsed);
             dispatch({
                 type: actionTypes.SIDE_MENU_COLLAPSE,
@@ -117,38 +124,35 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
         },
         [dispatch],
     );
-    const onBreakPoint = useCallback(broken => {}, []);
-    const onClickMenu = useCallback(
-        ({ item, key, keyPath, domEvent }) => {
-            switch (key.toLowerCase()) {
-                case 'home':
-                    Router.push('/');
-                    break;
-                case 'me':
-                    Router.push('/me');
-                    // setSelectedMenuKeys([key]);
-                    break;
-                case 'posts':
-                    Router.push('/me/posts');
-                    // setSelectedMenuKeys([key]);
-                    break;
-                case 'signout':
-                    // dispatch({
-                    //     type: SIGN_OUT_CALL,
-                    //     returnUrl: '/',
-                    // });
-                    Router.push('/signout');
-                    break;
-                default:
-                    break;
-            }
-        },
-        [],
-    );
+    // const onBreakPoint = useCallback((broken) => {}, []);
+    const onClickMenu = useCallback(({ key }) => {
+        switch (key.toLowerCase()) {
+            case 'home':
+                Router.push('/');
+                break;
+            case 'me':
+                Router.push('/me');
+                // setSelectedMenuKeys([key]);
+                break;
+            case 'posts':
+                Router.push('/me/posts');
+                // setSelectedMenuKeys([key]);
+                break;
+            case 'signout':
+                // dispatch({
+                //     type: SIGN_OUT_CALL,
+                //     returnUrl: '/',
+                // });
+                Router.push('/signout');
+                break;
+            default:
+                break;
+        }
+    }, []);
 
-    const onClickSideMenu = useCallback(menu => {
-        const { item, key, keyPath, domEvent } = menu;
-        const current = menusSide.find(v => v.key === key);
+    const onClickSideMenu = useCallback((menu) => {
+        const { key } = menu;
+        const current = menusSide.find((v) => v.key === key);
         const { path, pathAs } = current;
         if (!!path) {
             Router.push(path, pathAs || path);
@@ -159,22 +163,22 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
         <Layout style={{ minHeight: '100%' }}>
             <Layout.Header
                 style={{ position: 'fixed', zIndex: 500, width: '100%' }}>
-                <div className="logo" />
+                <div className='logo' />
                 <Menu
-                    theme="dark"
-                    mode="horizontal"
+                    theme='dark'
+                    mode='horizontal'
                     style={{ lineHeight: '64px' }}
                     defaultSelectedKeys={['me']}
                     selectedKeys={selectedMenuKeys}
                     onClick={onClickMenu}>
-                    <Menu.Item key="home">NodeBlog</Menu.Item>
-                    <Menu.Item key="me">
-                        <Icon type="user" /> <span>Me</span>
+                    <Menu.Item key='home'>NodeBlog</Menu.Item>
+                    <Menu.Item key='me'>
+                        <Icon type='user' /> <span>Me</span>
                     </Menu.Item>
-                    <Menu.Item key="posts">
-                        <Icon type="container" /> <span>Posts</span>
+                    <Menu.Item key='posts'>
+                        <Icon type='container' /> <span>Posts</span>
                     </Menu.Item>
-                    <Menu.Item key="signout">Sign out</Menu.Item>
+                    <Menu.Item key='signout'>Sign out</Menu.Item>
                 </Menu>
             </Layout.Header>
             <Layout.Content
@@ -183,9 +187,12 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
                     minHeight: '100vh',
                 }}>
                 <Layout style={{ minHeight: '100vh' }}>
-                    <Drawer placement="left" closable={false} visible={false} bodyStyle={{padding: 0}}></Drawer>
+                    <Drawer
+                        placement='left'
+                        closable={false}
+                        visible={false}
+                        bodyStyle={{ padding: 0 }}></Drawer>
 
-                    
                     <Sider
                         collapsible={true}
                         collapsed={sideMenuCollapsed}
@@ -204,11 +211,11 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
                             </div>
                         </div>
                         <Menu
-                            mode="inline"
+                            mode='inline'
                             defaultSelectedKeys={['me']}
                             selectedKeys={selectedMenuKeys}
                             onClick={onClickSideMenu}>
-                            {menusSide.map(v => {
+                            {menusSide.map((v) => {
                                 return (
                                     <Menu.Item key={v.key}>
                                         {v.icon && <Icon type={v.icon} />}
@@ -218,7 +225,7 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
                             })}
                         </Menu>
                     </Sider>
-                    
+
                     <Layout style={{ minHeight: '100vh' }}>
                         {/* <Layout.Header /> */}
                         <Layout.Content>
@@ -232,8 +239,8 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
     );
 };
 
-MeLayout.propTypes = {
-    children: PropTypes.element.isRequired,
-};
+// MeLayout.propTypes = {
+//     children: PropTypes.element.isRequired,
+// };
 
 export default MeLayout;

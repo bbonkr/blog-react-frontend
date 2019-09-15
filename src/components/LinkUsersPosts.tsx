@@ -1,13 +1,17 @@
 import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import { IUserModel } from 'typings/IUserModel';
 
 export interface ILinkUsersPostsProps {
-    user: any; // todo user type
+    user: IUserModel;
     children: React.ReactNode;
 }
 
-const LinkUsersPosts: FunctionComponent<ILinkUsersPostsProps> = ({ user, children }) => {
+const LinkUsersPosts: FunctionComponent<ILinkUsersPostsProps> = ({
+    user,
+    children,
+}) => {
     const { username } = user;
     const displayUsername: string = `@${username}`;
     return (
@@ -24,9 +28,9 @@ const LinkUsersPosts: FunctionComponent<ILinkUsersPostsProps> = ({ user, childre
     );
 };
 
-LinkUsersPosts.propTypes = {
-    user: PropTypes.object.isRequired,
-    children: PropTypes.element.isRequired,
-};
+// LinkUsersPosts.propTypes = {
+//     user: PropTypes.object.isRequired,
+//     children: PropTypes.element.isRequired,
+// };
 
 export default LinkUsersPosts;

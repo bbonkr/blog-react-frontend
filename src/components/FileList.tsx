@@ -1,4 +1,9 @@
-import React, { useCallback, useState, useEffect, FunctionComponent } from 'react';
+import React, {
+    useCallback,
+    useState,
+    useEffect,
+    FunctionComponent,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Upload,
@@ -12,12 +17,12 @@ import {
 } from 'antd';
 import moment from 'moment';
 import StackGrid from 'react-stack-grid';
-import {withSize, SizeMeProps} from 'react-sizeme';
+import { withSize, SizeMeProps } from 'react-sizeme';
 import ImageViewer from './ImageViewer';
 import CroppedImage from './CroppedImage';
 import { IRootState } from 'reducers';
 import { IMeState } from 'reducers/me';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../reducers/actionTypes';
 
 const Paragraph = Typography.Paragraph;
 const Dragger = Upload.Dragger;
@@ -36,7 +41,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
         mediaFilesNextPageToken,
         mediaFilesLimit,
         uploading,
-    } = useSelector<IRootState, IMeState>(s => s.me);
+    } = useSelector<IRootState, IMeState>((s) => s.me);
 
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [imageViewerFiles, setImageViewerFiles] = useState([]);
@@ -93,7 +98,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
 
                 if (uploadBuffer.length === fileList.length) {
                     const formData = new FormData();
-                    uploadBuffer.forEach(f => {
+                    uploadBuffer.forEach((f) => {
                         formData.append('files', f);
                     });
 
@@ -110,24 +115,21 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
         [dispatch, uploadBuffer, uploading],
     );
 
-    const onClickLoadMore = useCallback(
-        e => {
-            if (hasMoreMediaFiles) {
-                dispatch({
-                    type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
-                    data: {
-                        pageToken: mediaFilesNextPageToken,
-                        limit: mediaFilesLimit,
-                        keyword: '',
-                    },
-                });
-            }
-        },
-        [dispatch, hasMoreMediaFiles, mediaFilesLimit, mediaFilesNextPageToken],
-    );
+    const onClickLoadMore = useCallback(() => {
+        if (hasMoreMediaFiles) {
+            dispatch({
+                type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
+                data: {
+                    pageToken: mediaFilesNextPageToken,
+                    limit: mediaFilesLimit,
+                    keyword: '',
+                },
+            });
+        }
+    }, [dispatch, hasMoreMediaFiles, mediaFilesLimit, mediaFilesNextPageToken]);
 
     const onClickImage = useCallback(
-        image => () => {
+        (image) => () => {
             setImageViewerVisible(true);
             setImageViewerFiles([image]);
         },
@@ -135,24 +137,24 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     );
 
     const onClickDeleteFile = useCallback(
-        media => () => {
+        (media) => () => {
             Modal.confirm({
                 title: 'Do you want to delete this file?',
                 content: `${media.fileName}${media.fileExtension}`,
-                onOk() {
+                onOk: () => {
                     dispatch({
                         type: actionTypes.DELETE_MY_MEDIA_FILES_CALL,
                         data: media.id,
                     });
                 },
-                onCancel() {},
+                onCancel: null,
             });
         },
         [dispatch],
     );
 
     const onClickSelectFile = useCallback(
-        selectedItem => () => {
+        (selectedItem) => () => {
             if (!!onSelect) {
                 onSelect(selectedItem);
             }
@@ -160,12 +162,12 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
         [onSelect],
     );
 
-    const getCardActions = item => {
+    const getCardActions = (item) => {
         const actions = [];
 
         if (!!onSelect) {
             actions.push(
-                <Icon type="check" onClick={onClickSelectFile(item)} />,
+                <Icon type='check' onClick={onClickSelectFile(item)} />,
             );
         }
 
@@ -176,7 +178,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                 }}
             />,
         );
-        actions.push(<Icon type="delete" onClick={onClickDeleteFile(item)} />);
+        actions.push(<Icon type='delete' onClick={onClickDeleteFile(item)} />);
         return actions;
     };
 
@@ -185,17 +187,17 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
             <Dragger
                 disabled={uploading}
                 supportServerRender={true}
-                name="files"
+                name='files'
                 multiple={true}
                 showUploadList={false}
                 beforeUpload={onBeforeUploadFiles}>
-                <p className="ant-upload-drag-icon">
-                    <Icon type="inbox" />
+                <p className='ant-upload-drag-icon'>
+                    <Icon type='inbox' />
                 </p>
-                <p className="ant-upload-text">
+                <p className='ant-upload-text'>
                     Click or drag file to this area to upload
                 </p>
-                <p className="ant-upload-hint">
+                <p className='ant-upload-hint'>
                     Support for a single or bulk upload. Strictly prohibit from
                     uploading company data or other band files
                 </p>
@@ -209,7 +211,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                 gutterHeight={16}
                 enableSSR={true}
                 monitorImagesLoaded={true}>
-                {mediaFiles.map(item => {
+                {mediaFiles.map((item) => {
                     const filename = `${item.fileName}${item.fileExtension}`;
                     return (
                         <div key={+item.id}>
@@ -227,7 +229,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                                     title={filename}
                                     description={
                                         <span>
-                                            <Icon type="clock-circle" />{' '}
+                                            <Icon type='clock-circle' />{' '}
                                             {moment(
                                                 new Date(item.createdAt),
                                                 'YYYY-MM-DD HH:mm:ss',
@@ -240,9 +242,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                                         copyable={{
                                             text: item.src,
                                         }}>
-                                        {`${item.fileName}${
-                                            item.fileExtension
-                                        }`}
+                                        {`${item.fileName}${item.fileExtension}`}
                                     </Paragraph>
                                 </div>
                             </Card>

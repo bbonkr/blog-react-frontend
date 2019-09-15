@@ -1,22 +1,14 @@
-import {
-    all,
-    fork,
-    call,
-    delay,
-    takeLatest,
-    put,
-    actionChannel,
-    throttle,
-} from 'redux-saga/effects';
+import { all, fork, call, takeLatest, put } from 'redux-saga/effects';
 // import axios from 'axios';
-import {http} from './httpHelper';
-import { actionTypes } from 'reducers/actionTypes';
+import { http } from './httpHelper';
+import { actionTypes } from '../reducers/actionTypes';
+import { IBlogAction } from 'typings/IBlogAction';
 
 function loadCategoriesApi() {
     return http.get('/category');
 }
 
-function* loadCategories(action) {
+function* loadCategories(action?: IBlogAction) {
     try {
         const result = yield call(loadCategoriesApi);
         yield put({

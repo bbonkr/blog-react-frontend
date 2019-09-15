@@ -1,12 +1,17 @@
-import React, { useState, useEffect, useCallback, FunctionComponent } from 'react';
+import React, {
+    useState,
+    useEffect,
+    useCallback,
+    FunctionComponent,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { IUserState } from '../reducers/user';
 import Router from 'next/router';
 import { ErrorMessageWrapper } from '../styledComponents/Wrapper';
 import { IRootState } from 'reducers';
-import { actionTypes } from 'reducers/actionTypes';
-import { SignUpFormValidator } from 'helpers/formValidators';
+import { actionTypes } from '../reducers/actionTypes';
+import { SignUpFormValidator } from 'helpers/SignUpFormValidator';
 
 const formValidator = new SignUpFormValidator();
 
@@ -40,25 +45,25 @@ const SignUpForm: FunctionComponent = () => {
     const [displayNameErrorMessage, setDisplayNameErrorMessage] = useState('');
 
     const [agreement, setAgreement] = useState(false);
-    const [agreementErrorMessage, setAgreementErrorMessage] = useState('');
+    // const [agreementErrorMessage, setAgreementErrorMessage] = useState('');
 
-    const [errorMessage, setErrorMessage] = useState('');
-    const [confirmDirty, setConfirmDirty] = useState(false);
+    // const [errorMessage, setErrorMessage] = useState('');
+    // const [confirmDirty, setConfirmDirty] = useState(false);
     const {
         me,
         signUpInProcess,
         signUpFailMessage,
         signUpSuccess,
-    } = useSelector<IRootState, IUserState>(s => s.user);
+    } = useSelector<IRootState, IUserState>((s) => s.user);
 
     useEffect(() => {
         if (signUpSuccess) {
-            //Router.push('/me');
+            // Router.push('/me');
             Router.push('/signin');
         }
     }, [signUpSuccess]);
 
-    const onChangeEmail = useCallback(e => {
+    const onChangeEmail = useCallback((e) => {
         const newValue = e.target.value;
         setEmail(newValue);
 
@@ -67,7 +72,7 @@ const SignUpForm: FunctionComponent = () => {
     }, []);
 
     const onChangePassword = useCallback(
-        e => {
+        (e) => {
             const newValue = e.target.value;
             setPassword(newValue);
 
@@ -80,7 +85,7 @@ const SignUpForm: FunctionComponent = () => {
     );
 
     const onChangePasswordConfirm = useCallback(
-        e => {
+        (e) => {
             const newValue = e.target.value;
             setPasswordConfirm(newValue);
 
@@ -93,7 +98,7 @@ const SignUpForm: FunctionComponent = () => {
         [password],
     );
 
-    const onChangeUsername = useCallback(e => {
+    const onChangeUsername = useCallback((e) => {
         const newValue = e.target.value;
         setUsername(newValue);
 
@@ -103,7 +108,7 @@ const SignUpForm: FunctionComponent = () => {
         setUsernameErrorMessage(message);
     }, []);
 
-    const onChangeDisplayName = useCallback(e => {
+    const onChangeDisplayName = useCallback((e) => {
         const newValue = e.target.value;
         setDisplayName(newValue);
         const { message } = formValidator.checkDisplayName({
@@ -112,7 +117,7 @@ const SignUpForm: FunctionComponent = () => {
         setDisplayNameErrorMessage(message);
     }, []);
 
-    const onChangeAgreement = useCallback(e => {
+    const onChangeAgreement = useCallback((e) => {
         setAgreement(e.target.checked);
     }, []);
 
@@ -124,12 +129,12 @@ const SignUpForm: FunctionComponent = () => {
             username,
             displayName,
         };
-        const { valid, messages } = formValidator.validate(formValues);
+        const { valid } = formValidator.validate(formValues);
         return valid && agreement;
     }, [email, password, passwordConfirm, username, displayName, agreement]);
 
     const onSubmit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault();
             const formValues = {
                 email,
@@ -138,7 +143,7 @@ const SignUpForm: FunctionComponent = () => {
                 username,
                 displayName,
             };
-            const { valid, messages } = formValidator.validate(formValues);
+            const { valid } = formValidator.validate(formValues);
 
             // console.log('valid: ', valid);
             // console.log('messages: ', messages);
@@ -164,7 +169,8 @@ const SignUpForm: FunctionComponent = () => {
                 hasFeedback={true}
                 validateStatus={!emailErrorMessage ? 'success' : 'error'}
                 help={emailErrorMessage}>
-                <Input type="email"
+                <Input
+                    type='email'
                     value={email}
                     onChange={onChangeEmail}
                     placeholder={PLACEHOLDER_EMAIL}
@@ -228,8 +234,8 @@ const SignUpForm: FunctionComponent = () => {
             </Form.Item>
             <Form.Item>
                 <Button
-                    type="primary"
-                    htmlType="submit"
+                    type='primary'
+                    htmlType='submit'
                     disabled={!isFormValid()}
                     loading={signUpInProcess}>
                     Sign up

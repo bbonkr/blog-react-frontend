@@ -1,7 +1,13 @@
-import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
-import { PageHeader, Modal, Carousel, Icon, Typography, Button } from 'antd';
-import styled from 'styled-components';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    FunctionComponent,
+} from 'react';
+import { PageHeader, Carousel, Icon, Typography } from 'antd';
+// import styled from 'styled-components';
 import FullSizeModal from '../styledComponents/FullSizeModal';
+import { IImageModel } from 'typings/IImageModel';
 // const FullSizeModal = styled(Modal)`
 //     position: fixed;
 //     z-index: 5000;
@@ -14,21 +20,25 @@ import FullSizeModal from '../styledComponents/FullSizeModal';
 // `;
 
 export interface IImageViewerProps {
-    files: any[];   // todo type image
+    files: IImageModel[];
     visible: boolean;
     closeImageviewer: () => void;
-} 
+}
 
-const ImageViewer: FunctionComponent<IImageViewerProps> = ({ files, visible, closeImageviewer }) => {
+const ImageViewer: FunctionComponent<IImageViewerProps> = ({
+    files,
+    visible,
+    closeImageviewer,
+}) => {
     const [title, setTitle] = useState('Image viewer');
-    const [url, setUrl] = useState('');
+    // const [url, setUrl] = useState('');
     const [fullUrl, setFullUrl] = useState('');
 
     useEffect(() => {
         if (files && files.length > 0) {
             const file = files[0];
             setTitle(`${file.fileName}${file.fileExtension}`);
-            setUrl(file.src);
+            // setUrl(file.src);
             setFullUrl(`${window.location.origin}${file.src}`);
         }
     }, [files]);
@@ -37,10 +47,10 @@ const ImageViewer: FunctionComponent<IImageViewerProps> = ({ files, visible, clo
         (current: number): void => {
             const file = files[current];
             setTitle(`${file.fileName}${file.fileExtension}`);
-            setUrl(file.url);
+            // setUrl(file.url);
             setFullUrl(`${window.location.origin}${file.src}`);
         },
-        [files]
+        [files],
     );
 
     return (
@@ -49,11 +59,11 @@ const ImageViewer: FunctionComponent<IImageViewerProps> = ({ files, visible, clo
             visible={visible}
             maskClosable={true}
             onCancel={closeImageviewer}
-            width="100%">
+            width='100%'>
             <PageHeader
                 title={
                     <Typography.Title level={3} copyable={{ text: fullUrl }}>
-                        <Icon type="file-image" /> {title}
+                        <Icon type='file-image' /> {title}
                     </Typography.Title>
                 }
                 extra={
@@ -67,8 +77,8 @@ const ImageViewer: FunctionComponent<IImageViewerProps> = ({ files, visible, clo
                 }
             />
 
-            <Carousel style={{ width: '100%' }}  afterChange={onAafterChange}>
-                {files.map(f => {
+            <Carousel style={{ width: '100%' }} afterChange={onAafterChange}>
+                {files.map((f) => {
                     return (
                         <div key={f.id} style={{ textAlign: 'center' }}>
                             <img

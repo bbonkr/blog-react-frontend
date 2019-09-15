@@ -2,71 +2,74 @@ import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import Router from 'next/router';
 import { actionTypes } from './actionTypes';
+import { IPostModel } from '../typings/IPostModel';
+import { ICategoryModel } from '../typings/ICategoryModel';
+import { ITagModel } from '../typings/ITagModel';
 
 export interface IMeState {
-    myPost: any, // TODO type post
-    postsLimit: number,
-    hasMorePost: boolean,
-    searchKeyword?: string,
-    nextPageToken?: string,
-    postsCount: number,
+    myPost: IPostModel;
+    postsLimit: number;
+    hasMorePost: boolean;
+    searchKeyword?: string;
+    nextPageToken?: string;
+    postsCount: number;
 
     // category
-    categories: any[],  // TODO type category
-    loadingCategories: boolean,
-    loadCategoriesErrorReason?: string,
-    hasMoreCategories: boolean,
-    categorySearchKeyword?: string,
-    categoryNextPageToken?: string,
-    categoryLimit: number,
-    categoriesCount: number,
+    categories: ICategoryModel[];
+    loadingCategories: boolean;
+    loadCategoriesErrorReason?: string;
+    hasMoreCategories: boolean;
+    categorySearchKeyword?: string;
+    categoryNextPageToken?: string;
+    categoryLimit: number;
+    categoriesCount: number;
 
     // tag
-    tags: any[],    // TODO type tag
-    myPosts: any[],   // TODO type post
-    
-    loadingMyPost: boolean,
-    loadingTags: boolean,
-    loadingMyPosts: boolean,
+    tags: ITagModel[];
+    myPosts: IPostModel[];
 
-    loadTagsErrorReason?: string,
-    loadMyPostsErrorReason?: string,
-    loadMyPostErrorReason?: string,
-    writingPost: boolean,
-    writePostErrorReason?: string,
+    loadingMyPost: boolean;
+    loadingTags: boolean;
+    loadingMyPosts: boolean;
 
-       // media
-       mediaFiles: any[],
-       mediaFilesNextPageToken?: string,
-       mediaFilesSearchKeyword?: string,
-       mediaFilesCount: number,
-       mediaFilesLimit: number,
-       hasMoreMediaFiles: boolean,
-       loadingMediaFiles: boolean,
-       loadMediaFilesErrorReason?: string,
-       uploading: boolean,
+    loadTagsErrorReason?: string;
+    loadMyPostsErrorReason?: string;
+    loadMyPostErrorReason?: string;
+    writingPost: boolean;
+    writePostErrorReason?: string;
+
+    // media
+    mediaFiles: any[];
+    mediaFilesNextPageToken?: string;
+    mediaFilesSearchKeyword?: string;
+    mediaFilesCount: number;
+    mediaFilesLimit: number;
+    hasMoreMediaFiles: boolean;
+    loadingMediaFiles: boolean;
+    loadMediaFilesErrorReason?: string;
+    uploading: boolean;
 
     // menu
-    sideMenuCollapsed: boolean,
+    sideMenuCollapsed: boolean;
 
-  // liked
-  likedPosts: any[],
-  likedPostsLoading: boolean,
-  likedPostsKeyword?: string,
-  likedPostsErrorReason?: string,
-  likedPostsLimit: number,
-  likedPostsHasMore: boolean,
-  likedPostsPageToken?: string,
-  likedPostsTotal: number,
-  
-  // stat - general
-  statGeneral: any,
-  statGeneralLoading: boolean,
-  statGeneralErrorReason?: string,
+    // liked
+    likedPosts: any[];
+    likedPostsLoading: boolean;
+    likedPostsKeyword?: string;
+    likedPostsErrorReason?: string;
+    likedPostsLimit: number;
+    likedPostsHasMore: boolean;
+    likedPostsPageToken?: string;
+    likedPostsTotal: number;
 
-  statRead: any,
-  statReadLoading: boolean,
-  statReadErrorReason?: string,
+    // stat - general
+    statGeneral: any;
+    statGeneralLoading: boolean;
+    statGeneralErrorReason?: string;
+
+    statRead: any;
+    statReadLoading: boolean;
+    statReadErrorReason?: string;
 }
 
 export const initialState: IMeState = {
@@ -89,7 +92,7 @@ export const initialState: IMeState = {
 
     // tag
     tags: [],
-    myPost: [],
+    myPost: null,
     loadingMyPost: false,
 
     loadingTags: false,
@@ -126,11 +129,11 @@ export const initialState: IMeState = {
     likedPostsTotal: 0,
 
     // stat - general
-    statGeneral: {},
+    statGeneral: null,
     statGeneralLoading: false,
     statGeneralErrorReason: '',
 
-    statRead: {},
+    statRead: null,
     statReadLoading: false,
     statReadErrorReason: '',
 };
@@ -206,7 +209,7 @@ export const initialState: IMeState = {
 // export const LOAD_STAT_READ_FAIL = 'LOAD_STAT_READ_FAIL';
 
 const reducer = (state: IMeState = initialState, action) =>
-    produce(state, draft => {
+    produce(state, (draft) => {
         // https://lannstark.github.io/nodejs/console/3
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
 
@@ -224,9 +227,9 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.loadingMyPosts = false;
                 // draft.myPosts = action.data;
 
-                action.data.posts.forEach(v => {
+                action.data.posts.forEach((v) => {
                     const postIndex = draft.myPosts.findIndex(
-                        x => x.id === v.id,
+                        (x) => x.id === v.id,
                     );
                     if (postIndex < 0) {
                         draft.myPosts.push(v);
@@ -270,9 +273,9 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.loadingCategories = false;
                 // draft.categories = action.data;
 
-                action.data.items.forEach(v => {
+                action.data.items.forEach((v) => {
                     const postIndex = draft.categories.findIndex(
-                        x => x.id === v.id,
+                        (x) => x.id === v.id,
                     );
                     if (postIndex < 0) {
                         draft.categories.push(v);
@@ -312,12 +315,13 @@ const reducer = (state: IMeState = initialState, action) =>
                     title: 'Saved.',
                     message: 'Your request is success.',
                     onClick: null,
-                    icon: null
+                    icon: null,
                 });
-                
-                Router.push({
-                    pathname: '/me/write',
-                    query: { id: action.data.id },
+
+                Router.push(
+                    {
+                        pathname: '/me/write',
+                        query: { id: action.data.id },
                     },
                     `/me/write/${action.data.id}`,
                 );
@@ -337,9 +341,10 @@ const reducer = (state: IMeState = initialState, action) =>
                     onClick: null,
                     icon: null,
                 });
-                Router.push({
-                    pathname: '/me/write',
-                    query: { id: action.data.id },
+                Router.push(
+                    {
+                        pathname: '/me/write',
+                        query: { id: action.data.id },
                     },
                     `/me/write/${action.data.id}`,
                 );
@@ -361,7 +366,7 @@ const reducer = (state: IMeState = initialState, action) =>
                 break;
             case actionTypes.DELETE_POST_DONE:
                 const index = draft.myPosts.findIndex(
-                    x => x.id === action.data.id,
+                    (x) => x.id === action.data.id,
                 );
                 draft.myPosts.splice(index, 1);
                 draft.loadingMyPosts = false;
@@ -382,9 +387,9 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.loadMediaFilesErrorReason = '';
                 break;
             case actionTypes.LOAD_MY_MEDIA_FILES_DONE:
-                action.data.forEach(v => {
+                action.data.forEach((v) => {
                     const mediaIndex = draft.mediaFiles.findIndex(
-                        x => x.id === v.id,
+                        (x) => x.id === v.id,
                     );
                     if (mediaIndex < 0) {
                         draft.mediaFiles.push(v);
@@ -416,7 +421,7 @@ const reducer = (state: IMeState = initialState, action) =>
                 break;
             case actionTypes.DELETE_MY_MEDIA_FILES_DONE:
                 const foundId = draft.mediaFiles.findIndex(
-                    x => x.id === action.data.id,
+                    (x) => x.id === action.data.id,
                 );
                 draft.mediaFiles.splice(foundId, 1);
                 draft.uploading = false;
@@ -431,7 +436,7 @@ const reducer = (state: IMeState = initialState, action) =>
                 break;
             case actionTypes.EDIT_MY_CATEGORY_DONE:
                 const foundCategoryIndex = draft.categories.findIndex(
-                    v => v.id === action.data.id,
+                    (v) => v.id === action.data.id,
                 );
                 if (foundCategoryIndex < 0) {
                     draft.categories.push(action.data);
@@ -442,11 +447,11 @@ const reducer = (state: IMeState = initialState, action) =>
 
                 draft.categories
                     .filter(
-                        v =>
+                        (v) =>
                             v.id !== action.data.id &&
                             v.ordinal >= action.data.ordinal,
                     )
-                    .forEach(v => {
+                    .forEach((v) => {
                         v.ordinal = v.ordinal + 1;
                     });
 
@@ -472,7 +477,7 @@ const reducer = (state: IMeState = initialState, action) =>
                 break;
             case actionTypes.DELETE_MY_CATEGORY_DONE:
                 const foundDeletedCategoryIndex = draft.categories.findIndex(
-                    v => v.id === action.data.id,
+                    (v) => v.id === action.data.id,
                 );
                 draft.categories.splice(foundDeletedCategoryIndex, 1);
 
@@ -506,9 +511,9 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.likedPostsErrorReason = '';
                 break;
             case actionTypes.LOAD_LIKED_POSTS_DONE:
-                action.data.records.forEach(x => {
+                action.data.records.forEach((x) => {
                     const post = draft.likedPosts.find(
-                        v => v.UserId === x.UserId && v.PostId === x.PostId,
+                        (v) => v.UserId === x.UserId && v.PostId === x.PostId,
                     );
                     if (!post) {
                         draft.likedPosts.push(x);

@@ -25,11 +25,11 @@ BlogError.defaultProps = {
     statusCode: 400,
 };
 
-BlogError.propTypes = {
-    statusCode: PropTypes.number,
-};
+// BlogError.propTypes = {
+//     statusCode: PropTypes.number,
+// };
 
-BlogError.getInitialProps = async context => {
+BlogError.getInitialProps = async (context) => {
     const statusCode = context.res
         ? context.res.statusCode
         : context.err

@@ -10,7 +10,7 @@ import MeLayout from '../../components/MeLayout';
 import styled from 'styled-components';
 import FileList from '../../components/FileList';
 import { withAuth } from '../../utils/auth';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../../reducers/actionTypes';
 
 const DropZoneDiv = styled.div`
     border: '2px dashed gray';
@@ -25,14 +25,14 @@ const Media: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title="Media" />
+                <PageHeader title='Media' />
                 <FileList />
             </ContentWrapper>
         </MeLayout>
     );
 };
 
-Media.getInitialProps = async context => {
+Media.getInitialProps = async (context) => {
     const state = context.store.getState();
     const { mediaFilesLimit } = state.me;
     context.store.dispatch({

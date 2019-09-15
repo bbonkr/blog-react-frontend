@@ -1,6 +1,6 @@
 import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
@@ -9,14 +9,19 @@ import UserAvatar from '../../components/UserAvatar';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import { IRootState } from 'reducers';
 import { IPostState } from 'reducers/post';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../../reducers/actionTypes';
+import { IUserModel } from 'typings/IUserModel';
+import { ICategoryModel } from 'typings/ICategoryModel';
 
 export interface IUserCategoryPostsProps {
-    user: any;  // todo type user
-    category: any; // todo type category
-} 
+    user: IUserModel;
+    category: ICategoryModel;
+}
 
-const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({ user, category }) => {
+const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
+    user,
+    category,
+}) => {
     const dispatch = useDispatch();
     const {
         userCategoryPosts,
@@ -25,7 +30,7 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({ user, c
         postsLimit,
         userCategoryPostsCategory,
         userCategoryPostsUser,
-    } = useSelector<IRootState, IPostState>(s => s.post);
+    } = useSelector<IRootState, IPostState>((s) => s.post);
 
     const onClickLoadMore = useCallback(() => {
         const pageToken =
@@ -74,10 +79,10 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({ user, c
     );
 };
 
-UserCategoryPosts.propTypes = {
-    user: PropTypes.string.isRequired,
-    category: PropTypes.string.isRequired,
-};
+// UserCategoryPosts.propTypes = {
+//     user: PropTypes.string.isRequired,
+//     category: PropTypes.string.isRequired,
+// };
 
 UserCategoryPosts.getInitialProps = async (context) => {
     const state = context.store.getState();

@@ -1,18 +1,17 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button } from 'antd';
-import { ChangePasswordValidator } from '../helpers/formValidators';
+import { ChangePasswordValidator } from '../helpers/ChangePasswordValidator';
 import { IRootState } from 'reducers';
 import { IUserState } from 'reducers/user';
-import { actionTypes } from 'reducers/actionTypes';
-
+import { actionTypes } from '../reducers/actionTypes';
 
 const validator: ChangePasswordValidator = new ChangePasswordValidator();
 
 const ChangePasswordForm = () => {
     const dispatch = useDispatch();
     const { loadingChangePassword, changePasswordSuccess } = useSelector<IRootState, IUserState>(
-        s => s.user
+        (s) => s.user,
     );
     const [currentPassword, setCurrentPassword] = useState('');
     const [
@@ -43,7 +42,7 @@ const ChangePasswordForm = () => {
         }
     }, [changePasswordSuccess]);
 
-    const onChangeCurrentPassword = useCallback(e => {
+    const onChangeCurrentPassword = useCallback((e) => {
         const newValue = e.target.value;
         setCurrentPassword(newValue);
 
@@ -72,11 +71,11 @@ const ChangePasswordForm = () => {
             });
             setPasswordConfirmErrorMessage(message);
         },
-        [password]
+        [password],
     );
 
     const onSubmit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault();
             const formData = {
                 currentPassword: currentPassword.trim(),
@@ -91,13 +90,13 @@ const ChangePasswordForm = () => {
                 });
             }
         },
-        [currentPassword, dispatch, password, passwordConfirm]
+        [currentPassword, dispatch, password, passwordConfirm],
     );
 
     return (
         <Form onSubmit={onSubmit}>
             <Form.Item
-                label="Current password"
+                label='Current password'
                 hasFeedback={true}
                 help={currentPasswordErrorMessage}
                 validateStatus={
@@ -109,14 +108,14 @@ const ChangePasswordForm = () => {
                 />
             </Form.Item>
             <Form.Item
-                label="Password"
+                label='Password'
                 hasFeedback={true}
                 help={passwordErrorMessage}
                 validateStatus={!passwordErrorMessage ? 'success' : 'error'}>
                 <Input.Password value={password} onChange={onChangePassword} />
             </Form.Item>
             <Form.Item
-                label="Password again"
+                label='Password again'
                 hasFeedback={true}
                 help={passwordConfirmErrorMessage}
                 validateStatus={
@@ -129,8 +128,8 @@ const ChangePasswordForm = () => {
             </Form.Item>
             <Form.Item>
                 <Button
-                    type="primary"
-                    htmlType="submit"
+                    type='primary'
+                    htmlType='submit'
                     loading={loadingChangePassword}>
                     Change Password
                 </Button>

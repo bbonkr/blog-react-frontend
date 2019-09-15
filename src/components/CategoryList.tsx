@@ -2,9 +2,10 @@ import React, { FunctionComponent } from 'react';
 import { List, Badge } from 'antd';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import { ICategoryModel } from '../typings/ICategoryModel';
 
 export interface ICategoryListProps {
-    categories: any[];      // todo type category
+    categories: ICategoryModel[];
 }
 
 /**
@@ -12,11 +13,13 @@ export interface ICategoryListProps {
  *
  * @param {array} 분류 데이터
  */
-const CategoryList: FunctionComponent<ICategoryListProps> = ({ categories }) => {
+const CategoryList: FunctionComponent<ICategoryListProps> = ({
+    categories,
+}) => {
     return (
         <List
             dataSource={categories}
-            renderItem={item => {
+            renderItem={(item) => {
                 return (
                     <List.Item
                         extra={
@@ -40,8 +43,8 @@ const CategoryList: FunctionComponent<ICategoryListProps> = ({ categories }) => 
     );
 };
 
-CategoryList.propTypes = {
-    categories: PropTypes.array.isRequired,
-};
+// CategoryList.propTypes = {
+//     categories: PropTypes.array.isRequired,
+// };
 
 export default CategoryList;

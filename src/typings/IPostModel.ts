@@ -1,0 +1,33 @@
+import { IDictionary } from './IDictionary';
+import { ICategoryModel } from './ICategoryModel';
+import { ICommentModel } from './ICommentModel';
+import { IImageModel } from './IImageModel';
+import { IUserModel } from './IUserModel';
+import { ITagModel } from './ITagModel';
+import { IPostAccessLogModel } from './IPostAccessLogModel';
+export interface IPostModel extends IDictionary<any> {
+    id: number;
+    title?: string;
+    slug?: string;
+    markdown?: string;
+    html?: string;
+    text?: string;
+    excerpt?: string;
+    coverImage?: string;
+    isPublished?: boolean;
+    isPrivate?: string;
+    // password: string;
+    isPinned?: boolean;
+    // isDeleted: boolean;
+    deletedAt?: Date;
+    userId?: number;
+    user?: IUserModel;
+    categories?: ICategoryModel[];
+    comments?: ICommentModel[];
+    accessLogs?: IPostAccessLogModel[];
+    images?: IImageModel[];
+    tags?: ITagModel[];
+    likers?: IUserModel[];
+    createdAt?: Date;
+    updatedAt?: Date;
+}

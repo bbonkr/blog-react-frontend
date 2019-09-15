@@ -1,69 +1,73 @@
 import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import { actionTypes } from './actionTypes';
+import { IPostModel } from '../typings/IPostModel';
+import { IUserModel } from '../typings/IUserModel';
+import { ICategoryModel } from '../typings/ICategoryModel';
+import { ITagModel } from '../typings/ITagModel';
 
 export interface IPostState {
- /** posts */
- posts: any[],      // todo type post
- /** posts loading */
- loadingPosts: boolean,
- hasMorePost: boolean,
- loadPostErrorReason?: string,
- postsLimit: number,
- nextPageToken: string,
- searchKeyword: string,
+    /** posts */
+    posts: IPostModel[];
+    /** posts loading */
+    loadingPosts: boolean;
+    hasMorePost: boolean;
+    loadPostErrorReason?: string;
+    postsLimit: number;
+    nextPageToken: string;
+    searchKeyword: string;
 
- /** singlePost */
- singlePost: any,   // todo type post
- loadSinglePostErrorReason?: string,
- 
- /** post loading  */
- loadingPost: boolean,
- isSinglePost: boolean,
- currentCategory?: string,
+    /** singlePost */
+    singlePost: IPostModel;
+    loadSinglePostErrorReason?: string;
 
- writingPost: boolean,
+    /** post loading  */
+    loadingPost: boolean;
+    isSinglePost: boolean;
+    currentCategory?: string;
 
- /** users posts */
- usersPosts: any[], // todo type post
- usersPostsPageToken?: string,
- loadingUsersPosts: boolean,
- loadUsersPostsErrorReason?: string,
- hasMoreUsersPosts: boolean,
- currentUser?: string, // 현재 선택된 사용자; 데이터 소스 초기화에 사용
+    writingPost: boolean;
 
- /** users category posts */
- userCategoryPosts: any[],  // todo type post
- userCategoryPostsPageToken?: string,
- userCategoryPostsLoading: boolean,
- userCategoryPostsErrorReason?: string,
- userCategoryPostsHasMore: boolean,
- userCategoryPostsKeyword?: string,
- currentUserCategory?: string, // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
- userCategoryPostsUser: any,        // todo type user
- userCategoryPostsCategory: any,    // todo type category
+    /** users posts */
+    usersPosts: IPostModel[];
+    usersPostsPageToken?: string;
+    loadingUsersPosts: boolean;
+    loadUsersPostsErrorReason?: string;
+    hasMoreUsersPosts: boolean;
+    currentUser?: string; // 현재 선택된 사용자; 데이터 소스 초기화에 사용
 
- /** tag posts */
- tagPosts: any[],       // todo type post
- tagPostsPageToken?: string,
- tagPostsLoading: boolean,
- tagPostsErrorReason?: string,
- tagPostsHasMore: boolean,
- tagPostsKeyword?: string,
- currentTag?: any,   // todo type tag
- currentTagSlug?: string,
+    /** users category posts */
+    userCategoryPosts: IPostModel[];
+    userCategoryPostsPageToken?: string;
+    userCategoryPostsLoading: boolean;
+    userCategoryPostsErrorReason?: string;
+    userCategoryPostsHasMore: boolean;
+    userCategoryPostsKeyword?: string;
+    currentUserCategory?: string; // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
+    userCategoryPostsUser: IUserModel;
+    userCategoryPostsCategory: ICategoryModel;
 
- /** search posts */
- searchPosts: any[],    // todo type post
- searchPostsPageToken?: string,  
- searchPostsLoading: boolean,
- searchPostsErrorReason?: string,
- searchPostsHasMore: boolean,
- searchPostsKeyword?: string,
+    /** tag posts */
+    tagPosts: IPostModel[];
+    tagPostsPageToken?: string;
+    tagPostsLoading: boolean;
+    tagPostsErrorReason?: string;
+    tagPostsHasMore: boolean;
+    tagPostsKeyword?: string;
+    currentTag?: ITagModel;
+    currentTagSlug?: string;
 
- /** like post */
- likePostLoading: boolean,
- likePostErrorMessage?: string,
+    /** search posts */
+    searchPosts: IPostModel[];
+    searchPostsPageToken?: string;
+    searchPostsLoading: boolean;
+    searchPostsErrorReason?: string;
+    searchPostsHasMore: boolean;
+    searchPostsKeyword?: string;
+
+    /** like post */
+    likePostLoading: boolean;
+    likePostErrorMessage?: string;
 }
 
 export const initialState: IPostState = {
@@ -103,8 +107,8 @@ export const initialState: IPostState = {
     userCategoryPostsHasMore: false,
     userCategoryPostsKeyword: '',
     currentUserCategory: '', // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
-    userCategoryPostsUser: {},
-    userCategoryPostsCategory: {},
+    userCategoryPostsUser: null,
+    userCategoryPostsCategory: null,
 
     /** tag posts */
     tagPosts: [],
@@ -113,7 +117,7 @@ export const initialState: IPostState = {
     tagPostsErrorReason: '',
     tagPostsHasMore: false,
     tagPostsKeyword: '',
-    currentTag: {},
+    currentTag: null,
     currentTagSlug: '',
 
     /** search posts */
@@ -179,7 +183,7 @@ const updatePostLikers = (source, update) => {
 
     if (Array.isArray(source)) {
         // posts
-        post = source.find(x => x.id === update.id);
+        post = source.find((x) => x.id === update.id);
     } else {
         post = source;
     }
@@ -192,7 +196,7 @@ const updatePostLikers = (source, update) => {
 };
 
 const reducer = (state: IPostState = initialState, action) =>
-    produce(state, draft => {
+    produce(state, (draft) => {
         // https://lannstark.github.io/nodejs/console/3
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
 
@@ -209,8 +213,10 @@ const reducer = (state: IPostState = initialState, action) =>
                 break;
             case actionTypes.LOAD_POSTS_DONE:
             case actionTypes.LOAD_CATEGORY_POSTS_DONE:
-                action.data.records.forEach(v => {
-                    const postIndex = draft.posts.findIndex(x => x.id === v.id);
+                action.data.records.forEach((v) => {
+                    const postIndex = draft.posts.findIndex(
+                        (x) => x.id === v.id,
+                    );
                     if (postIndex < 0) {
                         draft.posts.push(v);
                         draft.nextPageToken = `${v.id}`;
@@ -242,9 +248,9 @@ const reducer = (state: IPostState = initialState, action) =>
                 draft.currentUser = action.data.user;
                 break;
             case actionTypes.LOAD_USERS_POSTS_DONE:
-                action.data.forEach(v => {
+                action.data.forEach((v) => {
                     const postIndex = draft.usersPosts.findIndex(
-                        x => x.id === v.id,
+                        (x) => x.id === v.id,
                     );
                     if (postIndex < 0) {
                         draft.usersPosts.push(v);
@@ -270,17 +276,15 @@ const reducer = (state: IPostState = initialState, action) =>
                     : true;
                 draft.userCategoryPostsErrorReason = '';
 
-                draft.currentUserCategory = `${action.data.user}${
-                    action.data.category
-                }`;
+                draft.currentUserCategory = `${action.data.user}${action.data.category}`;
                 draft.userCategoryPostsKeyword = action.data.keyword;
                 // draft.userCategoryPostsUser = null;
                 // draft.userCategoryPostsCategory = null;
                 break;
             case actionTypes.LOAD_USER_CATEGORY_POSTS_DONE:
-                action.data.records.forEach(v => {
+                action.data.records.forEach((v) => {
                     const index = draft.userCategoryPosts.findIndex(
-                        x => x.id === v.id,
+                        (x) => x.id === v.id,
                     );
                     if (index < 0) {
                         draft.userCategoryPosts.push(v);
@@ -322,8 +326,10 @@ const reducer = (state: IPostState = initialState, action) =>
                 draft.tagPostsErrorReason = '';
                 break;
             case actionTypes.LOAD_TAG_POSTS_DONE:
-                action.data.records.forEach(v => {
-                    const index = draft.tagPosts.findIndex(x => x.id === v.id);
+                action.data.records.forEach((v) => {
+                    const index = draft.tagPosts.findIndex(
+                        (x) => x.id === v.id,
+                    );
                     if (index < 0) {
                         draft.tagPosts.push(v);
                         draft.tagPostsPageToken = `${v.id}`;
@@ -352,9 +358,9 @@ const reducer = (state: IPostState = initialState, action) =>
                 break;
             case actionTypes.LOAD_SEARCH_POSTS_DONE:
                 draft.searchPostsLoading = false;
-                action.data.records.forEach(v => {
+                action.data.records.forEach((v) => {
                     const index = draft.searchPosts.findIndex(
-                        x => x.id === v.id,
+                        (x) => x.id === v.id,
                     );
                     if (index < 0) {
                         draft.searchPosts.push(v);
@@ -421,7 +427,7 @@ const reducer = (state: IPostState = initialState, action) =>
                     title: 'Notification',
                     message: action.reason,
                     onClick: null,
-                    icon: null
+                    icon: null,
                 });
                 break;
 

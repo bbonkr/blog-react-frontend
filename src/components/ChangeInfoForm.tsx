@@ -1,19 +1,26 @@
-import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    FunctionComponent,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Input, Button, Modal, Icon, AutoComplete } from 'antd';
+import { Form, Input, Button, Modal, Icon } from 'antd';
 import FileList from './FileList';
 import FullSizeModal from '../styledComponents/FullSizeModal';
 import { IRootState } from 'reducers';
 import { IUserState } from 'reducers/user';
-import { actionTypes } from 'reducers/actionTypes';
-import {ChangeInfoValidator} from '../helpers/formValidators'
+import { actionTypes } from '../reducers/actionTypes';
+import { ChangeInfoValidator } from '../helpers/ChangeInfoValidator';
 
 const validator = new ChangeInfoValidator();
 
 const ChangeInfoForm: FunctionComponent = () => {
     const dispatch = useDispatch();
-    const { loadingChangeInfo, changeInfoSuccess } = useSelector<IRootState, IUserState>(s => s.user);
-    const { me } = useSelector<IRootState, IUserState>(s => s.user);
+    const { loadingChangeInfo } = useSelector<IRootState, IUserState>(
+        (s) => s.user,
+    );
+    const { me } = useSelector<IRootState, IUserState>((s) => s.user);
 
     const [email, setEmail] = useState('');
     const [emailErrorMessage, setemailErrorMessage] = useState('');
@@ -42,21 +49,21 @@ const ChangeInfoForm: FunctionComponent = () => {
         Modal.destroyAll();
     }, []);
 
-    const onChangeEmail = useCallback(e => {
+    const onChangeEmail = useCallback((e) => {
         const newValue = e.target.value;
         setEmail(newValue);
         const result = validator.checkEmail({ email: newValue.trim() });
         setemailErrorMessage(result.message);
     }, []);
 
-    const onChangeUsername = useCallback(e => {
+    const onChangeUsername = useCallback((e) => {
         const newValue = e.target.value;
         setUsername(newValue);
         const result = validator.checkUsername({ username: newValue.trim() });
         setUsernameErrorMessage(result.message);
     }, []);
 
-    const onChangeDisplayName = useCallback(e => {
+    const onChangeDisplayName = useCallback((e) => {
         const newValue = e.target.value;
         setDisplayName(newValue);
         const result = validator.checkDisplayName({
@@ -65,7 +72,7 @@ const ChangeInfoForm: FunctionComponent = () => {
         setDisplayNameErrorMessage(result.message);
     }, []);
 
-    const onChangePhoto = useCallback(e => {
+    const onChangePhoto = useCallback((e) => {
         const newValue = e.target.value;
         setPhoto(newValue);
     }, []);
@@ -79,7 +86,7 @@ const ChangeInfoForm: FunctionComponent = () => {
     }, [dispatch, me.isEmailConfirmed]);
 
     const onSubmit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault();
             const formData = {
                 email: email.trim(),
@@ -99,7 +106,7 @@ const ChangeInfoForm: FunctionComponent = () => {
         [dispatch, displayName, email, photo, username],
     );
 
-    const onSelect = item => {
+    const onSelect = (item) => {
         if (!!item) {
             setPhoto(item.src);
             setFileListModalVisible(false);
@@ -111,20 +118,20 @@ const ChangeInfoForm: FunctionComponent = () => {
         <>
             <Form onSubmit={onSubmit}>
                 <Form.Item
-                    label="Email address"
+                    label='Email address'
                     hasFeedback={true}
                     validateStatus={!emailErrorMessage ? 'success' : 'error'}
                     help={emailErrorMessage}>
                     <Input
                         value={email}
                         onChange={onChangeEmail}
-                        placeholder="Please input your email"
+                        placeholder='Please input your email'
                         addonBefore={
                             !me.isEmailConfirmed && (
                                 <span
                                     style={{ cursor: 'pointer' }}
                                     onClick={onClickVerifyEmail}
-                                    title="Verify email address">
+                                    title='Verify email address'>
                                     Verify
                                 </span>
                             )
@@ -132,7 +139,7 @@ const ChangeInfoForm: FunctionComponent = () => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="User name"
+                    label='User name'
                     hasFeedback={true}
                     help={usernameErrorMessage}
                     validateStatus={
@@ -141,7 +148,7 @@ const ChangeInfoForm: FunctionComponent = () => {
                     <Input value={username} onChange={onChangeUsername} />
                 </Form.Item>
                 <Form.Item
-                    label="Display name"
+                    label='Display name'
                     hasFeedback={true}
                     help={displayNameErrorMessage}
                     validateStatus={
@@ -155,15 +162,15 @@ const ChangeInfoForm: FunctionComponent = () => {
                         onChange={onChangePhoto}
                         suffix={
                             <Button onClick={onClickShowFileListModal}>
-                                <Icon type="picture" /> Select image
+                                <Icon type='picture' /> Select image
                             </Button>
                         }
                     />
                 </Form.Item>
                 <Form.Item>
                     <Button
-                        type="primary"
-                        htmlType="submit"
+                        type='primary'
+                        htmlType='submit'
                         loading={loadingChangeInfo}>
                         Change Information
                     </Button>
@@ -175,8 +182,8 @@ const ChangeInfoForm: FunctionComponent = () => {
                 visible={fileListModalVisible}
                 maskClosable={true}
                 onCancel={onClickHideFileListModal}
-                width="100%"
-                title="Select a file"
+                width='100%'
+                title='Select a file'
                 destroyOnClose={true}>
                 <div>
                     <FileList onSelect={onSelect} />

@@ -27,17 +27,17 @@ import { withAuth } from '../../utils/auth';
 import { IRootState } from 'reducers';
 import { IUserState } from 'reducers/user';
 import { IMeState } from 'reducers/me';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../../reducers/actionTypes';
 // import { withAuthSync } from '../../utils/auth';
 
 const Me: FunctionComponent = () => {
-    const { me } = useSelector<IRootState, IUserState>(state => state.user);
+    const { me } = useSelector<IRootState, IUserState>((state) => state.user);
     const {
         statGeneral,
         statGeneralLoading,
         statRead,
         statReadLoading,
-    } = useSelector<IRootState, IMeState>(s => s.me);
+    } = useSelector<IRootState, IMeState>((s) => s.me);
 
     if (!me) {
         return <div>loading ...</div>;
@@ -46,7 +46,7 @@ const Me: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title="Dashboard" />
+                <PageHeader title='Dashboard' />
                 <Divider />
 
                 <Row gutter={16}>
@@ -54,7 +54,7 @@ const Me: FunctionComponent = () => {
                         <Spin spinning={statGeneralLoading}>
                             <Card>
                                 <Statistic
-                                    title="Latest writing"
+                                    title='Latest writing'
                                     value={
                                         (statGeneral &&
                                             moment(
@@ -76,7 +76,7 @@ const Me: FunctionComponent = () => {
                         <Spin spinning={statGeneralLoading}>
                             <Card>
                                 <Statistic
-                                    title="Posts"
+                                    title='Posts'
                                     value={
                                         (statGeneral && statGeneral.posts) || 0
                                     }
@@ -88,11 +88,11 @@ const Me: FunctionComponent = () => {
                         <Spin spinning={statGeneralLoading}>
                             <Card>
                                 <Statistic
-                                    title="Liked"
+                                    title='Liked'
                                     value={
                                         (statGeneral && statGeneral.liked) || 0
                                     }
-                                    prefix={<Icon type="heart" />}
+                                    prefix={<Icon type='heart' />}
                                 />
                             </Card>
                         </Spin>
@@ -102,15 +102,15 @@ const Me: FunctionComponent = () => {
                 <Row gutter={16}>
                     <Col span={24}>
                         <Spin spinning={statReadLoading}>
-                            <Card title="Readers">
-                                <ResponsiveContainer width="100%" height={300}>
+                            <Card title='Readers'>
+                                <ResponsiveContainer width='100%' height={300}>
                                     <BarChart data={statRead && statRead.stat}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="xAxis" />
+                                        <CartesianGrid strokeDasharray='3 3' />
+                                        <XAxis dataKey='xAxis' />
                                         <YAxis />
                                         <Tooltip />
                                         <Legend />
-                                        <Bar dataKey="read" fill="#8884d8" />
+                                        <Bar dataKey='read' fill='#8884d8' />
                                         {/* <Bar dataKey="uv" fill="#82ca9d" /> */}
                                     </BarChart>
                                 </ResponsiveContainer>
@@ -123,7 +123,7 @@ const Me: FunctionComponent = () => {
     );
 };
 
-Me.getInitialProps = async context => {
+Me.getInitialProps = async (context) => {
     context.store.dispatch({
         type: actionTypes.LOAD_STAT_GENERAL_CALL,
         data: '',

@@ -2,7 +2,6 @@ import React, { FunctionComponent } from 'react';
 import { Icon } from 'antd';
 import { IconProps } from 'antd/lib/icon';
 
-
 export interface IIconTextProps {
     type: string;
     text: string;

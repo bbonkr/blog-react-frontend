@@ -1,14 +1,14 @@
-import React, { useCallback, FunctionComponent, StatelessComponent } from 'react';
+import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ListExcerpt from '../components/ListExcerpt';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../reducers/actionTypes';
 import { IRootState } from 'reducers';
 import { IPostState } from 'reducers/post';
 import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
-import { BlogAction } from 'reducers/BlogAction';
+import { IBlogAction } from '../typings/IBlogAction';
 
 const Home: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -20,19 +20,16 @@ const Home: FunctionComponent = () => {
         hasMorePost,
     } = useSelector<IRootState, IPostState>((s) => s.post);
 
-    const onClickLoadMorePosts = useCallback(
-        () => {
-            dispatch({
-                type: actionTypes.LOAD_POSTS_CALL,
-                data: {
-                    pageToken: nextPageToken,
-                    limit: postsLimit,
-                    keyword: '',
-                },
-            });
-        },
-        [dispatch, nextPageToken, postsLimit],
-    );
+    const onClickLoadMorePosts = useCallback(() => {
+        dispatch({
+            type: actionTypes.LOAD_POSTS_CALL,
+            data: {
+                pageToken: nextPageToken,
+                limit: postsLimit,
+                keyword: '',
+            },
+        });
+    }, [dispatch, nextPageToken, postsLimit]);
 
     return (
         <DefaultLayout>
@@ -48,18 +45,19 @@ const Home: FunctionComponent = () => {
     );
 };
 
-Home.defaultProps = {};
+// Home.defaultProps = {};
 
-Home.propTypes = {};
+// Home.propTypes = {};
 
-Home.getInitialProps = async (context: NextPageContext & NextJSContext<IRootState, BlogAction>) => {
+Home.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+) => {
     const state = context.store.getState();
 
     const { postsLimit, posts } = state.post;
 
     if (context.isServer || !posts || posts.length === 0) {
-
-        context.store.dispatch<BlogAction>({
+        context.store.dispatch<IBlogAction>({
             type: actionTypes.LOAD_POSTS_CALL,
             data: {
                 pageToken: null,

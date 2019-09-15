@@ -8,8 +8,8 @@ import {
     actionChannel,
     throttle,
 } from 'redux-saga/effects';
-import {http} from './httpHelper';
-import { actionTypes } from 'reducers/actionTypes';
+import { http } from './httpHelper';
+import { actionTypes } from '../reducers/actionTypes';
 
 function loadPostsApi(pageToken = '', limit = 10, keyword = '') {
     return http.get(
@@ -29,12 +29,23 @@ function* loadPosts(action) {
             keyword,
         );
 
-        yield put({
-            type: actionTypes.LOAD_POSTS_DONE,
-            data: result.data,
-            limit: limit,
-            keyword: keyword,
-        });
+        console.log('axios result: ', result.data);
+
+        const { success, data, message } = result.data;
+        if (success) {
+            yield put({
+                type: actionTypes.LOAD_POSTS_DONE,
+                data: data,
+                limit: limit,
+                keyword: keyword,
+            });
+        } else {
+            yield put({
+                type: actionTypes.LOAD_POSTS_FAIL,
+                error: new Error(message),
+                reason: message,
+            });
+        }
     } catch (e) {
         console.error(e);
         yield put({
@@ -194,7 +205,7 @@ function* watchLoadUsersPosts() {
 function loadUserCategoryPostsApi(query) {
     const { user, category, pageToken, limit, keyword } = query;
     return http.get(
-        `/users/${user}/categories/${category}/posts?pageToken=${pageToken}&limit=${limit}&keyword=${keyword}`
+        `/users/${user}/categories/${category}/posts?pageToken=${pageToken}&limit=${limit}&keyword=${keyword}`,
     );
 }
 
@@ -215,7 +226,10 @@ function* loadUserCategoryPosts(action) {
 }
 
 function* watchLaodUserCatetoryPosts() {
-    yield takeLatest(actionTypes.LOAD_USER_CATEGORY_POSTS_CALL, loadUserCategoryPosts);
+    yield takeLatest(
+        actionTypes.LOAD_USER_CATEGORY_POSTS_CALL,
+        loadUserCategoryPosts,
+    );
 }
 
 function loadSearchPostsApi(query) {
@@ -252,10 +266,7 @@ function* watchLoadSearchPosts() {
 
 function addUserLikePostApi(data) {
     const { user, post } = data;
-    return http.post(
-        `/users/${user}/posts/${post}/like`,
-        {},
-    );
+    return http.post(`/users/${user}/posts/${post}/like`, {});
 }
 
 function* addUserLikePost(action) {

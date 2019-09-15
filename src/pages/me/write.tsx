@@ -1,24 +1,15 @@
 import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    Input,
     Divider,
-    Select,
-    Form,
-    Button,
-    Tabs,
-    Icon,
     PageHeader,
 } from 'antd';
-import Markdown from 'react-markdown';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import MeLayout from '../../components/MeLayout';
 import { withAuth } from '../../utils/auth';
 // import { markdownConverter } from '../../helpers/converter';
-import showdown from 'showdown';
-import xssFilter from 'showdown-xss-filter';
 import WritePostForm from '../../components/WritePostForm';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../../reducers/actionTypes';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 
@@ -30,7 +21,7 @@ const Write: FunctionComponent<IWriteProps> = ({ id }) => {
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title="Write" />
+                <PageHeader title='Write' />
                 <Divider />
                 <WritePostForm key={`post-${id}`} id={id} />
             </ContentWrapper>

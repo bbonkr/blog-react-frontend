@@ -4,7 +4,7 @@ import post, { IPostState } from './post';
 import category, { ICategoryState } from './category';
 import settings, { ISettingState } from './settings';
 import me, { IMeState } from './me';
-import { BlogAction } from './BlogAction';
+import { IBlogAction } from '../typings/IBlogAction';
 
 export interface IRootState {
     user: IUserState;
@@ -14,15 +14,14 @@ export interface IRootState {
     me: IMeState;
 }
 
-export type BlogReducer 
-    = Reducer<IRootState, BlogAction>
+export type BlogReducer = Reducer<IRootState, IBlogAction>;
 
-    const map : ReducersMapObject= {
-        user,
-        post,
-        category,
-        settings,
-        me,
-    }
+const map: ReducersMapObject = {
+    user,
+    post,
+    category,
+    settings,
+    me,
+};
 
-export const rootReducer = combineReducers<IRootState, BlogAction>(map);
+export const rootReducer = combineReducers<IRootState, IBlogAction>(map);

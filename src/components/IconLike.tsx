@@ -1,21 +1,29 @@
-import React, { useCallback, useMemo, useState, FunctionComponent } from 'react';
+import React, {
+    useCallback,
+    useMemo,
+    useState,
+    FunctionComponent,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icon } from 'antd';
 import { IPostState } from '../reducers/post';
 import { IRootState } from 'reducers';
 import { IUserState } from 'reducers/user';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../reducers/actionTypes';
+import { IPostModel } from '../typings/IPostModel';
 
 const LIKE_COLOR = '#eb2f96';
 
 export interface IIconLikeProps {
-    post: any;  // todo type post
+    post: IPostModel;
 }
 
 const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
     const dispatch = useDispatch();
-    const { me } = useSelector<IRootState, IUserState>(s => s.user);
-    const { likePostLoading } = useSelector<IRootState, IPostState>(s => s.post);
+    const { me } = useSelector<IRootState, IUserState>((s) => s.user);
+    const { likePostLoading } = useSelector<IRootState, IPostState>(
+        (s) => s.post,
+    );
     const [loading, setLoading] = useState(false);
 
     useMemo(() => {
@@ -25,14 +33,16 @@ const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
     }, [likePostLoading]);
 
     const likersCount = useMemo(() => {
-        return (post.Likers && post.Likers.length) || 0;
+        return (post.likers && post.likers.length) || 0;
     }, [post.Likers]);
 
     const liked = useMemo(() => {
         return (
-            me && post.Likers && post.Likers.findIndex(x => x.id === me.id) >= 0
+            me &&
+            post.likers &&
+            post.likers.findIndex((x) => x.id === me.id) >= 0
         );
-    }, [me, post.Likers]);
+    }, [me, post.likers]);
 
     const onClickLike = useCallback(() => {
         if (!!me) {
@@ -47,12 +57,12 @@ const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
             dispatch({
                 type: action,
                 data: {
-                    user: post.User.username,
+                    user: post.user.username,
                     post: post.slug,
                 },
             });
         }
-    }, [dispatch, liked, me, post.User.username, post.slug]);
+    }, [dispatch, liked, me, post.user.username, post.slug]);
 
     return (
         <span onClick={onClickLike} style={{ cursor: !!me ? 'pointer' : '' }}>

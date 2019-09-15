@@ -1,4 +1,9 @@
-import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    FunctionComponent,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     Table,
@@ -14,10 +19,10 @@ import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
 import { formatNumber, makeSlug } from '../../helpers/stringHelper';
-import { IRootState } from 'reducers';
-import { IMeState } from 'reducers/me';
-import { actionTypes } from 'reducers/actionTypes';
-import { CategoryFormValidator } from 'helpers/formValidators';
+import { IRootState } from '../../reducers';
+import { IMeState } from '../../reducers/me';
+import { actionTypes } from '../../reducers/actionTypes';
+import { CategoryFormValidator } from '../../helpers/CategoryFormValidator';
 
 const validator = new CategoryFormValidator();
 
@@ -29,7 +34,7 @@ const MyCategory: FunctionComponent = () => {
         categoriesCount,
         categoryLimit,
         categoryNextPageToken,
-    } = useSelector<IRootState, IMeState>(s => s.me);
+    } = useSelector<IRootState, IMeState>((s) => s.me);
 
     const [currentPage, setCurrentPage] = useState(0);
     const [editFormVisible, setEditFormVisible] = useState(false);
@@ -102,7 +107,7 @@ const MyCategory: FunctionComponent = () => {
     }, []);
 
     const onClickEditCategory = useCallback(
-        record => () => {
+        (record) => () => {
             setId(record.id);
             setName(record.name);
             setSlug(record.slug);
@@ -114,23 +119,23 @@ const MyCategory: FunctionComponent = () => {
     );
 
     const onClickDeleteCategory = useCallback(
-        record => () => {
+        (record) => () => {
             Modal.confirm({
                 title: 'Do you want to delete this category?',
                 content: record.name,
-                onOk() {
+                onOk: () => {
                     dispatch({
                         type: actionTypes.DELETE_MY_CATEGORY_CALL,
                         data: record,
                     });
                 },
-                onCancel() {},
+                onCancel: null,
             });
         },
         [dispatch],
     );
 
-    const onChangeName = useCallback(e => {
+    const onChangeName = useCallback((e) => {
         const newValue = e.target.value;
         setName(newValue);
         const { valid, message } = validator.checkName({ name: newValue });
@@ -140,14 +145,14 @@ const MyCategory: FunctionComponent = () => {
         setNameErrorMessage(message);
     }, []);
 
-    const onChangeSlug = useCallback(e => {
+    const onChangeSlug = useCallback((e) => {
         const newValue = e.target.value;
         setSlug(newValue);
         const { valid, message } = validator.checkSlug({ slug: newValue });
         setSlugErrorMessage(message);
     }, []);
 
-    const onChangeOrdinal = useCallback(value => {
+    const onChangeOrdinal = useCallback((value) => {
         // const newValue = e.target.value;
         setOrdinal(value);
         const { valid, message } = validator.checkOrdinal({ ordinal: value });
@@ -155,7 +160,7 @@ const MyCategory: FunctionComponent = () => {
     }, []);
 
     const onSubmitEditForm = useCallback(
-        e => {
+        (e) => {
             e.preventDefault();
 
             const formData = { id, name, slug, ordinal };
@@ -173,14 +178,14 @@ const MyCategory: FunctionComponent = () => {
         [dispatch, id, name, ordinal, slug],
     );
 
-    const onClickCancelEditForm = useCallback(e => {
+    const onClickCancelEditForm = useCallback((e) => {
         setEditFormVisible(false);
     }, []);
 
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title="Categories" />
+                <PageHeader title='Categories' />
 
                 <Table
                     title={(currentPageData) => {
@@ -188,7 +193,7 @@ const MyCategory: FunctionComponent = () => {
                             <div>
                                 <div>
                                     <Button
-                                        type="primary"
+                                        type='primary'
                                         onClick={onClickNewCategory}>
                                         New category
                                     </Button>
@@ -199,7 +204,7 @@ const MyCategory: FunctionComponent = () => {
                             </div>
                         );
                     }}
-                    rowKey={record => record.id}
+                    rowKey={(record) => record.slug}
                     dataSource={categories}
                     columns={columns}
                     loading={loadingCategories}
@@ -214,21 +219,21 @@ const MyCategory: FunctionComponent = () => {
                         onShowSizeChange: onShowSizeChangePagination,
                         position: 'both',
                     }}
-                    expandedRowRender={record => {
+                    expandedRowRender={(record) => {
                         return (
                             <div>
                                 <Button.Group>
                                     <Button
                                         onClick={onClickEditCategory(record)}>
                                         <span>
-                                            <Icon type="edit" /> Edit
+                                            <Icon type='edit' /> Edit
                                         </span>
                                     </Button>
                                     <Button
-                                        type="danger"
+                                        type='danger'
                                         onClick={onClickDeleteCategory(record)}>
                                         <span>
-                                            <Icon type="delete" /> Delete
+                                            <Icon type='delete' /> Delete
                                         </span>
                                     </Button>
                                 </Button.Group>
@@ -243,7 +248,7 @@ const MyCategory: FunctionComponent = () => {
                     onCancel={onClickCancelEditForm}>
                     <Form onSubmit={onSubmitEditForm}>
                         <Form.Item
-                            label="Name"
+                            label='Name'
                             help={nameErrorMessage}
                             hasFeedback={true}
                             validateStatus={
@@ -252,7 +257,7 @@ const MyCategory: FunctionComponent = () => {
                             <Input value={name} onChange={onChangeName} />
                         </Form.Item>
                         <Form.Item
-                            label="Slug"
+                            label='Slug'
                             help={slugErrorMessage}
                             hasFeedback={true}
                             validateStatus={
@@ -265,7 +270,7 @@ const MyCategory: FunctionComponent = () => {
                             />
                         </Form.Item>
                         <Form.Item
-                            label="Ordinal"
+                            label='Ordinal'
                             help={ordinalErrorMessage}
                             hasFeedback={true}
                             validateStatus={
@@ -279,7 +284,7 @@ const MyCategory: FunctionComponent = () => {
                         </Form.Item>
                         <Form.Item>
                             <Button.Group>
-                                <Button type="primary" htmlType="submit">
+                                <Button type='primary' htmlType='submit'>
                                     Save
                                 </Button>
                                 <Button onClick={onClickCancelEditForm}>
@@ -294,7 +299,7 @@ const MyCategory: FunctionComponent = () => {
     );
 };
 
-MyCategory.getInitialProps = async context => {
+MyCategory.getInitialProps = async (context) => {
     const state = context.store.getState();
     const { categoryLimit } = state.me;
 

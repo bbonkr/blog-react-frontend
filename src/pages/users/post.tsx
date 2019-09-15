@@ -12,20 +12,25 @@ import SinglePost from '../../components/SinglePost';
 import { Skeleton, Spin } from 'antd';
 import { IRootState } from 'reducers';
 import { ISettingState } from 'reducers/settings';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../../reducers/actionTypes';
+import { IUserModel } from 'typings/IUserModel';
 
 // import '../../styles/prism.css';
 // import '../../styles/singlepost.css';
 
 export interface IUsersPostProps {
-    user: any;  // todo type user
-    slug: string; 
+    user: IUserModel;
+    slug: string;
 }
 
 const UsersPost: FunctionComponent = () => {
     const siteName = 'nodeblog';
-    const { loadingPost, singlePost } = useSelector<IRootState, IPostState>(s => s.post);
-    const { baseUrl, currentUrl } = useSelector<IRootState, ISettingState>(s => s.settings);
+    const { loadingPost, singlePost } = useSelector<IRootState, IPostState>(
+        (s) => s.post,
+    );
+    const { baseUrl, currentUrl } = useSelector<IRootState, ISettingState>(
+        (s) => s.settings,
+    );
 
     const getOgImage = useCallback(() => {
         if (!singlePost) {
@@ -34,8 +39,8 @@ const UsersPost: FunctionComponent = () => {
         if (!!singlePost.coverImage) {
             return `${baseUrl}${singlePost.coverImage}`;
         }
-        if (!!singlePost.User && singlePost.User.photo) {
-            return `${baseUrl}${singlePost.User.photo}`;
+        if (!!singlePost.User && singlePost.user.photo) {
+            return `${baseUrl}${singlePost.user.photo}`;
         }
         return '';
     }, [baseUrl, singlePost]);
@@ -43,9 +48,7 @@ const UsersPost: FunctionComponent = () => {
         <>
             {!!singlePost && (
                 <Helmet
-                    title={`${singlePost.title} | ${
-                        singlePost.User.displayName
-                    } | ${siteName}`}
+                    title={`${singlePost.title} | ${singlePost.user.displayName} | ${siteName}`}
                     meta={[
                         { name: 'description', content: singlePost.excerpt },
                         { name: 'og:title', content: singlePost.title },
@@ -57,7 +60,7 @@ const UsersPost: FunctionComponent = () => {
             )}
             <DefaultLayout>
                 <ContentWrapper>
-                    <Spin spinning={loadingPost} tip="loading ...">
+                    <Spin spinning={loadingPost} tip='loading ...'>
                         {!!singlePost && !loadingPost ? (
                             <SinglePost post={singlePost} />
                         ) : (
@@ -70,12 +73,12 @@ const UsersPost: FunctionComponent = () => {
     );
 };
 
-UsersPost.propTypes = {
-    user: PropTypes.string.isRequired,
-    slug: PropTypes.string.isRequired,
-};
+// UsersPost.propTypes = {
+//     user: PropTypes.string.isRequired,
+//     slug: PropTypes.string.isRequired,
+// };
 
-UsersPost.getInitialProps = async context => {
+UsersPost.getInitialProps = async (context) => {
     const { user, slug } = context.query;
     // console.log('Post.getInitialize() ==> user: ', user);
     // console.log('Post.getInitialize() ==> slug: ', slug);

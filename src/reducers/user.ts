@@ -1,9 +1,10 @@
 import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import { actionTypes } from './actionTypes';
+import { IUserModel } from 'typings/IUserModel';
 
 export interface IUserState {
-    me: any;        // todo type user
+    me: IUserModel;
     signInFailMessage?: string;
     signInInProcess: boolean;
 
@@ -24,13 +25,13 @@ export interface IUserState {
     signOutReturnUrl?: string;
 
     // verify email
-    verifyEmailInfo: any;   // todo type email
+    verifyEmailInfo: any; // todo type email
     verifyEmailLoading: boolean;
     verifyEmailErrorReason?: string;
 
     // make verify email code
     makeVerifyEmailLoading: boolean;
-    makeVerifyEmailErrorReason?: string; 
+    makeVerifyEmailErrorReason?: string;
 
     // request reset password
     requestResetPasswordLoading: boolean;
@@ -136,7 +137,7 @@ export const initialState: IUserState = {
 // export const UNREGISTER_FAIL = 'UNREGISTER_FAIL';
 
 const reducer = (state: IUserState = initialState, action) =>
-    produce(state, draft => {
+    produce(state, (draft) => {
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
         switch (action.type) {
             case actionTypes.SIGN_IN_PREPARE:

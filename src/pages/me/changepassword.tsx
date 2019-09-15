@@ -9,7 +9,7 @@ const ChangePassword: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title="Change my password">
+                <PageHeader title='Change my password'>
                     Change my password.
                     <ol>
                         <li>Input current password.</li>

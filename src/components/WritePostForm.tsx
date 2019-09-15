@@ -1,22 +1,28 @@
-import React, { useState, useCallback, useEffect, FunctionComponent, useRef, TextareaHTMLAttributes } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    FunctionComponent,
+    useRef,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Input, Divider, Select, Form, Button, Tabs, Icon, Modal } from 'antd';
+import { Input, Select, Form, Button, Tabs, Icon, Modal } from 'antd';
 import Markdown from 'react-markdown';
 import showdown from 'showdown';
 import xssFilter from 'showdown-xss-filter';
 import FullSizeModal from '../styledComponents/FullSizeModal';
 import FileList from './FileList';
-import { WriteFormValaidator } from 'helpers/formValidators';
+import { WriteFormValaidator } from 'helpers/WriteFormValaidator';
 import { IRootState } from 'reducers';
 import { IMeState } from 'reducers/me';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../reducers/actionTypes';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 const SELECT_FILE_TARGET_MARKDOWN = 'markdown';
 const SELECT_FILE_TARGET_COVERIMAGE = 'coverimage';
 const TextArea = Input.TextArea;
 export interface IWritePostFormProps {
-    id?: number; 
+    id?: number;
 }
 
 const Validator = new WriteFormValaidator();
@@ -60,9 +66,8 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         tags,
         loadingCategories,
         loadingTags,
-        loadingMyPost,
         myPost,
-    } = useSelector<IRootState, IMeState>(s => s.me);
+    } = useSelector<IRootState, IMeState>((s) => s.me);
 
     const [title, setTitle] = useState('');
     const [slug, setSlug] = useState('');
@@ -93,21 +98,21 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
             setMarkdown(myPost.markdown);
             setCoverImage(myPost.coverImage);
             setSelectedCategoryValues(
-                !!myPost.Categories ? myPost.Categories.map(v => v.slug) : [],
+                !!myPost.Categories ? myPost.Categories.map((v) => v.slug) : [],
             );
             setSelectedTagValues(
-                !!myPost.Tags ? myPost.Tags.map(v => v.slug) : [],
+                !!myPost.Tags ? myPost.Tags.map((v) => v.slug) : [],
             );
             setSelectedCategories(
                 myPost.Categories
-                    ? myPost.Categories.map(v => {
+                    ? myPost.Categories.map((v) => {
                           return { name: v.name, slug: v.slug };
                       })
                     : [],
             );
             setSelectedTags(
                 myPost.Tags
-                    ? myPost.Tags.map(v => {
+                    ? myPost.Tags.map((v) => {
                           return {
                               name: v.name,
                               slug: v.slug,
@@ -129,7 +134,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
     }, [dispatch, id, myPost]);
 
     const onChangeTitle = useCallback(
-        e => {
+        (e) => {
             const newValue = e.target.value;
             setTitle(newValue);
             const { message } = Validator.checkTitle({ title: newValue });
@@ -146,13 +151,13 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         [slug],
     );
 
-    const onChangeSlug = useCallback(e => {
+    const onChangeSlug = useCallback((e) => {
         const text = e.target.value;
         setSlug(text);
     }, []);
 
     const onChangeMarkdown = useCallback(
-        e => {
+        (e) => {
             const newValue = e.target.value;
             setMarkdown(newValue);
             setHtml(markdownConverter.makeHtml(newValue));
@@ -162,7 +167,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         [markdownConverter],
     );
 
-    const onChangeCoverImage = useCallback(e => {
+    const onChangeCoverImage = useCallback((e) => {
         const newValue = e.target.value;
         setCoverImage(newValue);
 
@@ -175,24 +180,24 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         setFileListVisible(false);
     }, []);
 
-    const onTabKeyPressed = useCallback(e => {
-        e.preventDefault();
-        const indent = `    `;
-        const startIndex = e.target.selectionStart;
-        const endIndex = e.target.selectionEnd;
-        const text = e.target.value;
-        setMarkdown(
-            `${text.substring(0, startIndex)}${indent}${text.substring(
-                endIndex,
-            )} `,
-        );
-    }, []);
+    // const onTabKeyPressed = useCallback((e) => {
+    //     e.preventDefault();
+    //     const indent = `    `;
+    //     const startIndex = e.target.selectionStart;
+    //     const endIndex = e.target.selectionEnd;
+    //     const text = e.target.value;
+    //     setMarkdown(
+    //         `${text.substring(0, startIndex)}${indent}${text.substring(
+    //             endIndex,
+    //         )} `,
+    //     );
+    // }, []);
 
     const onChangeCategories = useCallback((values, options) => {
         // console.log('selected values', values);
         // console.log('selected options', options);
         setSelectedCategories(
-            options.map(v => {
+            options.map((v) => {
                 return { name: v.props.value, slug: v.key };
             }),
         );
@@ -207,7 +212,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         // console.log('selected options', options);
 
         setSelectedTags(
-            options.map(v => {
+            options.map((v) => {
                 return {
                     name: v.props.value,
                     slug: v.key,
@@ -222,20 +227,18 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         setFileListVisible(true);
     }, []);
 
-    const onClickInsetImage = useCallback(e => {
+    const onClickInsetImage = useCallback(() => {
         setSelectFileTarget(SELECT_FILE_TARGET_MARKDOWN);
         setFileListVisible(true);
     }, []);
 
     const onSelectMarkdownInsertImage = useCallback(
-        item => {
+        (item) => {
             // todo 확인 필요 textAreaRef.refs.input <= HTMLTextAreaElement
-            const textAreaRef  = markdownRef.current;
-            const textArea = textAreaRef.refs.input as HTMLTextAreaElement;;
+            const textAreaRef = markdownRef.current;
+            const textArea = textAreaRef.refs.input as HTMLTextAreaElement;
             const startIndex = textArea.selectionStart;
-            const imageItem = `![${item.fileName}${item.fileExtension}](${
-                item.src
-            })\n`;
+            const imageItem = `![${item.fileName}${item.fileExtension}](${item.src})\n`;
             const currentValue = textArea.value;
             const newValue = `${currentValue.slice(
                 0,
@@ -250,14 +253,14 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         [markdownRef],
     );
 
-    const onSelectCoverImage = useCallback(item => {
+    const onSelectCoverImage = useCallback((item) => {
         setCoverImage(item.src);
         setFileListVisible(false);
         Modal.destroyAll();
     }, []);
 
     const onSelectItemOnFileList = useCallback(
-        item => {
+        (item) => {
             switch (selectFileTarget) {
                 case SELECT_FILE_TARGET_MARKDOWN:
                     onSelectMarkdownInsertImage(item);
@@ -275,7 +278,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
     );
 
     const onSubmit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault();
 
             const formData = {
@@ -323,17 +326,17 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         <>
             <Form onSubmit={onSubmit}>
                 <Form.Item
-                    label="Title"
+                    label='Title'
                     hasFeedback={true}
                     help={titleErrorMessage}
                     validateStatus={!!titleErrorMessage ? 'error' : ''}>
                     <Input value={title} onChange={onChangeTitle} />
                 </Form.Item>
-                <Form.Item label="Slug">
+                <Form.Item label='Slug'>
                     <Input value={slug} onChange={onChangeSlug} />
                 </Form.Item>
                 <Form.Item
-                    label="Content"
+                    label='Content'
                     hasFeedback={true}
                     help={markdownErrorMessage}
                     validateStatus={!!markdownErrorMessage ? 'error' : ''}>
@@ -341,13 +344,13 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                         <Tabs.TabPane
                             tab={
                                 <span>
-                                    <Icon type="file-markdown" /> Markdown
+                                    <Icon type='file-markdown' /> Markdown
                                 </span>
                             }
-                            key="markdown">
+                            key='markdown'>
                             <div>
                                 <Button onClick={onClickInsetImage}>
-                                    <Icon type="file-image" /> Insert image
+                                    <Icon type='file-image' /> Insert image
                                 </Button>
                             </div>
                             <Input.TextArea
@@ -361,10 +364,10 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                         <Tabs.TabPane
                             tab={
                                 <span>
-                                    <Icon type="eye" /> Preview
+                                    <Icon type='eye' /> Preview
                                 </span>
                             }
-                            key="preview">
+                            key='preview'>
                             <Markdown source={markdown} escapeHtml={false} />
                         </Tabs.TabPane>
                         {/* <Tabs.TabPane
@@ -380,54 +383,50 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                         </Tabs.TabPane> */}
                     </Tabs>
                 </Form.Item>
-                <Form.Item label="Cover">
+                <Form.Item label='Cover'>
                     <Input
                         value={coverImage}
                         onChange={onChangeCoverImage}
-                        placeholder="Set post cover image"
+                        placeholder='Set post cover image'
                         addonBefore={
                             <span
                                 style={{ cursor: 'pointer' }}
                                 onClick={onClickShowFileListModal}>
-                                <Icon type="picture" /> Select image
+                                <Icon type='picture' /> Select image
                             </span>
                         }
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Categories"
+                    label='Categories'
                     hasFeedback={true}
                     help={categoriesErrorMessage}
                     validateStatus={!!categoriesErrorMessage ? 'error' : ''}>
                     <Select
-                        mode="multiple"
+                        mode='multiple'
                         onChange={onChangeCategories}
                         style={{ width: '100%' }}
                         loading={loadingCategories}
                         value={selectedCategoryValues}>
-                        {categories.map(c => {
+                        {categories.map((c) => {
                             return (
-                                <Select.Option
-                                    key={c.slug}
-                                    value={c.slug}>
+                                <Select.Option key={c.slug} value={c.slug}>
                                     {c.name}
                                 </Select.Option>
                             );
                         })}
                     </Select>
                 </Form.Item>
-                <Form.Item label="Tags">
+                <Form.Item label='Tags'>
                     <Select
-                        mode="tags"
+                        mode='tags'
                         onChange={onChangeTags}
                         style={{ width: '100%' }}
                         loading={loadingTags}
                         value={selectedTagValues}>
-                        {tags.map(t => {
+                        {tags.map((t) => {
                             return (
-                                <Select.Option
-                                    key={t.slug}
-                                    value={t.slug}>
+                                <Select.Option key={t.slug} value={t.slug}>
                                     {t.name}
                                 </Select.Option>
                             );
@@ -435,20 +434,20 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                     </Select>
                 </Form.Item>
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">
+                    <Button type='primary' htmlType='submit'>
                         Save
                     </Button>
                 </Form.Item>
             </Form>
 
             <FullSizeModal
-                title="Select a file"
+                title='Select a file'
                 footer={false}
                 visible={fileListVisible}
                 maskClosable={true}
                 onCancel={closeFileList}
                 destroyOnClose={true}
-                width="100%">
+                width='100%'>
                 <FileList onSelect={onSelectItemOnFileList} />
             </FullSizeModal>
         </>

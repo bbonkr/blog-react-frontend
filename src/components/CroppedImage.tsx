@@ -1,14 +1,28 @@
-import React, { FunctionComponent } from 'react';
-import PropTypes from 'prop-types';
+import React, { FunctionComponent, useCallback } from 'react';
+// import PropTypes from 'prop-types';
+import { IImageModel } from '../typings/IImageModel';
 
 export interface ICroppedImageProps {
-    image: any; // todo type image 
+    image: IImageModel;
     altText?: string;
-    onClickHandler?: (event?: React.MouseEvent<HTMLImageElement, MouseEvent>) => (image: any) => void;
+    onClickHandler?: (image: IImageModel) => void;
 }
 
-const CroppedImage: FunctionComponent<ICroppedImageProps> = ({ image, altText, onClickHandler }) => {
+const CroppedImage: FunctionComponent<ICroppedImageProps> = ({
+    image,
+    altText,
+    onClickHandler,
+}) => {
     const filename = `${image.fileName}${image.fileExtension}`;
+
+    const onClickImage = useCallback(
+        (e: React.MouseEvent<HTMLImageElement, MouseEvent>): void => {
+            if (onClickHandler) {
+                onClickHandler(image);
+            }
+        },
+        [],
+    );
 
     return (
         <>
@@ -27,17 +41,17 @@ const CroppedImage: FunctionComponent<ICroppedImageProps> = ({ image, altText, o
                     }}
                     src={decodeURIComponent(image.src)}
                     alt={altText || filename}
-                    onClick={onClickHandler && onClickHandler(image)}
+                    onClick={onClickImage}
                 />
             </figure>
         </>
     );
 };
 
-CroppedImage.propTypes = {
-    image: PropTypes.object.isRequired,
-    altText: PropTypes.string,
-    onClickHandler: PropTypes.func,
-};
+// CroppedImage.propTypes = {
+//     image: PropTypes.object.isRequired,
+//     altText: PropTypes.string,
+//     onClickHandler: PropTypes.func,
+// };
 
 export default CroppedImage;

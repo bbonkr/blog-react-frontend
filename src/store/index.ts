@@ -3,19 +3,16 @@ import { createStore, compose, applyMiddleware, Store } from 'redux';
 import { rootReducer, IRootState } from '../reducers';
 import { rootSaga } from '../sagas';
 import { MakeStoreOptions } from 'next-redux-wrapper';
-import { BlogAction } from 'reducers/BlogAction';
+import { IBlogAction } from '../typings/IBlogAction';
 
 export const configureStore = (
     initialState: any,
     options: MakeStoreOptions,
-): Store<any, BlogAction> => {
+): Store<any, IBlogAction> => {
     const isProd = process.env.NODE_ENV === 'production';
 
     const sagaMiddleware = createSagaMiddleware();
-    const middlewares = [
-        loggingMiddleware,
-        sagaMiddleware
-        ];
+    const middlewares = [loggingMiddleware, sagaMiddleware];
 
     const composeEnhancers =
         (!options.isServer &&
@@ -27,14 +24,18 @@ export const configureStore = (
         ? compose(applyMiddleware(...middlewares))
         : composeEnhancers(applyMiddleware(...middlewares));
 
-    const store: Store<IRootState,BlogAction> = createStore(rootReducer, initialState, enhancers);
+    const store: Store<IRootState, IBlogAction> = createStore(
+        rootReducer,
+        initialState,
+        enhancers,
+    );
 
     store.sagaTask = sagaMiddleware.run(rootSaga);
 
     return store;
 };
 
-const loggingMiddleware = (store) => next => action => {
+const loggingMiddleware = (store) => (next) => (action) => {
     // 액션확인
     // console.log(action);
     // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);

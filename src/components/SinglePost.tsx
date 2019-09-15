@@ -10,13 +10,14 @@ import UserAvatar from './UserAvatar';
 import moment from 'moment';
 import LinkUsersPosts from './LinkUsersPosts';
 import IconLike from './IconLike';
-
+import { IPostModel } from '../typings/IPostModel';
 import Prism from 'prismjs';
+
 import '../styles/prism.css';
 import '../styles/singlepost.css';
 
 export interface ISinglePostProps {
-    post: any;  // todo type post
+    post: IPostModel;
 }
 
 const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
@@ -59,7 +60,7 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                         }
                         description={
                             post.Categories &&
-                            post.Categories.map(category => {
+                            post.Categories.map((category) => {
                                 return (
                                     <LinkCategory
                                         key={category.slug}
@@ -70,9 +71,9 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                             })
                         }
                     />
-                    <Divider orientation="right">
+                    <Divider orientation='right'>
                         <span>
-                            <Icon type="clock-circle" />{' '}
+                            <Icon type='clock-circle' />{' '}
                             {moment(
                                 new Date(post.createdAt),
                                 'YYYY-MM-DD HH:mm:ss',
@@ -90,7 +91,7 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                     <Divider dashed={true} />
 
                     {post.Tags &&
-                        post.Tags.map(v => {
+                        post.Tags.map((v) => {
                             return <LinkTag key={v.slug} tag={v} />;
                         })}
                 </Card>
@@ -99,8 +100,8 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
     );
 };
 
-SinglePost.propTypes = {
-    post: PropTypes.object.isRequired,
-};
+// SinglePost.propTypes = {
+//     post: PropTypes.object.isRequired,
+// };
 
 export default SinglePost;

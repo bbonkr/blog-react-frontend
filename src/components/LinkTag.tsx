@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Icon } from 'antd';
+import { ITagModel } from 'typings/ITagModel';
 
 const LinkWrapper = styled.span`
     margin-right: 1em;
 `;
 
 export interface ILinkTagProps {
-    tag: any;   // todo type tag
+    tag: ITagModel;
 }
 
 const LinkTag: FunctionComponent<ILinkTagProps> = ({ tag }) => {
@@ -21,15 +22,15 @@ const LinkTag: FunctionComponent<ILinkTagProps> = ({ tag }) => {
                 href={{ pathname: '/tag', query: { slug: encodedSlug } }}
                 as={`/tag/${encodedSlug}`}>
                 <a>
-                    <Icon type="tag" /> <span>{name}</span>
+                    <Icon type='tag' /> <span>{name}</span>
                 </a>
             </Link>
         </LinkWrapper>
     );
 };
 
-LinkTag.propTypes = {
-    tag: PropTypes.object.isRequired,
-};
+// LinkTag.propTypes = {
+//     tag: PropTypes.object.isRequired,
+// };
 
 export default LinkTag;

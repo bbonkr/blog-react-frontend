@@ -1,3 +1,5 @@
+import { IDictionary } from 'typings/IDictionary';
+
 /**
  * URL과 쿼리 정보를 사용해서 URL을 작성합니다.
  * @param {string} URL
@@ -5,12 +7,17 @@
  *
  * @returns {string} 완성된 URL
  */
-export const normalizeReturnUrl = (pathname = '', query = {}) => {
+export const normalizeReturnUrl = (
+    pathname: string = '',
+    query: IDictionary<any> = {},
+) => {
     let url = pathname;
     if (!!query) {
         url = `${url}?`;
-        for (let k in query) {
-            url = `${url}${k}=${query[k]}&`;
+        for (const k in query) {
+            if (query.hasOwnPropery(k)) {
+                url = `${url}${k}=${query[k]}&`;
+            }
         }
         url = url.slice(0, -1);
     }
@@ -18,7 +25,7 @@ export const normalizeReturnUrl = (pathname = '', query = {}) => {
     return url;
 };
 
-export const makeSlug = text => {
+export const makeSlug = (text) => {
     if (!text) {
         return null;
     }
@@ -26,7 +33,7 @@ export const makeSlug = text => {
     return text.replace(/\s+/g, '-').toLowerCase();
 };
 
-export const formatNumber = num => {
+export const formatNumber = (num) => {
     let tempNum = 0;
     if (typeof num === 'string') {
         tempNum = parseFloat(num);
@@ -41,9 +48,11 @@ export const formatNumber = num => {
         );
     }
 
-    if (tempNum === 0) return '0';
+    if (tempNum === 0) {
+        return '0';
+    }
 
-    let reg = /(^[+-]?\d+)(\d{3})/;
+    const reg = /(^[+-]?\d+)(\d{3})/;
     let n = tempNum + '';
 
     while (reg.test(n)) {

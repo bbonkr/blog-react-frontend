@@ -1,10 +1,12 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    FunctionComponent,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { Form, Input, Checkbox, Button, Icon, Row, Col } from 'antd';
-import styled from 'styled-components';
-import Validator from '../helpers/validator';
-import { SIGN_IN_PREPARE, SIGN_IN_CALL } from '../reducers/user';
 import Router from 'next/router';
 import PropTypes from 'prop-types';
 import {
@@ -13,30 +15,36 @@ import {
     ErrorMessageWrapper,
 } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
-// import {login} from '../utils/auth';
+import { IRootState } from 'reducers';
+import { IUserState } from 'reducers/user';
+import { actionTypes } from '../reducers/actionTypes';
+import { SignInFormValidator } from 'helpers/SignInFormValidator';
+
+const validator = new SignInFormValidator();
 
 const INPUT_EMAIL_PLACEHOLDER = 'Your email Address';
 const INPUT_PASSWORD_PLACEHOLDER = 'Your password';
 
-const MESSAGE_INVALID_EMAIL = 'Invalid email address.';
-const MESSAGE_REQUIRED_EMAIL = 'Please Input your email address';
-const MESSAGE_REQUIRED_PASSWORD = 'Please Input your password';
+export interface ISignInProps {
+    returnUrl?: string;
+}
 
-const SignIn = ({ returnUrl }) => {
+const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
     const dispatch = useDispatch();
+    const { me, signInFailMessage } = useSelector<IRootState, IUserState>(
+        (s) => s.user,
+    );
+
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [remember, setRemember] = useState(false);
-    const { me, signInFailMessage } = useSelector(s => s.user);
 
     useEffect(() => {
         if (me && me.id) {
             console.log('returnUrl', returnUrl);
             Router.push(!!returnUrl ? returnUrl : '/');
-
-            
         } else {
             setEmail('');
             setEmailError('');
@@ -52,35 +60,21 @@ const SignIn = ({ returnUrl }) => {
         setPasswordError('');
     }, []);
 
-    const onEmailChange = useCallback(e => {
+    const onEmailChange = useCallback((e) => {
         const value = e.target.value;
         setEmail(value);
-
-        if (value.trim().length === 0) {
-            setEmailError(MESSAGE_REQUIRED_EMAIL);
-        } else if (!Validator.email(value)) {
-            setEmailError(MESSAGE_INVALID_EMAIL);
-        } else {
-            setEmailError('');
-        }
-
-        // if (!Validator.email(e.target.value, setEmailError, '')) {
-        //     setEmailError('Invalid format');
-        // }
+        const { message } = validator.checkUsername({ username: value });
+        setEmailError(message);
     }, []);
 
-    const onPasswordChange = useCallback(e => {
+    const onPasswordChange = useCallback((e) => {
         const value = e.target.value;
         setPassword(value);
-
-        if (value.trim().length === 0) {
-            setPasswordError(MESSAGE_REQUIRED_PASSWORD);
-        } else {
-            setPasswordError('');
-        }
+        const { message } = validator.checkPassword({ password: value });
+        setPasswordError(message);
     }, []);
 
-    const onRememberChange = useCallback(e => {
+    const onRememberChange = useCallback((e) => {
         setRemember(e.target.checked);
     }, []);
 
@@ -89,21 +83,20 @@ const SignIn = ({ returnUrl }) => {
     }, [emailError, passwordError]);
 
     const onSubmit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault();
             if (!isSubmitButtonDisabled()) {
                 setEmailError('');
                 setPasswordError('');
 
-                if (!email || email.trim().length === 0) {
-                    setEmailError(MESSAGE_REQUIRED_EMAIL);
-                } else if (!Validator.email(email)) {
-                    setEmailError(MESSAGE_INVALID_EMAIL);
-                } else if (!password || password.trim().length === 0) {
-                    setPasswordError(MESSAGE_REQUIRED_PASSWORD);
-                } else {
+                const { valid } = validator.validate({
+                    username: email,
+                    password: password,
+                });
+
+                if (valid) {
                     dispatch({
-                        type: SIGN_IN_CALL,
+                        type: actionTypes.SIGN_IN_CALL,
                         data: {
                             email: email,
                             password: password,
@@ -132,7 +125,7 @@ const SignIn = ({ returnUrl }) => {
     return (
         <DefaultLayout>
             <ContentWrapper>
-                <Row type="flex" justify="center" align="middle">
+                <Row type='flex' justify='center' align='middle'>
                     <Col xs={24} sm={24} md={12}>
                         {signInFailMessage && (
                             <ErrorMessageWrapper>
@@ -143,14 +136,14 @@ const SignIn = ({ returnUrl }) => {
                         <Form onSubmit={onSubmit}>
                             <Form.Item>
                                 <Input
-                                    type="email"
+                                    type='email'
                                     style={{ width: '100%' }}
                                     value={email}
                                     onChange={onEmailChange}
                                     placeholder={INPUT_EMAIL_PLACEHOLDER}
                                     prefix={
                                         <Icon
-                                            type="mail"
+                                            type='mail'
                                             style={{
                                                 color: 'rgba(0,0,0,0.25)',
                                             }}
@@ -160,7 +153,7 @@ const SignIn = ({ returnUrl }) => {
                                 {emailError && (
                                     <span>
                                         <Icon
-                                            type="alert"
+                                            type='alert'
                                             style={{ color: ERROR_COLOR }}
                                         />
                                         <span style={{ color: ERROR_COLOR }}>
@@ -177,7 +170,7 @@ const SignIn = ({ returnUrl }) => {
                                     placeholder={INPUT_PASSWORD_PLACEHOLDER}
                                     prefix={
                                         <Icon
-                                            type="lock"
+                                            type='lock'
                                             style={{
                                                 color: 'rgba(0,0,0,0.25)',
                                             }}
@@ -187,7 +180,7 @@ const SignIn = ({ returnUrl }) => {
                                 {passwordError && (
                                     <span>
                                         <Icon
-                                            type="alert"
+                                            type='alert'
                                             style={{ color: ERROR_COLOR }}
                                         />
                                         <span style={{ color: ERROR_COLOR }}>
@@ -202,20 +195,20 @@ const SignIn = ({ returnUrl }) => {
                                     onChange={onRememberChange}>
                                     Remember me
                                 </Checkbox>
-                                <Link href="/requestresetpassword">
+                                <Link href='/requestresetpassword'>
                                     <a style={{ float: 'right' }}>
                                         Reset my password
                                     </a>
                                 </Link>
                                 <Button
-                                    type="primary"
-                                    htmlType="submit"
+                                    type='primary'
+                                    htmlType='submit'
                                     style={{ width: '100%' }}
                                     disabled={isSubmitButtonDisabled()}>
                                     Log in
                                 </Button>
                                 {'Or '}
-                                <Link href="/signup">
+                                <Link href='/signup'>
                                     <a>Register</a>
                                 </Link>
                             </Form.Item>
@@ -227,7 +220,7 @@ const SignIn = ({ returnUrl }) => {
     );
 };
 
-SignIn.getInitialProps = async context => {
+SignIn.getInitialProps = async (context) => {
     let url = context.query.returnUrl;
 
     const state = context.store.getState();
@@ -236,7 +229,9 @@ SignIn.getInitialProps = async context => {
         url = !!returnUrl ? returnUrl : '/';
     }
 
-    context.store.dispatch({ type: SIGN_IN_PREPARE });
+    context.store.dispatch({
+        type: actionTypes.SIGN_IN_PREPARE,
+    });
 
     return {
         doNotSetCurrentUrl: true,

@@ -9,8 +9,7 @@ import {
     throttle,
 } from 'redux-saga/effects';
 import {http} from './httpHelper';
-import { actionTypes } from 'reducers/actionTypes';
-
+import { actionTypes } from '../reducers/actionTypes';
 
 function getMyInfoApi() {
     return http.get('/me');

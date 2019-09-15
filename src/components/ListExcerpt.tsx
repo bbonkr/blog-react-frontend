@@ -1,5 +1,9 @@
-import React, { useEffect, useState, FunctionComponent, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import React, {
+    useEffect,
+    useState,
+    FunctionComponent,
+    useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import { Button, Divider, Card, Typography, Icon, Spin } from 'antd';
 import moment from 'moment';
@@ -12,32 +16,36 @@ import LinkUsersPosts from './LinkUsersPosts';
 import UserAvatar from './UserAvatar';
 import IconLike from './IconLike';
 import StackGrid from 'react-stack-grid';
-import {withSize, SizeMeProps} from 'react-sizeme';
-import { IUserState } from 'reducers/user';
-import { IRootState } from 'reducers';
+import { withSize, SizeMeProps } from 'react-sizeme';
+import { IPostModel } from '../typings/IPostModel';
 
 const FullWidthButton = styled(Button)`
     width: 100%;
 `;
 
 export interface IListExceptProps extends SizeMeProps {
-    posts : any[];  // todo type post 
+    posts: IPostModel[];
     loading: boolean;
     hasMore: boolean;
     loadMoreHandler: () => void;
 }
 
-const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasMore, loadMoreHandler, size }) => {
+const ListExcerpt: FunctionComponent<IListExceptProps> = ({
+    posts,
+    loading,
+    hasMore,
+    loadMoreHandler,
+    size,
+}) => {
     // const { me } = useSelector<IRootState, IUserState>(s => s.user);
     const { width } = size;
     const [cardWidth, setCardWidth] = useState('100%');
 
     useEffect(() => {
         let columnWidth = '100%';
-   
+
         // const { width } = size;
-        if(width){
-     
+        if (width) {
             if (width > 576) {
                 columnWidth = '50%';
             }
@@ -52,15 +60,14 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasM
 
             if (width > 1200) {
                 columnWidth = '20%';
-            }            
+            }
         }
 
         setCardWidth(columnWidth);
-
     }, [width]);
 
-    const onClickLoadMore = useCallback((e) => {
-        if(loadMoreHandler){
+    const onClickLoadMore = useCallback(() => {
+        if (loadMoreHandler) {
             loadMoreHandler();
         }
     }, [loadMoreHandler]);
@@ -74,7 +81,7 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasM
                     gutterHeight={16}
                     enableSSR={false}
                     monitorImagesLoaded={true}>
-                    {posts.map(post => {
+                    {posts.map((post) => {
                         const { title, excerpt, createdAt } = post;
                         return (
                             <div key={post.id}>
@@ -89,26 +96,28 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasM
                                     }
                                     actions={[
                                         <IconText
-                                            type="eye"
+                                            type='eye'
                                             text={`${
-                                                post.PostAccessLogs &&
-                                                post.PostAccessLogs.length > 0
-                                                    ? post.PostAccessLogs.length
+                                                post.accessLogs &&
+                                                post.accessLogs.length > 0
+                                                    ? post.accessLogs.length
                                                     : 0
                                             }`}
                                         />,
                                         <IconLike post={post} />,
-                                    ]} 
-                                    extra={<IconText
-                                        type="clock-circle"
-                                        text={moment(createdAt).format(
-                                            'YYYY-MM-DD HH:mm:ss',
-                                        )}
-                                    />}>
+                                    ]}
+                                    extra={
+                                        <IconText
+                                            type='clock-circle'
+                                            text={moment(createdAt).format(
+                                                'YYYY-MM-DD HH:mm:ss',
+                                            )}
+                                        />
+                                    }>
                                     <Card.Meta
                                         avatar={
-                                            <LinkUsersPosts user={post.User}>
-                                                <UserAvatar user={post.User} />
+                                            <LinkUsersPosts user={post.user}>
+                                                <UserAvatar user={post.user} />
                                             </LinkUsersPosts>
                                         }
                                         title={
@@ -121,12 +130,12 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasM
                                             </LinkSinglePost>
                                         }
                                         description={
-                                            post.Categories &&
-                                            post.Categories.map(category => {
+                                            post.categories &&
+                                            post.categories.map((category) => {
                                                 return (
                                                     <LinkCategory
                                                         key={category.slug}
-                                                        user={post.User}
+                                                        user={post.user}
                                                         category={category}
                                                     />
                                                 );
@@ -134,9 +143,9 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasM
                                         }
                                     />
                                     <div>
-                                        <Divider orientation="right">
+                                        <Divider orientation='right'>
                                             <span>
-                                                <Icon type="clock-circle" />{' '}
+                                                <Icon type='clock-circle' />{' '}
                                                 {moment(
                                                     new Date(post.createdAt),
                                                     'YYYY-MM-DD HH:mm:ss',
@@ -150,8 +159,8 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasM
                                             <Divider dashed={true} />
                                         )}
                                         <div>
-                                            {post.Tags &&
-                                                post.Tags.map(v => {
+                                            {post.tags &&
+                                                post.tags.map((v) => {
                                                     return (
                                                         <LinkTag
                                                             tag={v}
@@ -177,15 +186,15 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasM
     );
 };
 
-ListExcerpt.propTypes = {
-    posts: PropTypes.array.isRequired,
-    loading: PropTypes.bool.isRequired,
-    hasMore: PropTypes.bool.isRequired,
-    loadMoreHandler: PropTypes.func.isRequired,
-    // size: PropTypes.shape({
-    //     width: PropTypes.number,
-    // }),
-};
+// ListExcerpt.propTypes = {
+//     posts: PropTypes.array.isRequired,
+//     loading: PropTypes.bool.isRequired,
+//     hasMore: PropTypes.bool.isRequired,
+//     loadMoreHandler: PropTypes.func.isRequired,
+//     // size: PropTypes.shape({
+//     //     width: PropTypes.number,
+//     // }),
+// };
 
 // export default sizeMe()(ListExcerpt);
 export default withSize({ noPlaceholder: true })(ListExcerpt);

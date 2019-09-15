@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Form, Input, Button, Row, Col } from 'antd';
+import React, { FunctionComponent } from 'react';
+import { Row, Col } from 'antd';
 import {
     ContentWrapper,
-    ErrorMessageWrapper,
 } from '../styledComponents/Wrapper';
 import SignUpForm from '../components/SignUpForm';
 import DefaultLayout from '../components/DefaultLayout';
 
-const SignUp = () => {
+const SignUp: FunctionComponent = () => {
     return (
         <DefaultLayout>
             <ContentWrapper>
-                <Row type="flex" justify="center" align="middle">
+                <Row type='flex' justify='center' align='middle'>
                     <Col xs={24} sm={24} md={12}>
                         <div>sign up</div>
                         <SignUpForm />

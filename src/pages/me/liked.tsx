@@ -8,7 +8,7 @@ import { withAuth } from '../../utils/auth';
 import Router from 'next/router';
 import { IRootState } from 'reducers';
 import { IMeState } from 'reducers/me';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../../reducers/actionTypes';
 
 const Liked: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const Liked: FunctionComponent = () => {
         likedPostsHasMore,
         likedPostsLimit,
         likedPostsPageToken,
-    } = useSelector<IRootState, IMeState>(s => s.me);
+    } = useSelector<IRootState, IMeState>((s) => s.me);
 
     const onClickLoadMore = useCallback(() => {
         if (likedPostsHasMore) {
@@ -34,7 +34,7 @@ const Liked: FunctionComponent = () => {
     }, [dispatch, likedPostsHasMore, likedPostsLimit, likedPostsPageToken]);
 
     const onClickOpnePost = useCallback(
-        post => () => {
+        (post) => () => {
             const username = `@${post.User.username}`;
             const slug = encodeURIComponent(post.slug);
 
@@ -46,13 +46,13 @@ const Liked: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title="Liked posts" />
+                <PageHeader title='Liked posts' />
                 <Divider />
                 <Timeline
                     pending={likedPostsLoading}
                     reverse={false}
-                    mode="left">
-                    {likedPosts.map(likePost => {
+                    mode='left'>
+                    {likedPosts.map((likePost) => {
                         return (
                             <Timeline.Item key={likePost.PostId}>
                                 <Card
@@ -61,7 +61,7 @@ const Liked: FunctionComponent = () => {
                                     ).format('YYYY-MM-DD HH:mm:ss')}`}
                                     extra={
                                         <Button
-                                            type="primary"
+                                            type='primary'
                                             onClick={onClickOpnePost(
                                                 likePost.Post,
                                             )}>
@@ -72,7 +72,7 @@ const Liked: FunctionComponent = () => {
                                         title={likePost.Post.title}
                                         description={
                                             <span>
-                                                <Icon type="clock-circle-o" />
+                                                <Icon type='clock-circle-o' />
                                                 {` ${moment(
                                                     likePost.Post.createdAt,
                                                     'YYYY-MM-DD HH:mm:ss',
@@ -87,7 +87,7 @@ const Liked: FunctionComponent = () => {
                     })}
                 </Timeline>
                 <Button
-                    type="primary"
+                    type='primary'
                     loading={likedPostsLoading}
                     onClick={onClickLoadMore}
                     disabled={!likedPostsHasMore}>
@@ -98,7 +98,7 @@ const Liked: FunctionComponent = () => {
     );
 };
 
-Liked.getInitialProps = async context => {
+Liked.getInitialProps = async (context) => {
     const state = context.store.getState();
     const { likedPostsLimit } = state.me;
 

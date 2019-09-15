@@ -9,10 +9,11 @@ import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
 import { IRootState } from 'reducers';
 import { IPostState } from 'reducers/post';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../../reducers/actionTypes';
+import { IUserModel } from 'typings/IUserModel';
 
 export interface IUsersPostsProps {
-    user: any;  // todo type user
+    user: IUserModel;
 }
 
 const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
@@ -22,7 +23,7 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
         hasMoreUsersPosts,
         loadingUsersPosts,
         postsLimit,
-    } = useSelector<IRootState, IPostState>(s => s.post);
+    } = useSelector<IRootState, IPostState>((s) => s.post);
     const onClickLoadMore = useCallback(() => {
         dispatch({
             type: actionTypes.LOAD_USERS_POSTS_CALL,
@@ -51,11 +52,11 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
     );
 };
 
-UsersPosts.propTypes = {
-    user: PropTypes.string.isRequired,
-};
+// UsersPosts.propTypes = {
+//     user: PropTypes.string.isRequired,
+// };
 
-UsersPosts.getInitialProps = async context => {
+UsersPosts.getInitialProps = async (context) => {
     const state = context.store.getState();
     const { user } = context.query;
     const { postsLimit, usersPosts, currentUser } = state.post;

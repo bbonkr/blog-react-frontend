@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Input, Divider } from 'antd';
 import ListExcerpt from '../components/ListExcerpt';
-import { LOAD_POSTS_CALL, LOAD_SEARCH_POSTS_CALL } from '../reducers/post';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
+import { IRootState } from 'reducers';
+import { IPostState } from 'reducers/post';
+import { actionTypes } from '../reducers/actionTypes';
 
 const KEYWORD_INPUT_PLACEHOLDER = 'Searching keyword';
 
@@ -18,8 +20,8 @@ const Search = ({ keyword }) => {
         searchPostsLoading,
         searchPostsKeyword,
         postsLimit,
-    } = useSelector(s => s.post);
-    const onChangeKeyword = useCallback(e => {
+    } = useSelector<IRootState, IPostState>((s) => s.post);
+    const onChangeKeyword = useCallback((e) => {
         setKeywordText(e.target.value);
     }, []);
 
@@ -27,7 +29,7 @@ const Search = ({ keyword }) => {
         (value, e) => {
             if (value) {
                 dispatch({
-                    type: LOAD_SEARCH_POSTS_CALL,
+                    type: actionTypes.LOAD_SEARCH_POSTS_CALL,
                     data: {
                         pageToken: null,
                         limit: postsLimit,
@@ -45,7 +47,7 @@ const Search = ({ keyword }) => {
             searchPosts.length > 0 &&
             searchPosts[searchPosts.length - 1].id;
         dispatch({
-            type: LOAD_SEARCH_POSTS_CALL,
+            type: actionTypes.LOAD_SEARCH_POSTS_CALL,
             data: {
                 pageToken: `${pageToken}`,
                 limit: postsLimit,
@@ -59,7 +61,7 @@ const Search = ({ keyword }) => {
             <ContentWrapper>
                 <Input.Search
                     enterButton
-                    name="keyword"
+                    name='keyword'
                     value={keywordText}
                     onChange={onChangeKeyword}
                     onSearch={onSearch}
@@ -78,14 +80,14 @@ const Search = ({ keyword }) => {
     );
 };
 
-Search.getInitialProps = async context => {
+Search.getInitialProps = async (context) => {
     const keyword = decodeURIComponent(context.query.keyword);
 
     if (keyword) {
         const state = context.store.getState();
         const { postsLimit } = state.post;
         context.store.dispatch({
-            type: LOAD_SEARCH_POSTS_CALL,
+            type: actionTypes.LOAD_SEARCH_POSTS_CALL,
             data: {
                 pageToken: null,
                 limit: postsLimit,

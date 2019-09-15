@@ -2,11 +2,21 @@ import React from 'react';
 import Router from 'next/router';
 import { Spin } from 'antd';
 import { normalizeReturnUrl } from '../helpers/stringHelper';
+import { IUserModel } from 'typings/IUserModel';
 const { Component } = React;
 
-const withAuth = WrappedComponent => {
-    return class extends Component {
-        static async getInitialProps(ctx) {
+export interface IWithAuthProps {
+    me: IUserModel;
+    returnUrl?: string;
+}
+
+export interface IWithAuthState {
+    loading: boolean;
+}
+
+export const withAuth = (WrappedComponent) => {
+    return class extends Component<IWithAuthProps, IWithAuthState> {
+        public static async getInitialProps(ctx) {
             // const url = ctx.isServer
             //     ? ctx.req.url
             //     : !!ctx.asPath
@@ -39,7 +49,7 @@ const withAuth = WrappedComponent => {
             };
         }
 
-        componentDidMount() {
+        public componentDidMount() {
             if (!this.props.me) {
                 const returnUrl = encodeURIComponent(
                     !!this.props.returnUrl ? this.props.returnUrl : '/',
@@ -51,7 +61,7 @@ const withAuth = WrappedComponent => {
             this.setState({ loading: false });
         }
 
-        render() {
+        public render() {
             if (this.state.loading) {
                 // TODO Add loading page
                 return <Spin spinning={true}>Loading...</Spin>;
@@ -60,5 +70,3 @@ const withAuth = WrappedComponent => {
         }
     };
 };
-
-export { withAuth };

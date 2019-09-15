@@ -1,9 +1,10 @@
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
+import { ICategoryModel } from 'typings/ICategoryModel';
 
 export interface ICategoryState {
-    categories: any[],  // TODO category
-    loadingCategories: boolean,    
+    categories: ICategoryModel[];
+    loadingCategories: boolean;
 }
 
 export const initialState: ICategoryState = {
@@ -16,7 +17,7 @@ export const initialState: ICategoryState = {
 // export const LOAD_CATEGORIES_FAIL = 'LOAD_CATEGORIES_FAIL';
 
 const reducer = (state = initialState, action) =>
-    produce(state, draft => {
+    produce(state, (draft) => {
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
         switch (action.type) {
             case actionTypes.LOAD_CATEGORIES_CALL:

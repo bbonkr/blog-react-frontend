@@ -9,13 +9,13 @@ import {
     throttle,
 } from 'redux-saga/effects';
 import {http} from './httpHelper';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../reducers/actionTypes';
 
 function loadMyPostsApi(pageToken = '', limit = 10, keyword = '') {
     return http.get(
         `/me/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
-        )}`
+        )}`,
     );
 }
 
@@ -76,7 +76,7 @@ function loadCategoriesApi(query) {
     return http.get(
         `/me/categories?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
-        )}`
+        )}`,
     );
 }
 
@@ -378,7 +378,7 @@ function loadLikedPostsApi(query) {
     return http.get(
         `/me/liked?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
-        )}`
+        )}`,
     );
 }
 
@@ -405,7 +405,7 @@ function* watchLoadLikedPosts() {
 }
 
 function loadStatGeneralApi(query) {
-    
+
     return http.get('/stat/general');
 }
 

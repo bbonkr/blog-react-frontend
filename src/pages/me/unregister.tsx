@@ -1,14 +1,19 @@
-import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    FunctionComponent,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withAuth } from '../../utils/auth';
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { PageHeader, Form, Input, Button, Modal, Divider } from 'antd';
-import { SignUpFormValidator } from '../../helpers/formValidators';
+import { SignUpFormValidator } from '../../helpers/SignUpFormValidator';
 import Router from 'next/router';
 import { IRootState } from 'reducers';
 import { IUserState } from 'reducers/user';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../../reducers/actionTypes';
 
 const Validator = new SignUpFormValidator();
 
@@ -18,7 +23,7 @@ const Unregister: FunctionComponent = () => {
         unregisterLoading,
         unregisterErrorReason,
         unregisterSuccess,
-    } = useSelector<IRootState, IUserState>(s => s.user);
+    } = useSelector<IRootState, IUserState>((s) => s.user);
     const [password, setPassword] = useState('');
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
@@ -28,7 +33,7 @@ const Unregister: FunctionComponent = () => {
         }
     }, [unregisterSuccess]);
 
-    const onChangePassword = useCallback(e => {
+    const onChangePassword = useCallback((e) => {
         const newValue = e.target.value;
         setPassword(newValue);
         const { message } = Validator.checkPassword({ password: newValue });
@@ -45,7 +50,7 @@ const Unregister: FunctionComponent = () => {
                 Modal.confirm({
                     title: 'Do you want to unregister our service?',
                     content: '',
-                    onOk() {
+                    onOk: () => {
                         dispatch({
                             type: actionTypes.UNREGISTER_CALL,
                             data: {
@@ -53,7 +58,7 @@ const Unregister: FunctionComponent = () => {
                             },
                         });
                     },
-                    onCancel() {},
+                    onCancel: null,
                 });
             }
         },
@@ -63,7 +68,7 @@ const Unregister: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title="Unregister" />
+                <PageHeader title='Unregister' />
                 <Divider />
                 <div>
                     <p>Will delete your data when proceed to unregister.</p>
@@ -78,7 +83,7 @@ const Unregister: FunctionComponent = () => {
                 <div>
                     <Form onSubmit={onSubmit}>
                         <Form.Item
-                            label="Password"
+                            label='Password'
                             hasFeedback={true}
                             help={passwordErrorMessage || unregisterErrorReason}
                             validateStatus={
@@ -89,13 +94,13 @@ const Unregister: FunctionComponent = () => {
                             <Input.Password
                                 value={password}
                                 onChange={onChangePassword}
-                                placeholder="Input your password."
+                                placeholder='Input your password.'
                             />
                         </Form.Item>
                         <Form.Item>
                             <Button
-                                type="danger"
-                                htmlType="submit"
+                                type='danger'
+                                htmlType='submit'
                                 loading={unregisterLoading}>
                                 Unregister
                             </Button>

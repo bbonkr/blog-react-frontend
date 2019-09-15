@@ -1,13 +1,18 @@
-import React, { useState, useEffect, useCallback, FunctionComponent } from 'react';
+import React, {
+    useState,
+    useEffect,
+    useCallback,
+    FunctionComponent,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { PageHeader, Form, Input, Button, Icon, Divider } from 'antd';
+import { PageHeader, Form, Input, Button, Divider } from 'antd';
 import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
-import { ChangePasswordValidator } from '../helpers/formValidators';
+import { ChangePasswordValidator } from '../helpers/ChangePasswordValidator';
 import Router from 'next/router';
 import { IUserState } from '../reducers/user';
 import { IRootState } from 'reducers';
-import { actionTypes } from 'reducers/actionTypes';
+import { actionTypes } from '../reducers/actionTypes';
 
 export interface IResetPasswordProps {
     email: string;
@@ -16,12 +21,15 @@ export interface IResetPasswordProps {
 
 const validator = new ChangePasswordValidator();
 
-const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) => {
+const ResetPassword: FunctionComponent<IResetPasswordProps> = ({
+    email,
+    code,
+}) => {
     const dispatch = useDispatch();
-    const {
-        resetPasswordLoading,
-        resetPasswordSuccess,
-    } = useSelector<IRootState, IUserState>(s => s.user);
+    const { resetPasswordLoading, resetPasswordSuccess } = useSelector<
+        IRootState,
+        IUserState
+    >((s) => s.user);
 
     const [temporaryPassword, setTemporaryPassword] = useState('');
     const [
@@ -42,7 +50,7 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
         }
     }, [resetPasswordSuccess]);
 
-    const onChangeTemporaryPassword = useCallback(e => {
+    const onChangeTemporaryPassword = useCallback((e) => {
         const newValue = e.target.value;
         setTemporaryPassword(newValue);
         const { message } = validator.checkPassword({
@@ -51,7 +59,7 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
         setTemporaryPasswordErrorMessage(message);
     }, []);
 
-    const onChangePassword = useCallback(e => {
+    const onChangePassword = useCallback((e) => {
         const newValue = e.target.value;
         setPassword(newValue);
         const { message } = validator.checkPassword({
@@ -61,7 +69,7 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
     }, []);
 
     const onChangePasswordConfirm = useCallback(
-        e => {
+        (e) => {
             const newValue = e.target.value;
             setPasswordConfirm(newValue);
             const { message } = validator.checkPasswordConfirm({
@@ -74,14 +82,14 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
     );
 
     const onSubmit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault();
 
             const result = validator.validate({
-                 currentPassword: temporaryPassword,
-                 password: password,
-                 passwordConfirm: passwordConfirm,
-            })
+                currentPassword: temporaryPassword,
+                password: password,
+                passwordConfirm: passwordConfirm,
+            });
 
             if (result.valid) {
                 dispatch({
@@ -101,11 +109,11 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
     return (
         <DefaultLayout>
             <ContentWrapper>
-                <PageHeader title="Reset a password" />
+                <PageHeader title='Reset a password' />
                 <Divider />
                 <Form onSubmit={onSubmit}>
                     <Form.Item
-                        label="Temporary password"
+                        label='Temporary password'
                         hasFeedback={true}
                         help={temporaryPasswordErrorMessage}
                         validateStatus={
@@ -114,11 +122,11 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
                         <Input.Password
                             value={temporaryPassword}
                             onChange={onChangeTemporaryPassword}
-                            placeholder="Input a temporary password."
+                            placeholder='Input a temporary password.'
                         />
                     </Form.Item>
                     <Form.Item
-                        label="Password"
+                        label='Password'
                         hasFeedback={true}
                         help={passwordErrorMessage}
                         validateStatus={
@@ -127,11 +135,11 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
                         <Input.Password
                             value={password}
                             onChange={onChangePassword}
-                            placeholder="Input a new password"
+                            placeholder='Input a new password'
                         />
                     </Form.Item>
                     <Form.Item
-                        label="Password (again)"
+                        label='Password (again)'
                         hasFeedback={true}
                         help={passwordConfirmErrorMessage}
                         validateStatus={
@@ -140,13 +148,13 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
                         <Input.Password
                             value={passwordConfirm}
                             onChange={onChangePasswordConfirm}
-                            placeholder="Input a new password again"
+                            placeholder='Input a new password again'
                         />
                     </Form.Item>
                     <Form.Item>
                         <Button
-                            type="primary"
-                            htmlType="submit"
+                            type='primary'
+                            htmlType='submit'
                             loading={resetPasswordLoading}>
                             Reset
                         </Button>
@@ -157,7 +165,7 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) 
     );
 };
 
-ResetPassword.getInitialProps = async context => {
+ResetPassword.getInitialProps = async (context) => {
     const { email, code } = context.query;
 
     return {

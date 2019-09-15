@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { BackTop } from 'antd';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
+import 'antd/dist/antd.css';
 
 export interface IAppLayoutProps {
     children: React.ReactNode;
@@ -20,8 +21,8 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
     );
 };
 
-AppLayout.propTypes = {
-    children: PropTypes.element.isRequired,
-};
+// AppLayout.propTypes = {
+//     children: PropTypes.element.isRequired,
+// };
 
 export default AppLayout;

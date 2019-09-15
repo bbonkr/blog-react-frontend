@@ -2,17 +2,17 @@ import React from 'react';
 import Document, { Main, NextScript } from 'next/document';
 import Helmet, { HelmetData } from 'react-helmet';
 import { ServerStyleSheet } from 'styled-components';
-import { IDictionary } from 'reducers/IDictionary';
+import { IDictionary } from 'typings/IDictionary';
 
 export interface IBlogDocumentProps extends IDictionary<any> {
     helmet: HelmetData;
-    styleTags: React.Component<any,any,any>[];
+    styleTags: Array<React.Component<any, any, any>>;
 }
 
 class BlogDocument extends Document<IBlogDocumentProps> {
-    static getInitialProps(context) {
+    public static getInitialProps(context) {
         const styleSheet = new ServerStyleSheet();
-        const page = context.renderPage(App => props =>
+        const page = context.renderPage((App) => (props) =>
             styleSheet.collectStyles(<App {...props} />),
         );
         const styleTags = styleSheet.getStyleElement();
@@ -20,11 +20,11 @@ class BlogDocument extends Document<IBlogDocumentProps> {
         return { ...page, helmet: Helmet.renderStatic(), styleTags };
     }
 
-    render() {
+    public render() {
         const { htmlAttributes, bodyAttributes, ...helmet } = this.props.helmet;
 
         const prefixDir = '/_next/';
-        const cssFiles = this.props.files.filter(v => v.endsWith('.css'));
+        const cssFiles = this.props.files.filter((v) => v.endsWith('.css'));
 
         const htmlAttrs = htmlAttributes.toComponent();
         const bodyAttrs = bodyAttributes.toComponent();
@@ -36,25 +36,25 @@ class BlogDocument extends Document<IBlogDocumentProps> {
         return (
             <html {...htmlAttrs}>
                 <head>
-                    {Object.values(helmet).map(el => el.toComponent())}
-                    
+                    {Object.values(helmet).map((el) => el.toComponent())}
+
                     {cssFiles.map((css) => {
                         // console.log('=========> css file: ', css);
                         return (
                             <link
                                 key={`${css}`}
-                                rel="stylesheet"
+                                rel='stylesheet'
                                 href={`${prefixDir}${css}`}
-                                type="text/css"
+                                type='text/css'
                             />
                         );
                     })}
-                    {this.props.styleTags && this.props.styleTags.map(v=>v)}
+                    {this.props.styleTags && this.props.styleTags.map((v) => v)}
                 </head>
                 <body {...bodyAttrs}>
                     <Main />
                     {/** IE supports */ prod && ieSupport && (
-                        <script src="https://polyfill.io/v3/polyfill.min.js?features=es7%2Ces6%2Ces5%2Ces2017%2Ces2016%2Ces2015" />
+                        <script src='https://polyfill.io/v3/polyfill.min.js?features=es7%2Ces6%2Ces5%2Ces2017%2Ces2016%2Ces2015' />
                     )}
                     <NextScript />
                 </body>
