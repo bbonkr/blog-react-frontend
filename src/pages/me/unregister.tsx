@@ -1,26 +1,24 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withAuth } from '../../utils/auth';
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { PageHeader, Form, Input, Button, Modal, Divider } from 'antd';
-import { UNREGISTER_CALL } from '../../reducers/user';
-import { signUpFormValidator } from '../../helpers/formValidators';
+import { SignUpFormValidator } from '../../helpers/formValidators';
 import Router from 'next/router';
+import { IRootState } from 'reducers';
+import { IUserState } from 'reducers/user';
+import { actionTypes } from 'reducers/actionTypes';
 
-const Validator = {
-    checkPassword(formData) {
-        return signUpFormValidator.checkPassword(formData);
-    },
-};
+const Validator = new SignUpFormValidator();
 
-const Unregister = () => {
+const Unregister: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         unregisterLoading,
         unregisterErrorReason,
         unregisterSuccess,
-    } = useSelector(s => s.user);
+    } = useSelector<IRootState, IUserState>(s => s.user);
     const [password, setPassword] = useState('');
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
@@ -38,7 +36,7 @@ const Unregister = () => {
     }, []);
 
     const onSubmit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault();
             const formData = { password: password };
             const { valid, message } = Validator.checkPassword(formData);
@@ -49,7 +47,7 @@ const Unregister = () => {
                     content: '',
                     onOk() {
                         dispatch({
-                            type: UNREGISTER_CALL,
+                            type: actionTypes.UNREGISTER_CALL,
                             data: {
                                 password: password.trim(),
                             },
@@ -109,7 +107,7 @@ const Unregister = () => {
     );
 };
 
-Unregister.getInitialProps = async context => {
+Unregister.getInitialProps = async (context) => {
     return {};
 };
 

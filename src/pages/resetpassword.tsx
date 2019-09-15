@@ -1,19 +1,27 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { PageHeader, Form, Input, Button, Icon, Divider } from 'antd';
 import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
-import { signUpFormValidator } from '../helpers/formValidators';
+import { ChangePasswordValidator } from '../helpers/formValidators';
 import Router from 'next/router';
-import { RESET_PASSWORD_CALL } from '../reducers/user';
+import { IUserState } from '../reducers/user';
+import { IRootState } from 'reducers';
+import { actionTypes } from 'reducers/actionTypes';
 
-const ResetPassword = ({ email, code }) => {
+export interface IResetPasswordProps {
+    email: string;
+    code: string;
+}
+
+const validator = new ChangePasswordValidator();
+
+const ResetPassword: FunctionComponent<IResetPasswordProps> = ({ email, code }) => {
     const dispatch = useDispatch();
     const {
         resetPasswordLoading,
-        resetPasswordErrorMessage,
         resetPasswordSuccess,
-    } = useSelector(s => s.user);
+    } = useSelector<IRootState, IUserState>(s => s.user);
 
     const [temporaryPassword, setTemporaryPassword] = useState('');
     const [
@@ -37,7 +45,7 @@ const ResetPassword = ({ email, code }) => {
     const onChangeTemporaryPassword = useCallback(e => {
         const newValue = e.target.value;
         setTemporaryPassword(newValue);
-        const { message } = signUpFormValidator.checkPassword({
+        const { message } = validator.checkPassword({
             password: newValue,
         });
         setTemporaryPasswordErrorMessage(message);
@@ -46,7 +54,7 @@ const ResetPassword = ({ email, code }) => {
     const onChangePassword = useCallback(e => {
         const newValue = e.target.value;
         setPassword(newValue);
-        const { message } = signUpFormValidator.checkPassword({
+        const { message } = validator.checkPassword({
             password: newValue,
         });
         setPasswordErrorMessage(message);
@@ -56,7 +64,7 @@ const ResetPassword = ({ email, code }) => {
         e => {
             const newValue = e.target.value;
             setPasswordConfirm(newValue);
-            const { message } = signUpFormValidator.checkPasswordConfirm({
+            const { message } = validator.checkPasswordConfirm({
                 password: password,
                 passwordConfirm: newValue,
             });
@@ -68,34 +76,16 @@ const ResetPassword = ({ email, code }) => {
     const onSubmit = useCallback(
         e => {
             e.preventDefault();
-            const results = [];
-            const messages = [];
-            let valid = true;
-            results.push(
-                signUpFormValidator.checkPassword({
-                    password: temporaryPassword,
-                }),
-            );
-            results.push(
-                signUpFormValidator.checkPassword({ password: password }),
-            );
-            results.push(
-                signUpFormValidator.checkPasswordConfirm({
-                    password: password,
-                    passwordConfirm: passwordConfirm,
-                }),
-            );
 
-            results.forEach(v => {
-                valid &= v.valid;
-                if (!v.valid) {
-                    messages.push(v.message);
-                }
-            });
+            const result = validator.validate({
+                 currentPassword: temporaryPassword,
+                 password: password,
+                 passwordConfirm: passwordConfirm,
+            })
 
-            if (valid) {
+            if (result.valid) {
                 dispatch({
-                    type: RESET_PASSWORD_CALL,
+                    type: actionTypes.RESET_PASSWORD_CALL,
                     data: {
                         email: email,
                         code: code,

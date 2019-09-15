@@ -1,4 +1,5 @@
 import Validator from './validator';
+import { IDictionary } from 'reducers/IDictionary';
 
 const USERNAME_MIN_LENGTH = 3;
 const DISPLAYNAME_MIN_LENGTH = 3;
@@ -59,25 +60,25 @@ export class FormValidationResult implements IFormValidationResult {
     }
 }
 
-export interface IEmailFormValue {
+export interface IEmailFormValue extends IDictionary<any> {
     email: string;
 }
-export interface IUsernameFormValue {
+export interface IUsernameFormValue extends IDictionary<any> {
     username: string;
 }
-export interface IDisplayNameFormValue {
+export interface IDisplayNameFormValue extends IDictionary<any> {
     displayName: string;
 }
 
-export interface IPasswordFormValue {
+export interface IPasswordFormValue extends IDictionary<any> {
     password: string;
 }
 
-export interface IPasswordConfirmFormValue {
+export interface IPasswordConfirmFormValue extends IDictionary<any> {
     passwordConfirm: string;
 }
 
-export interface ICurrentPasswordFormValue {
+export interface ICurrentPasswordFormValue extends IDictionary<any> {
     currentPassword: string;
 }
 
@@ -86,7 +87,8 @@ export interface ISignupFormValues extends
     IUsernameFormValue, 
     IDisplayNameFormValue, 
     IPasswordFormValue, 
-    IPasswordConfirmFormValue {
+    IPasswordConfirmFormValue,
+    IDictionary<any> {
     // username: string;
     // email: string;
     // displayName: string;
@@ -94,7 +96,11 @@ export interface ISignupFormValues extends
     // passwordConfirm: string;
 }
 
-export class FormValidator {
+export abstract class FormValidatorBase {
+    abstract validate(formData: IDictionary<any>): FormValidationResult; 
+} 
+
+export abstract class FormValidator extends FormValidatorBase {
     /**
      * 비밀번호 유효성 검사를 실행합니다.
      * @param {string} password
@@ -192,7 +198,7 @@ export class SignUpFormValidator extends FormValidator {
     }
 }
 
-export interface IChangeInfoFormValues extends IUsernameFormValue, IDisplayNameFormValue, IEmailFormValue {
+export interface IChangeInfoFormValues extends IUsernameFormValue, IDisplayNameFormValue, IEmailFormValue, IDictionary<any> {
 } 
 
 export class ChangeInfoValidator extends FormValidator {
@@ -208,7 +214,7 @@ export class ChangeInfoValidator extends FormValidator {
     }
 }
 
-export interface IChangePasswordFormValues extends IPasswordFormValue, IPasswordConfirmFormValue, ICurrentPasswordFormValue {
+export interface IChangePasswordFormValues extends IPasswordFormValue, IPasswordConfirmFormValue, ICurrentPasswordFormValue, IDictionary<any> {
 
 }
 
@@ -222,4 +228,124 @@ export class ChangePasswordValidator extends FormValidator {
 
         return result;
     }
+}
+
+export interface ITitleFormValue extends IDictionary<any> {
+    title: string;
+}
+
+export interface IMarkdownFormValue extends IDictionary<any> {
+    markdown: string;
+}
+
+export interface ICategoriesFormValue extends IDictionary<any> {
+    categories: any[];
+}
+
+export interface ITagsFormValue extends IDictionary<any>{
+    tags?: any[];
+}
+
+export interface IWriteformValue extends ITitleFormValue, IMarkdownFormValue,ICategoriesFormValue, ITagsFormValue, IDictionary<any> {
+    
+}
+
+export class WriteFormValaidator extends FormValidatorBase {
+
+    public checkTitle(formData:ITitleFormValue ): IValidationResult {
+        const { title } = formData;
+
+        if (!title || title.trim().length === 0) {
+            return ValidationResult.fail( 'Please input a title');
+        }
+
+        return ValidationResult.success;
+    }
+
+    public checkMarkdown(formData:IMarkdownFormValue ): IValidationResult {
+        const { markdown } = formData;
+
+        if (!markdown || markdown.trim().length === 0) {
+            return ValidationResult.fail( 'Please write a your content.');
+        }
+
+        return ValidationResult.success;
+    }
+
+    public checkCategory(formData:ICategoriesFormValue ): IValidationResult {
+        const { categories } = formData;
+        if (!categories || categories.length === 0) {
+            return ValidationResult.fail( 'Please select a category at least one.');
+        }
+        return ValidationResult.success;
+    }
+
+    public validate(formData: IWriteformValue): FormValidationResult {
+        const result = new FormValidationResult([
+            this.checkTitle(formData),
+            this.checkMarkdown(formData),
+            this.checkCategory(formData),
+        ]);
+
+        return result;
+    }
+}
+
+export interface ICategoryNameFormValue extends IDictionary<any> {
+    name: string;
+}
+
+export interface ICategorySlugFormValue extends IDictionary<any> {
+    slug?: string;
+}
+
+export interface ICategoryOrdinalFormValue extends IDictionary<any> {
+    ordinal?: number;
+}
+
+export interface ICategoryFormValue extends 
+    ICategoryNameFormValue, 
+    ICategorySlugFormValue,
+    ICategoryOrdinalFormValue,
+    IDictionary<any> {
+
+}
+
+export class CategoryFormValidator extends FormValidatorBase {
+    public checkName(formData: ICategoryNameFormValue): IValidationResult {
+        const { name } = formData;
+
+        if (!name || name.trim().length === 0) {
+            return ValidationResult.fail( 'Please input a Name of category.');
+        }
+
+        return ValidationResult.success;
+    }
+    
+    public checkSlug(formData: ICategorySlugFormValue): IValidationResult {
+        const { slug } = formData;
+
+        if (!slug || slug.trim().length === 0) {
+            return ValidationResult.fail( 'Please input a Slug of category.');
+        }
+
+        return ValidationResult.success;
+    }
+
+    public checkOrdinal(formData: ICategoryOrdinalFormValue): IValidationResult {
+        const { ordinal } = formData;
+
+        return ValidationResult.success;
+    }
+
+    public validate(formData: ICategoryFormValue): IFormValidationResult {
+        const result= new FormValidationResult([
+            this.checkName(formData),
+            this.checkSlug(formData),
+            this.checkOrdinal(formData),
+        ]);
+
+        return result;
+    }
+
 }

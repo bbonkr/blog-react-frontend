@@ -1,25 +1,31 @@
 /**
  * users/:user/posts
  */
-import React, { useCallback } from 'react';
+import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { LOAD_POSTS_CALL, LOAD_USERS_POSTS_CALL } from '../../reducers/post';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
+import { IRootState } from 'reducers';
+import { IPostState } from 'reducers/post';
+import { actionTypes } from 'reducers/actionTypes';
 
-const UsersPosts = ({ user }) => {
+export interface IUsersPostsProps {
+    user: any;  // todo type user
+}
+
+const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
     const dispatch = useDispatch();
     const {
         usersPosts,
         hasMoreUsersPosts,
         loadingUsersPosts,
         postsLimit,
-    } = useSelector(s => s.post);
+    } = useSelector<IRootState, IPostState>(s => s.post);
     const onClickLoadMore = useCallback(() => {
         dispatch({
-            type: LOAD_USERS_POSTS_CALL,
+            type: actionTypes.LOAD_USERS_POSTS_CALL,
             data: {
                 user: user,
                 pageToken:
@@ -66,7 +72,7 @@ UsersPosts.getInitialProps = async context => {
     ) {
         // 서버 요청 || 사용자 글 목록이 없음 || 현재 사용자와 요청 사용자가 다름
         context.store.dispatch({
-            type: LOAD_USERS_POSTS_CALL,
+            type: actionTypes.LOAD_USERS_POSTS_CALL,
             data: {
                 user: user,
                 pageToken: null,

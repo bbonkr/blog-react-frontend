@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FunctionComponent } from 'react';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
@@ -15,7 +15,11 @@ import Prism from 'prismjs';
 import '../styles/prism.css';
 import '../styles/singlepost.css';
 
-const SinglePost = ({ post }) => {
+export interface ISinglePostProps {
+    post: any;  // todo type post
+}
+
+const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
     useEffect(() => {
         Prism.highlightAll();
     }, []);

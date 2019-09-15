@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Input,
@@ -17,19 +17,16 @@ import { withAuth } from '../../utils/auth';
 // import { markdownConverter } from '../../helpers/converter';
 import showdown from 'showdown';
 import xssFilter from 'showdown-xss-filter';
-import {
-    LOAD_MY_CATEGORIES_CALL,
-    LOAD_MY_TAGS_CALL,
-    LOAD_MY_POST_CALL,
-    WRITE_POST_CALL,
-    EDIT_POST_CALL,
-    WRITE_NEW_POST_CALL,
-} from '../../reducers/me';
 import WritePostForm from '../../components/WritePostForm';
+import { actionTypes } from 'reducers/actionTypes';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 
-const Write = ({ id }) => {
+export interface IWriteProps {
+    id?: number;
+}
+
+const Write: FunctionComponent<IWriteProps> = ({ id }) => {
     return (
         <MeLayout>
             <ContentWrapper>
@@ -41,24 +38,24 @@ const Write = ({ id }) => {
     );
 };
 
-Write.getInitialProps = async context => {
+Write.getInitialProps = async (context) => {
     const { id } = context.query;
 
     // console.log('/me/write ==> id: ', id);
 
     if (id) {
         context.store.dispatch({
-            type: LOAD_MY_POST_CALL,
+            type: actionTypes.LOAD_MY_POST_CALL,
             data: id,
         });
     } else {
         context.store.dispatch({
-            type: WRITE_NEW_POST_CALL,
+            type: actionTypes.WRITE_NEW_POST_CALL,
         });
     }
 
     context.store.dispatch({
-        type: LOAD_MY_CATEGORIES_CALL,
+        type: actionTypes.LOAD_MY_CATEGORIES_CALL,
         data: {
             pageToken: null,
             limit: 0,
@@ -67,7 +64,7 @@ Write.getInitialProps = async context => {
     });
 
     context.store.dispatch({
-        type: LOAD_MY_TAGS_CALL,
+        type: actionTypes.LOAD_MY_TAGS_CALL,
     });
 
     return { id };

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
 import { PageHeader, Button, Divider, Typography } from 'antd';
 import { withAuth } from '../../utils/auth';
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 
-const Settings = () => {
+const Settings: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>

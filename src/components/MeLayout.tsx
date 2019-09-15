@@ -1,10 +1,13 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout, Menu, Icon, Avatar, Drawer } from 'antd';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import UserAvatar from './UserAvatar';
-import { SIDE_MENU_COLLAPSE } from '../reducers/me';
+import { IMeState } from '../reducers/me';
+import { IRootState } from 'reducers';
+import { IUserState } from 'reducers/user';
+import { actionTypes } from 'reducers/actionTypes';
 const { Header, Content, Sider } = Layout;
 
 const menusSide = [
@@ -73,10 +76,14 @@ const menusSide = [
     },
 ];
 
-const MeLayout = ({ children }) => {
+export interface IMeLayoutPorps {
+    children: React.ReactNode;
+}
+
+const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
     const dispatch = useDispatch();
-    const { me } = useSelector(state => state.user);
-    const { sideMenuCollapsed } = useSelector(s => s.me);
+    const { me } = useSelector<IRootState, IUserState>(state => state.user);
+    const { sideMenuCollapsed } = useSelector<IRootState, IMeState>(s => s.me);
 
     // const [menuCollapsed, setMenuCollapsed] = useState(false);
     const [selectedMenuKeys, setSelectedMenuKeys] = useState([]);
@@ -104,7 +111,7 @@ const MeLayout = ({ children }) => {
         (collapsed, type) => {
             // setMenuCollapsed(collapsed);
             dispatch({
-                type: SIDE_MENU_COLLAPSE,
+                type: actionTypes.SIDE_MENU_COLLAPSE,
                 data: collapsed,
             });
         },

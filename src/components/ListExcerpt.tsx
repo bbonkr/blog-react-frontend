@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FunctionComponent } from 'react';
+import React, { useEffect, useState, FunctionComponent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Divider, Card, Typography, Icon, Spin } from 'antd';
@@ -12,8 +12,7 @@ import LinkUsersPosts from './LinkUsersPosts';
 import UserAvatar from './UserAvatar';
 import IconLike from './IconLike';
 import StackGrid from 'react-stack-grid';
-// import sizeMe from 'react-sizeme';
-import {withSize, SizeMe, SizeMeProps} from 'react-sizeme';
+import {withSize, SizeMeProps} from 'react-sizeme';
 import { IUserState } from 'reducers/user';
 import { IRootState } from 'reducers';
 
@@ -21,15 +20,15 @@ const FullWidthButton = styled(Button)`
     width: 100%;
 `;
 
-export interface IListExceptProps {
+export interface IListExceptProps extends SizeMeProps {
     posts : any[];  // todo type post 
     loading: boolean;
-     hasMore: boolean;
-      loadMoreHandler: () => void;
+    hasMore: boolean;
+    loadMoreHandler: () => void;
 }
 
-const ListExcerpt: FunctionComponent<IListExceptProps & SizeMeProps> = ({ posts, loading, hasMore, loadMoreHandler, size }) => {
-    const { me } = useSelector<IRootState, IUserState>(s => s.user);
+const ListExcerpt: FunctionComponent<IListExceptProps> = ({ posts, loading, hasMore, loadMoreHandler, size }) => {
+    // const { me } = useSelector<IRootState, IUserState>(s => s.user);
     const { width } = size;
     const [cardWidth, setCardWidth] = useState('100%');
 
@@ -59,6 +58,12 @@ const ListExcerpt: FunctionComponent<IListExceptProps & SizeMeProps> = ({ posts,
         setCardWidth(columnWidth);
 
     }, [width]);
+
+    const onClickLoadMore = useCallback((e) => {
+        if(loadMoreHandler){
+            loadMoreHandler();
+        }
+    }, [loadMoreHandler]);
 
     return (
         <article>
@@ -93,20 +98,18 @@ const ListExcerpt: FunctionComponent<IListExceptProps & SizeMeProps> = ({ posts,
                                             }`}
                                         />,
                                         <IconLike post={post} />,
-                                    ]}>
+                                    ]} 
+                                    extra={<IconText
+                                        type="clock-circle"
+                                        text={moment(createdAt).format(
+                                            'YYYY-MM-DD HH:mm:ss',
+                                        )}
+                                    />}>
                                     <Card.Meta
                                         avatar={
                                             <LinkUsersPosts user={post.User}>
                                                 <UserAvatar user={post.User} />
                                             </LinkUsersPosts>
-                                        }
-                                        extra={
-                                            <IconText
-                                                type="clock-circle"
-                                                text={moment(createdAt).format(
-                                                    'YYYY-MM-DD HH:mm:ss',
-                                                )}
-                                            />
                                         }
                                         title={
                                             <LinkSinglePost post={post}>
@@ -166,7 +169,7 @@ const ListExcerpt: FunctionComponent<IListExceptProps & SizeMeProps> = ({ posts,
             </Spin>
             <Divider />
             {hasMore && (
-                <FullWidthButton loading={loading} onClick={loadMoreHandler}>
+                <FullWidthButton loading={loading} onClick={onClickLoadMore}>
                     Load more
                 </FullWidthButton>
             )}
@@ -179,9 +182,9 @@ ListExcerpt.propTypes = {
     loading: PropTypes.bool.isRequired,
     hasMore: PropTypes.bool.isRequired,
     loadMoreHandler: PropTypes.func.isRequired,
-    size: PropTypes.shape({
-        width: PropTypes.number,
-    }),
+    // size: PropTypes.shape({
+    //     width: PropTypes.number,
+    // }),
 };
 
 // export default sizeMe()(ListExcerpt);

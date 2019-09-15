@@ -1,85 +1,27 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, FunctionComponent, useRef, TextareaHTMLAttributes } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Divider, Select, Form, Button, Tabs, Icon, Modal } from 'antd';
 import Markdown from 'react-markdown';
 import showdown from 'showdown';
 import xssFilter from 'showdown-xss-filter';
-import { WRITE_POST_CALL, EDIT_POST_CALL } from '../reducers/me';
 import FullSizeModal from '../styledComponents/FullSizeModal';
 import FileList from './FileList';
+import { WriteFormValaidator } from 'helpers/formValidators';
+import { IRootState } from 'reducers';
+import { IMeState } from 'reducers/me';
+import { actionTypes } from 'reducers/actionTypes';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 const SELECT_FILE_TARGET_MARKDOWN = 'markdown';
 const SELECT_FILE_TARGET_COVERIMAGE = 'coverimage';
+const TextArea = Input.TextArea;
+export interface IWritePostFormProps {
+    id?: number; 
+}
 
-const Validator = {
-    checkTitle(formData) {
-        const { title } = formData;
+const Validator = new WriteFormValaidator();
 
-        if (!title || title.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please input a title',
-            };
-        }
-
-        return {
-            valid: true,
-            message: '',
-        };
-    },
-
-    checkMarkdown(formData) {
-        const { markdown } = formData;
-
-        if (!markdown || markdown.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please write a your content.',
-            };
-        }
-
-        return {
-            valid: true,
-            message: '',
-        };
-    },
-
-    checkCategory(formData) {
-        const { categories } = formData;
-        if (!categories || categories.length === 0) {
-            return {
-                valid: false,
-                message: 'Please select a category at least one.',
-            };
-        }
-        return {
-            valid: true,
-            message: '',
-        };
-    },
-
-    validate(formData) {
-        let valid = true;
-        const results = [];
-        const messages = [];
-
-        results.push(this.checkTitle(formData));
-        results.push(this.checkMarkdown(formData));
-        results.push(this.checkCategory(formData));
-
-        results.forEach(v => {
-            valid &= v.valid;
-            if (!v.valid) {
-                messages.push(v.message);
-            }
-        });
-
-        return { valid: valid, messages: messages };
-    },
-};
-
-const WritePostForm = ({ id }) => {
+const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
     const dispatch = useDispatch();
 
     // https://github.com/showdownjs/showdown/wiki/Showdown-options
@@ -120,7 +62,7 @@ const WritePostForm = ({ id }) => {
         loadingTags,
         loadingMyPost,
         myPost,
-    } = useSelector(s => s.me);
+    } = useSelector<IRootState, IMeState>(s => s.me);
 
     const [title, setTitle] = useState('');
     const [slug, setSlug] = useState('');
@@ -141,7 +83,8 @@ const WritePostForm = ({ id }) => {
     const [markdownErrorMessage, setMarkdownErrorMessage] = useState('');
     const [categoriesErrorMessage, setCategoriesErrorMessage] = useState('');
 
-    const markdownRef = React.createRef(null);
+    // const markdownRef = React.createRef();
+    const markdownRef = useRef(null);
 
     useEffect(() => {
         if (id && myPost) {
@@ -286,13 +229,14 @@ const WritePostForm = ({ id }) => {
 
     const onSelectMarkdownInsertImage = useCallback(
         item => {
-            const { textAreaRef } = markdownRef.current;
-
-            const startIndex = textAreaRef.selectionStart;
+            // todo 확인 필요 textAreaRef.refs.input <= HTMLTextAreaElement
+            const textAreaRef  = markdownRef.current;
+            const textArea = textAreaRef.refs.input as HTMLTextAreaElement;;
+            const startIndex = textArea.selectionStart;
             const imageItem = `![${item.fileName}${item.fileExtension}](${
                 item.src
             })\n`;
-            const currentValue = textAreaRef.value;
+            const currentValue = textArea.value;
             const newValue = `${currentValue.slice(
                 0,
                 startIndex,
@@ -351,13 +295,13 @@ const WritePostForm = ({ id }) => {
 
                 if (id) {
                     dispatch({
-                        type: EDIT_POST_CALL,
+                        type: actionTypes.EDIT_POST_CALL,
                         id: id,
                         data: formData,
                     });
                 } else {
                     dispatch({
-                        type: WRITE_POST_CALL,
+                        type: actionTypes.WRITE_POST_CALL,
                         data: formData,
                     });
                 }
@@ -465,8 +409,7 @@ const WritePostForm = ({ id }) => {
                             return (
                                 <Select.Option
                                     key={c.slug}
-                                    value={c.slug}
-                                    label={c.name}>
+                                    value={c.slug}>
                                     {c.name}
                                 </Select.Option>
                             );
@@ -484,8 +427,7 @@ const WritePostForm = ({ id }) => {
                             return (
                                 <Select.Option
                                     key={t.slug}
-                                    value={t.slug}
-                                    label={t.name}>
+                                    value={t.slug}>
                                     {t.name}
                                 </Select.Option>
                             );

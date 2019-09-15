@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
-const AdminHome = () => {
+const AdminHome: FunctionComponent = () => {
     return <div>admin home</div>;
 };
 

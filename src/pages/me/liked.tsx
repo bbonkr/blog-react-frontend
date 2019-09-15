@@ -1,14 +1,16 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PageHeader, Divider, Timeline, Button, Card, Icon } from 'antd';
 import moment from 'moment';
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
-import { LOAD_LIKED_POSTS_CALL } from '../../reducers/me';
 import Router from 'next/router';
+import { IRootState } from 'reducers';
+import { IMeState } from 'reducers/me';
+import { actionTypes } from 'reducers/actionTypes';
 
-const Liked = () => {
+const Liked: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         likedPosts,
@@ -16,12 +18,12 @@ const Liked = () => {
         likedPostsHasMore,
         likedPostsLimit,
         likedPostsPageToken,
-    } = useSelector(s => s.me);
+    } = useSelector<IRootState, IMeState>(s => s.me);
 
     const onClickLoadMore = useCallback(() => {
         if (likedPostsHasMore) {
             dispatch({
-                type: LOAD_LIKED_POSTS_CALL,
+                type: actionTypes.LOAD_LIKED_POSTS_CALL,
                 data: {
                     pageToken: likedPostsPageToken,
                     limit: likedPostsLimit,
@@ -101,7 +103,7 @@ Liked.getInitialProps = async context => {
     const { likedPostsLimit } = state.me;
 
     context.store.dispatch({
-        type: LOAD_LIKED_POSTS_CALL,
+        type: actionTypes.LOAD_LIKED_POSTS_CALL,
         data: {
             pageToken: null,
             limit: likedPostsLimit,

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     Table,
@@ -13,74 +13,15 @@ import {
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
-import {
-    LOAD_MY_CATEGORIES_CALL,
-    EDIT_MY_CATEGORY_CALL,
-    DELETE_MY_CATEGORY_CALL,
-} from '../../reducers/me';
 import { formatNumber, makeSlug } from '../../helpers/stringHelper';
+import { IRootState } from 'reducers';
+import { IMeState } from 'reducers/me';
+import { actionTypes } from 'reducers/actionTypes';
+import { CategoryFormValidator } from 'helpers/formValidators';
 
-const validator = {
-    name(formData) {
-        const { name } = formData;
+const validator = new CategoryFormValidator();
 
-        if (!name || name.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please input a Name of category.',
-            };
-        }
-
-        return {
-            valid: true,
-            message: '',
-        };
-    },
-    slug(formData) {
-        const { slug } = formData;
-
-        if (!slug || slug.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please input a Slug of category.',
-            };
-        }
-
-        return {
-            valid: true,
-            message: '',
-        };
-    },
-    ordinal(formData) {
-        const { ordinal } = formData;
-
-        return {
-            valid: true,
-            message: '',
-        };
-    },
-    submit(formData) {
-        const results = [];
-        results.push(this.name(formData));
-        results.push(this.slug(formData));
-        results.push(this.ordinal(formData));
-
-        let valid = true;
-        const messages = [];
-        results.forEach(r => {
-            valid &= r.valid;
-            if (!r.valid) {
-                messages.push(r.message);
-            }
-        });
-        return {
-            valid: valid,
-            messages: messages,
-        };
-    },
-};
-
-const MyCategory = () => {
+const MyCategory: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         categories,
@@ -88,13 +29,11 @@ const MyCategory = () => {
         categoriesCount,
         categoryLimit,
         categoryNextPageToken,
-    } = useSelector(s => s.me);
+    } = useSelector<IRootState, IMeState>(s => s.me);
+
     const [currentPage, setCurrentPage] = useState(0);
-
     const [editFormVisible, setEditFormVisible] = useState(false);
-
-    const [id, setId] = useState('');
-
+    const [id, setId] = useState(0);
     const [name, setName] = useState('');
     const [nameErrorMessage, setNameErrorMessage] = useState('');
     const [slug, setSlug] = useState('');
@@ -127,7 +66,7 @@ const MyCategory = () => {
         (current, size) => {
             setCurrentPage(current);
             dispatch({
-                type: LOAD_MY_CATEGORIES_CALL,
+                type: actionTypes.LOAD_MY_CATEGORIES_CALL,
                 data: {
                     pageToken: categoryNextPageToken,
                     limit: size || categoryLimit || 10,
@@ -142,7 +81,7 @@ const MyCategory = () => {
         (current, size) => {
             setCurrentPage(current);
             dispatch({
-                type: LOAD_MY_CATEGORIES_CALL,
+                type: actionTypes.LOAD_MY_CATEGORIES_CALL,
                 data: {
                     pageToken: categoryNextPageToken,
                     limit: size,
@@ -181,7 +120,7 @@ const MyCategory = () => {
                 content: record.name,
                 onOk() {
                     dispatch({
-                        type: DELETE_MY_CATEGORY_CALL,
+                        type: actionTypes.DELETE_MY_CATEGORY_CALL,
                         data: record,
                     });
                 },
@@ -194,7 +133,7 @@ const MyCategory = () => {
     const onChangeName = useCallback(e => {
         const newValue = e.target.value;
         setName(newValue);
-        const { valid, message } = validator.name({ name: newValue });
+        const { valid, message } = validator.checkName({ name: newValue });
         if (valid) {
             setSlug(makeSlug(newValue));
         }
@@ -204,14 +143,14 @@ const MyCategory = () => {
     const onChangeSlug = useCallback(e => {
         const newValue = e.target.value;
         setSlug(newValue);
-        const { valid, message } = validator.slug({ slug: newValue });
+        const { valid, message } = validator.checkSlug({ slug: newValue });
         setSlugErrorMessage(message);
     }, []);
 
     const onChangeOrdinal = useCallback(value => {
         // const newValue = e.target.value;
         setOrdinal(value);
-        const { valid, message } = validator.ordinal({ ordinal: value });
+        const { valid, message } = validator.checkOrdinal({ ordinal: value });
         setOrdinalErrorMessage(message);
     }, []);
 
@@ -221,11 +160,11 @@ const MyCategory = () => {
 
             const formData = { id, name, slug, ordinal };
 
-            const { valid, messages } = validator.submit(formData);
+            const { valid, messages } = validator.validate(formData);
 
             if (valid) {
                 dispatch({
-                    type: EDIT_MY_CATEGORY_CALL,
+                    type: actionTypes.EDIT_MY_CATEGORY_CALL,
                     data: formData,
                 });
                 setEditFormVisible(false);
@@ -244,7 +183,7 @@ const MyCategory = () => {
                 <PageHeader title="Categories" />
 
                 <Table
-                    title={currentPageData => {
+                    title={(currentPageData) => {
                         return (
                             <div>
                                 <div>
@@ -358,8 +297,9 @@ const MyCategory = () => {
 MyCategory.getInitialProps = async context => {
     const state = context.store.getState();
     const { categoryLimit } = state.me;
+
     context.store.dispatch({
-        type: LOAD_MY_CATEGORIES_CALL,
+        type: actionTypes.LOAD_MY_CATEGORIES_CALL,
         data: {
             pageToken: null,
             limit: categoryLimit,

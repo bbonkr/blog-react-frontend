@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
-import Validator from '../helpers/validator';
-import { SIGN_UP_CALL } from '../reducers/user';
+import { IUserState } from '../reducers/user';
 import Router from 'next/router';
 import { ErrorMessageWrapper } from '../styledComponents/Wrapper';
+import { IRootState } from 'reducers';
+import { actionTypes } from 'reducers/actionTypes';
+import { SignUpFormValidator } from 'helpers/formValidators';
+
+const formValidator = new SignUpFormValidator();
 
 const PLACEHOLDER_EMAIL = 'Input your email address';
 const PLACEHOLDER_PASSWORD = 'Input your password';
@@ -18,167 +22,7 @@ const LABEL_PASSWORD_CONFIRM = 'Confirm Password';
 const LABEL_USERNAME = 'User name';
 const LABEL_DISPLAYNAME = 'Display name';
 
-const USERNAME_MIN_LENGTH = 3;
-const DISPLAYNAME_MIN_LENGTH = 3;
-
-const formValues = {
-    email: '',
-    password: '',
-    passwordConfirm: '',
-    username: '',
-    displayName: '',
-    agreement: false,
-};
-
-const formValidator = () => {
-    const passwordCheck = formValues => {
-        const { password, passwordConfirm } = formValues;
-
-        if (password.trim() !== passwordConfirm.trim()) {
-            return {
-                valid: false,
-                message: 'Please check your two passwords',
-            };
-        }
-
-        return { valid: true, message: '' };
-    };
-
-    const email = formValues => {
-        const { email } = formValues;
-        if (!email || email.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please input your email address',
-            };
-        }
-
-        if (!Validator.email(email)) {
-            return {
-                valid: false,
-                message: 'Please input a valid formatted email address',
-            };
-        }
-
-        return {
-            valid: true,
-            message: '',
-        };
-    };
-    const password = formValues => {
-        const { password } = formValues;
-        if (!password || password.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please input your password',
-            };
-        }
-
-        // return passwordCheck(formValues);
-        return {
-            valid: true,
-            message: '',
-        };
-    };
-    const passwordConfirm = formValues => {
-        const { passwordConfirm } = formValues;
-        if (!passwordConfirm || passwordConfirm.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please input your password again',
-            };
-        }
-
-        return passwordCheck(formValues);
-    };
-
-    const username = formValues => {
-        const { username } = formValues;
-        if (!username || username.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please input your username',
-            };
-        }
-
-        if (!/^[a-z][a-z0-9_-]+[a-z0-9]$/i.test(username)) {
-            return {
-                valid: false,
-                message:
-                    'Please input your username with combining alphabet (lower-case), number, dash(-) and underscore(_). It should start with alphabet character. and it should end with alphabet or number character.',
-            };
-        }
-
-        if (username.trim().length < USERNAME_MIN_LENGTH) {
-            return {
-                valid: false,
-                message: `Please input your user name longer than ${USERNAME_MIN_LENGTH}`,
-            };
-        }
-
-        return {
-            valid: true,
-            message: '',
-        };
-    };
-
-    const displayName = formValues => {
-        const { displayName } = formValues;
-
-        if (!displayName || displayName.trim().length === 0) {
-            return {
-                valid: false,
-                message: 'Please input your display name.',
-            };
-        }
-
-        if (displayName.trim().length < DISPLAYNAME_MIN_LENGTH) {
-            return {
-                valid: false,
-                message: `Please input your display name longer than ${DISPLAYNAME_MIN_LENGTH}`,
-            };
-        }
-
-        return {
-            valid: true,
-            message: '',
-        };
-    };
-
-    const validate = formValues => {
-        const results = [];
-
-        results.push(email(formValues));
-        results.push(password(formValues));
-        results.push(passwordConfirm(formValues));
-        results.push(username(formValues));
-        results.push(displayName(formValues));
-
-        let valid = true;
-        const messages = [];
-        results.forEach(v => {
-            valid = valid && v.valid;
-            if (!v.valid) {
-                messages.push(v.message);
-            }
-        });
-
-        return {
-            valid: valid,
-            messages: messages,
-        };
-    };
-    return {
-        email,
-        password,
-        passwordConfirm,
-        username,
-        displayName,
-        validate,
-    };
-};
-
-const SignUpForm = () => {
+const SignUpForm: FunctionComponent = () => {
     const dispatch = useDispatch();
 
     const [email, setEmail] = useState('');
@@ -205,7 +49,7 @@ const SignUpForm = () => {
         signUpInProcess,
         signUpFailMessage,
         signUpSuccess,
-    } = useSelector(s => s.user);
+    } = useSelector<IRootState, IUserState>(s => s.user);
 
     useEffect(() => {
         if (signUpSuccess) {
@@ -218,7 +62,7 @@ const SignUpForm = () => {
         const newValue = e.target.value;
         setEmail(newValue);
 
-        const { message } = formValidator().email({ email: newValue });
+        const { message } = formValidator.checkEmail({ email: newValue });
         setEmailErrorMessage(message);
     }, []);
 
@@ -227,9 +71,8 @@ const SignUpForm = () => {
             const newValue = e.target.value;
             setPassword(newValue);
 
-            const { message } = formValidator().password({
+            const { message } = formValidator.checkPassword({
                 password: newValue,
-                passwordConfirm,
             });
             setPasswordErrorMessage(message);
         },
@@ -241,8 +84,8 @@ const SignUpForm = () => {
             const newValue = e.target.value;
             setPasswordConfirm(newValue);
 
-            const { message } = formValidator().passwordConfirm({
-                password,
+            const { message } = formValidator.checkPasswordConfirm({
+                password: password,
                 passwordConfirm: newValue,
             });
             setPasswordConfirmErrorMessage(message);
@@ -254,7 +97,7 @@ const SignUpForm = () => {
         const newValue = e.target.value;
         setUsername(newValue);
 
-        const { message } = formValidator().username({
+        const { message } = formValidator.checkUsername({
             username: newValue,
         });
         setUsernameErrorMessage(message);
@@ -263,7 +106,7 @@ const SignUpForm = () => {
     const onChangeDisplayName = useCallback(e => {
         const newValue = e.target.value;
         setDisplayName(newValue);
-        const { message } = formValidator().displayName({
+        const { message } = formValidator.checkDisplayName({
             displayName: newValue,
         });
         setDisplayNameErrorMessage(message);
@@ -281,7 +124,7 @@ const SignUpForm = () => {
             username,
             displayName,
         };
-        const { valid, messages } = formValidator().validate(formValues);
+        const { valid, messages } = formValidator.validate(formValues);
         return valid && agreement;
     }, [email, password, passwordConfirm, username, displayName, agreement]);
 
@@ -295,14 +138,14 @@ const SignUpForm = () => {
                 username,
                 displayName,
             };
-            const { valid, messages } = formValidator().validate(formValues);
+            const { valid, messages } = formValidator.validate(formValues);
 
             // console.log('valid: ', valid);
             // console.log('messages: ', messages);
 
             if (valid) {
                 dispatch({
-                    type: SIGN_UP_CALL,
+                    type: actionTypes.SIGN_UP_CALL,
                     data: formValues,
                 });
             }
@@ -394,10 +237,6 @@ const SignUpForm = () => {
             </Form.Item>
         </Form>
     );
-};
-
-SignUpForm.getInitialProps = async context => {
-    return {};
 };
 
 export default SignUpForm;

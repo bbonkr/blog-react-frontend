@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { withAuth } from '../../utils/auth';
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ChangeInfoForm from '../../components/ChangeInfoForm';
 import { PageHeader } from 'antd';
 
-const ChangeInfo = () => {
+const ChangeInfo: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>

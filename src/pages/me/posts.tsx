@@ -1,12 +1,8 @@
-import React, { useState, useCallback } from 'react';
-import Link from 'next/link';
+import React, { useState, useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    List,
-    Card,
     Tag,
     Table,
-    Pagination,
     Modal,
     Button,
     Icon,
@@ -15,12 +11,14 @@ import {
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
-import { LOAD_MY_POSTS_CALL, DELETE_POST_CALL } from '../../reducers/me';
 import moment from 'moment';
 import { formatNumber } from '../../helpers/stringHelper';
 import Router from 'next/router';
+import { IRootState } from 'reducers';
+import { IMeState } from 'reducers/me';
+import { actionTypes } from 'reducers/actionTypes';
 
-const Posts = () => {
+const Posts: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         myPosts,
@@ -28,7 +26,7 @@ const Posts = () => {
         loadingMyPosts,
         postsLimit,
         nextPageToken,
-    } = useSelector(state => state.me);
+    } = useSelector<IRootState, IMeState>(state => state.me);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -36,7 +34,7 @@ const Posts = () => {
         (current, size) => {
             setCurrentPage(current);
             dispatch({
-                type: LOAD_MY_POSTS_CALL,
+                type: actionTypes.LOAD_MY_POSTS_CALL,
                 data: {
                     pageToken: nextPageToken,
                     limit: size || postsLimit || 10,
@@ -51,7 +49,7 @@ const Posts = () => {
         (current, size) => {
             setCurrentPage(current);
             dispatch({
-                type: LOAD_MY_POSTS_CALL,
+                type: actionTypes.LOAD_MY_POSTS_CALL,
                 data: {
                     pageToken: nextPageToken,
                     limit: size,
@@ -80,7 +78,7 @@ const Posts = () => {
                 content: post.title,
                 onOk() {
                     dispatch({
-                        type: DELETE_POST_CALL,
+                        type: actionTypes.DELETE_POST_CALL,
                         data: post.id,
                     });
                 },
@@ -222,7 +220,7 @@ Posts.getInitialProps = async context => {
         myPosts && myPosts.length > 0 && myPosts[myPosts.length - 1];
 
     context.store.dispatch({
-        type: LOAD_MY_POSTS_CALL,
+        type: actionTypes.LOAD_MY_POSTS_CALL,
         data: {
             pageToken: null,
             limit: postsLimit || 10,

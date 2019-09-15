@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import Error from 'next/error';
 import PropTypes from 'prop-types';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
 
-const NodeBlogError = ({ statusCode }) => {
+export interface IBlogErrorProps {
+    statusCode: number;
+}
+
+const BlogError: FunctionComponent<IBlogErrorProps> = ({ statusCode }) => {
     // console.log('statusCode', statusCode);
 
     return (
@@ -17,15 +21,15 @@ const NodeBlogError = ({ statusCode }) => {
     );
 };
 
-NodeBlogError.defaultProps = {
+BlogError.defaultProps = {
     statusCode: 400,
 };
 
-NodeBlogError.propTypes = {
+BlogError.propTypes = {
     statusCode: PropTypes.number,
 };
 
-NodeBlogError.getInitialProps = async context => {
+BlogError.getInitialProps = async context => {
     const statusCode = context.res
         ? context.res.statusCode
         : context.err
@@ -36,4 +40,4 @@ NodeBlogError.getInitialProps = async context => {
     };
 };
 
-export default NodeBlogError;
+export default BlogError;

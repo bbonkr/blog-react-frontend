@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Upload,
@@ -11,22 +11,22 @@ import {
     Spin,
 } from 'antd';
 import moment from 'moment';
-import PropTypes from 'prop-types';
 import StackGrid from 'react-stack-grid';
-// import sizeMe from 'react-sizeme';
-import {withSize} from 'react-sizeme';
-import {
-    UPLOAD_MY_MEDIA_FILES_CALL,
-    LOAD_MY_MEDIA_FILES_CALL,
-    DELETE_MY_MEDIA_FILES_CALL,
-} from '../reducers/me';
+import {withSize, SizeMeProps} from 'react-sizeme';
 import ImageViewer from './ImageViewer';
 import CroppedImage from './CroppedImage';
+import { IRootState } from 'reducers';
+import { IMeState } from 'reducers/me';
+import { actionTypes } from 'reducers/actionTypes';
 
 const Paragraph = Typography.Paragraph;
 const Dragger = Upload.Dragger;
 
-const FileList = ({ size, onSelect }) => {
+export interface IFileListProps extends SizeMeProps {
+    onSelect?: (item: any) => void;
+}
+
+const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     const dispatch = useDispatch();
 
     const {
@@ -36,7 +36,7 @@ const FileList = ({ size, onSelect }) => {
         mediaFilesNextPageToken,
         mediaFilesLimit,
         uploading,
-    } = useSelector(s => s.me);
+    } = useSelector<IRootState, IMeState>(s => s.me);
 
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [imageViewerFiles, setImageViewerFiles] = useState([]);
@@ -48,7 +48,7 @@ const FileList = ({ size, onSelect }) => {
 
     useEffect(() => {
         dispatch({
-            type: LOAD_MY_MEDIA_FILES_CALL,
+            type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
             data: {
                 pageToken: null,
                 limit: mediaFilesLimit,
@@ -98,7 +98,7 @@ const FileList = ({ size, onSelect }) => {
                     });
 
                     dispatch({
-                        type: UPLOAD_MY_MEDIA_FILES_CALL,
+                        type: actionTypes.UPLOAD_MY_MEDIA_FILES_CALL,
                         data: formData,
                     });
 
@@ -114,7 +114,7 @@ const FileList = ({ size, onSelect }) => {
         e => {
             if (hasMoreMediaFiles) {
                 dispatch({
-                    type: LOAD_MY_MEDIA_FILES_CALL,
+                    type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
                     data: {
                         pageToken: mediaFilesNextPageToken,
                         limit: mediaFilesLimit,
@@ -141,7 +141,7 @@ const FileList = ({ size, onSelect }) => {
                 content: `${media.fileName}${media.fileExtension}`,
                 onOk() {
                     dispatch({
-                        type: DELETE_MY_MEDIA_FILES_CALL,
+                        type: actionTypes.DELETE_MY_MEDIA_FILES_CALL,
                         data: media.id,
                     });
                 },
@@ -267,14 +267,5 @@ const FileList = ({ size, onSelect }) => {
         </Spin>
     );
 };
-
-FileList.porpTypes = {
-    size: PropTypes.shape({
-        width: PropTypes.number.isRequired,
-    }),
-    onSelect: PropTypes.func,
-};
-
-// export default sizeMe()(FileList);
 
 export default withSize({ noPlaceholder: true })(FileList);

@@ -1,23 +1,31 @@
 /**
  * /users/:user/posts
  */
-import React, { useCallback } from 'react';
+import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector } from 'react-redux';
 import Helmet from 'react-helmet';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import PropTypes from 'prop-types';
-import { LOAD_SINGLE_POST_CALL } from '../../reducers/post';
+import { IPostState } from '../../reducers/post';
 import SinglePost from '../../components/SinglePost';
 import { Skeleton, Spin } from 'antd';
+import { IRootState } from 'reducers';
+import { ISettingState } from 'reducers/settings';
+import { actionTypes } from 'reducers/actionTypes';
 
 // import '../../styles/prism.css';
 // import '../../styles/singlepost.css';
 
-const UsersPost = ({ user, slug }) => {
+export interface IUsersPostProps {
+    user: any;  // todo type user
+    slug: string; 
+}
+
+const UsersPost: FunctionComponent = () => {
     const siteName = 'nodeblog';
-    const { loadingPost, singlePost } = useSelector(s => s.post);
-    const { baseUrl, currentUrl } = useSelector(s => s.settings);
+    const { loadingPost, singlePost } = useSelector<IRootState, IPostState>(s => s.post);
+    const { baseUrl, currentUrl } = useSelector<IRootState, ISettingState>(s => s.settings);
 
     const getOgImage = useCallback(() => {
         if (!singlePost) {
@@ -38,7 +46,6 @@ const UsersPost = ({ user, slug }) => {
                     title={`${singlePost.title} | ${
                         singlePost.User.displayName
                     } | ${siteName}`}
-                    description={singlePost.excerpt}
                     meta={[
                         { name: 'description', content: singlePost.excerpt },
                         { name: 'og:title', content: singlePost.title },
@@ -75,7 +82,7 @@ UsersPost.getInitialProps = async context => {
     const decodedUser = user;
     const decodedSlug = decodeURIComponent(slug);
     context.store.dispatch({
-        type: LOAD_SINGLE_POST_CALL,
+        type: actionTypes.LOAD_SINGLE_POST_CALL,
         data: { user: decodedUser, slug: decodedSlug },
     });
 

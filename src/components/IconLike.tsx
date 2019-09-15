@@ -1,14 +1,21 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icon } from 'antd';
-import { REMOVE_LIKE_POST_CALL, ADD_LIKE_POST_CALL } from '../reducers/post';
+import { IPostState } from '../reducers/post';
+import { IRootState } from 'reducers';
+import { IUserState } from 'reducers/user';
+import { actionTypes } from 'reducers/actionTypes';
 
 const LIKE_COLOR = '#eb2f96';
 
-const IconLike = ({ post }) => {
+export interface IIconLikeProps {
+    post: any;  // todo type post
+}
+
+const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
     const dispatch = useDispatch();
-    const { me } = useSelector(s => s.user);
-    const { likePostLoading } = useSelector(s => s.post);
+    const { me } = useSelector<IRootState, IUserState>(s => s.user);
+    const { likePostLoading } = useSelector<IRootState, IPostState>(s => s.post);
     const [loading, setLoading] = useState(false);
 
     useMemo(() => {
@@ -29,9 +36,10 @@ const IconLike = ({ post }) => {
 
     const onClickLike = useCallback(() => {
         if (!!me) {
-            let action = ADD_LIKE_POST_CALL;
+            let action: actionTypes = actionTypes.ADD_LIKE_POST_CALL;
+
             if (liked) {
-                action = REMOVE_LIKE_POST_CALL;
+                action = actionTypes.REMOVE_LIKE_POST_CALL;
             }
 
             setLoading(true);

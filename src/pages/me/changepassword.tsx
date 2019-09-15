@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { withAuth } from '../../utils/auth';
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ChangePasswordForm from '../../components/ChangePasswordForm';
 import { PageHeader } from 'antd';
 
-const ChangePassword = () => {
+const ChangePassword: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>

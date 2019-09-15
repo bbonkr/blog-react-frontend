@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Avatar } from 'antd';
 import PropTypes from 'prop-types';
 
-const UserAvatar = ({ user }) => {
+export interface IUserAvatarProps {
+    user: any;  // todo type user
+}
+
+const UserAvatar: FunctionComponent<IUserAvatarProps> = ({ user }) => {
     const { username, displayName, photo } = user;
 
     return (
@@ -13,4 +17,5 @@ const UserAvatar = ({ user }) => {
 UserAvatar.propTypes = {
     user: PropTypes.object.isRequired,
 };
+
 export default UserAvatar;

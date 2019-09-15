@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FunctionComponent } from 'react';
 import { useSelector } from 'react-redux';
 import {
     PageHeader,
@@ -24,22 +24,20 @@ import {
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
+import { IRootState } from 'reducers';
+import { IUserState } from 'reducers/user';
+import { IMeState } from 'reducers/me';
+import { actionTypes } from 'reducers/actionTypes';
 // import { withAuthSync } from '../../utils/auth';
 
-import { LOAD_STAT_GENERAL_CALL, LOAD_STAT_READ_CALL } from '../../reducers/me';
-
-const Me = () => {
-    const { me } = useSelector(state => state.user);
+const Me: FunctionComponent = () => {
+    const { me } = useSelector<IRootState, IUserState>(state => state.user);
     const {
         statGeneral,
         statGeneralLoading,
         statRead,
         statReadLoading,
-    } = useSelector(s => s.me);
-
-    // useEffect(() => {
-
-    // }, []);
+    } = useSelector<IRootState, IMeState>(s => s.me);
 
     if (!me) {
         return <div>loading ...</div>;
@@ -127,12 +125,12 @@ const Me = () => {
 
 Me.getInitialProps = async context => {
     context.store.dispatch({
-        type: LOAD_STAT_GENERAL_CALL,
+        type: actionTypes.LOAD_STAT_GENERAL_CALL,
         data: '',
     });
 
     context.store.dispatch({
-        type: LOAD_STAT_READ_CALL,
+        type: actionTypes.LOAD_STAT_READ_CALL,
         data: '',
     });
 
@@ -140,4 +138,3 @@ Me.getInitialProps = async context => {
 };
 
 export default withAuth(Me);
-// export default withAuthSync(Me);

@@ -18,10 +18,10 @@ const Home: FunctionComponent = () => {
         postsLimit,
         loadingPosts,
         hasMorePost,
-    } = useSelector<IRootState, IPostState>((s: IRootState): IPostState => s.post);
+    } = useSelector<IRootState, IPostState>((s) => s.post);
 
     const onClickLoadMorePosts = useCallback(
-        (e) => {
+        () => {
             dispatch({
                 type: actionTypes.LOAD_POSTS_CALL,
                 data: {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
 import { PageHeader, Modal, Carousel, Icon, Typography, Button } from 'antd';
 import styled from 'styled-components';
 import FullSizeModal from '../styledComponents/FullSizeModal';
@@ -13,7 +13,13 @@ import FullSizeModal from '../styledComponents/FullSizeModal';
 //     overflow-y: auto;
 // `;
 
-const ImageViewer = ({ files, visible, closeImageviewer }) => {
+export interface IImageViewerProps {
+    files: any[];   // todo type image
+    visible: boolean;
+    closeImageviewer: () => void;
+} 
+
+const ImageViewer: FunctionComponent<IImageViewerProps> = ({ files, visible, closeImageviewer }) => {
     const [title, setTitle] = useState('Image viewer');
     const [url, setUrl] = useState('');
     const [fullUrl, setFullUrl] = useState('');
@@ -28,7 +34,7 @@ const ImageViewer = ({ files, visible, closeImageviewer }) => {
     }, [files]);
 
     const onAafterChange = useCallback(
-        current => {
+        (current: number): void => {
             const file = files[current];
             setTitle(`${file.fileName}${file.fileExtension}`);
             setUrl(file.url);
@@ -61,7 +67,7 @@ const ImageViewer = ({ files, visible, closeImageviewer }) => {
                 }
             />
 
-            <Carousel style={{ width: '100%' }} onAafterChange={onAafterChange}>
+            <Carousel style={{ width: '100%' }}  afterChange={onAafterChange}>
                 {files.map(f => {
                     return (
                         <div key={f.id} style={{ textAlign: 'center' }}>

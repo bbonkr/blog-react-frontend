@@ -1,10 +1,15 @@
 import React from 'react';
 import Document, { Main, NextScript } from 'next/document';
-import Helmet from 'react-helmet';
-import PropTypes from 'prop-types';
+import Helmet, { HelmetData } from 'react-helmet';
 import { ServerStyleSheet } from 'styled-components';
+import { IDictionary } from 'reducers/IDictionary';
 
-class NodeBlogDocument extends Document {
+export interface IBlogDocumentProps extends IDictionary<any> {
+    helmet: HelmetData;
+    styleTags: React.Component<any,any,any>[];
+}
+
+class BlogDocument extends Document<IBlogDocumentProps> {
     static getInitialProps(context) {
         const styleSheet = new ServerStyleSheet();
         const page = context.renderPage(App => props =>
@@ -33,7 +38,7 @@ class NodeBlogDocument extends Document {
                 <head>
                     {Object.values(helmet).map(el => el.toComponent())}
                     
-                    {cssFiles.map((css, index) => {
+                    {cssFiles.map((css) => {
                         // console.log('=========> css file: ', css);
                         return (
                             <link
@@ -41,7 +46,6 @@ class NodeBlogDocument extends Document {
                                 rel="stylesheet"
                                 href={`${prefixDir}${css}`}
                                 type="text/css"
-                                charSet="UTF-8"
                             />
                         );
                     })}
@@ -59,9 +63,4 @@ class NodeBlogDocument extends Document {
     }
 }
 
-NodeBlogDocument.propTypes = {
-    helmet: PropTypes.object.isRequired,
-    styleTags: PropTypes.array.isRequired,
-};
-
-export default NodeBlogDocument;
+export default BlogDocument;

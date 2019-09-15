@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Icon } from 'antd';
@@ -8,13 +8,18 @@ const LinkWrapper = styled.span`
     margin-right: 1em;
 `;
 
+export interface ILinkCategoryProps {
+    user: any; // todo type user
+    category: any; // todo type category
+}
+
 /**
  * 분류 링크 컴포넌트입니다.
  *
  * @param {string} 분류 이름
  * @param {string} 분류 슬러그
  */
-const LinkCategory = ({ user, category }) => {
+const LinkCategory: FunctionComponent<ILinkCategoryProps> = ({ user, category }) => {
     const { username } = user;
     const { name, slug } = category;
     const displayUsername = `@${username}`;

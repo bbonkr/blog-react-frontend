@@ -1,14 +1,18 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { PageHeader, Form, Input, Button, Icon, Divider } from 'antd';
 import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
-import { signUpFormValidator } from '../helpers/formValidators';
-import { REQUEST_RESET_PASSWORD_CALL } from '../reducers/user';
+import { SignUpFormValidator } from '../helpers/formValidators';
+import { IUserState } from '../reducers/user';
+import { IRootState } from 'reducers';
+import { actionTypes } from 'reducers/actionTypes';
 
-const RequestResetPassword = () => {
+const signUpFormValidator = new SignUpFormValidator();
+
+const RequestResetPassword: FunctionComponent= () => {
     const dispatch = useDispatch();
-    const { requestResetPasswordLoading } = useSelector(s => s.user);
+    const { requestResetPasswordLoading } = useSelector<IRootState, IUserState>(s => s.user);
 
     const [email, setEmail] = useState('');
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
@@ -28,7 +32,7 @@ const RequestResetPassword = () => {
 
             if (valid) {
                 dispatch({
-                    type: REQUEST_RESET_PASSWORD_CALL,
+                    type: actionTypes.REQUEST_RESET_PASSWORD_CALL,
                     data: formData,
                 });
             }

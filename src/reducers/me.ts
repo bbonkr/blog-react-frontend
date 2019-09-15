@@ -4,7 +4,7 @@ import Router from 'next/router';
 import { actionTypes } from './actionTypes';
 
 export interface IMeState {
-    myPost: any[], // TODO type post
+    myPost: any, // TODO type post
     postsLimit: number,
     hasMorePost: boolean,
     searchKeyword?: string,
@@ -314,11 +314,13 @@ const reducer = (state: IMeState = initialState, action) =>
                     onClick: null,
                     icon: null
                 });
+                
                 Router.push({
                     pathname: '/me/write',
                     query: { id: action.data.id },
-                    as: `/me/write/${action.data.id}`,
-                });
+                    },
+                    `/me/write/${action.data.id}`,
+                );
                 break;
             case actionTypes.WRITE_POST_FAIL:
                 draft.writingPost = false;
@@ -338,8 +340,9 @@ const reducer = (state: IMeState = initialState, action) =>
                 Router.push({
                     pathname: '/me/write',
                     query: { id: action.data.id },
-                    as: `/me/write/${action.data.id}`,
-                });
+                    },
+                    `/me/write/${action.data.id}`,
+                );
                 break;
             case actionTypes.EDIT_POST_FAIL:
                 draft.writingPost = false;

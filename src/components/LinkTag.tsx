@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import styled from 'styled-components';
@@ -8,7 +8,11 @@ const LinkWrapper = styled.span`
     margin-right: 1em;
 `;
 
-const LinkTag = ({ tag }) => {
+export interface ILinkTagProps {
+    tag: any;   // todo type tag
+}
+
+const LinkTag: FunctionComponent<ILinkTagProps> = ({ tag }) => {
     const { name, slug } = tag;
     const encodedSlug = encodeURIComponent(slug);
     return (
@@ -17,7 +21,7 @@ const LinkTag = ({ tag }) => {
                 href={{ pathname: '/tag', query: { slug: encodedSlug } }}
                 as={`/tag/${encodedSlug}`}>
                 <a>
-                    <Icon type="tag" text={name} /> <span>{name}</span>
+                    <Icon type="tag" /> <span>{name}</span>
                 </a>
             </Link>
         </LinkWrapper>
