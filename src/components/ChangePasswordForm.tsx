@@ -2,17 +2,17 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 import { ChangePasswordValidator } from '../helpers/ChangePasswordValidator';
-import { IRootState } from 'reducers';
-import { IUserState } from 'reducers/user';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IUserState } from '../typings/reduxStates';
 
 const validator: ChangePasswordValidator = new ChangePasswordValidator();
 
 const ChangePasswordForm = () => {
     const dispatch = useDispatch();
-    const { loadingChangePassword, changePasswordSuccess } = useSelector<IRootState, IUserState>(
-        (s) => s.user,
-    );
+    const { loadingChangePassword, changePasswordSuccess } = useSelector<
+        IRootState,
+        IUserState
+    >((s) => s.user);
     const [currentPassword, setCurrentPassword] = useState('');
     const [
         currentPasswordErrorMessage,

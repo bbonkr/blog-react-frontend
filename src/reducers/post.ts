@@ -5,70 +5,8 @@ import { IPostModel } from '../typings/IPostModel';
 import { IUserModel } from '../typings/IUserModel';
 import { ICategoryModel } from '../typings/ICategoryModel';
 import { ITagModel } from '../typings/ITagModel';
-
-export interface IPostState {
-    /** posts */
-    posts: IPostModel[];
-    /** posts loading */
-    loadingPosts: boolean;
-    hasMorePost: boolean;
-    loadPostErrorReason?: string;
-    postsLimit: number;
-    nextPageToken: string;
-    searchKeyword: string;
-
-    /** singlePost */
-    singlePost: IPostModel;
-    loadSinglePostErrorReason?: string;
-
-    /** post loading  */
-    loadingPost: boolean;
-    isSinglePost: boolean;
-    currentCategory?: string;
-
-    writingPost: boolean;
-
-    /** users posts */
-    usersPosts: IPostModel[];
-    usersPostsPageToken?: string;
-    loadingUsersPosts: boolean;
-    loadUsersPostsErrorReason?: string;
-    hasMoreUsersPosts: boolean;
-    currentUser?: string; // 현재 선택된 사용자; 데이터 소스 초기화에 사용
-
-    /** users category posts */
-    userCategoryPosts: IPostModel[];
-    userCategoryPostsPageToken?: string;
-    userCategoryPostsLoading: boolean;
-    userCategoryPostsErrorReason?: string;
-    userCategoryPostsHasMore: boolean;
-    userCategoryPostsKeyword?: string;
-    currentUserCategory?: string; // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
-    userCategoryPostsUser: IUserModel;
-    userCategoryPostsCategory: ICategoryModel;
-
-    /** tag posts */
-    tagPosts: IPostModel[];
-    tagPostsPageToken?: string;
-    tagPostsLoading: boolean;
-    tagPostsErrorReason?: string;
-    tagPostsHasMore: boolean;
-    tagPostsKeyword?: string;
-    currentTag?: ITagModel;
-    currentTagSlug?: string;
-
-    /** search posts */
-    searchPosts: IPostModel[];
-    searchPostsPageToken?: string;
-    searchPostsLoading: boolean;
-    searchPostsErrorReason?: string;
-    searchPostsHasMore: boolean;
-    searchPostsKeyword?: string;
-
-    /** like post */
-    likePostLoading: boolean;
-    likePostErrorMessage?: string;
-}
+import { PostHandler } from './hanlders/post.handler';
+import { IPostState } from '../typings/reduxStates';
 
 export const initialState: IPostState = {
     /** posts */
@@ -199,71 +137,84 @@ const reducer = (state: IPostState = initialState, action) =>
     produce(state, (draft) => {
         // https://lannstark.github.io/nodejs/console/3
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
+        const handler = new PostHandler({ draft, action });
 
         switch (action.type) {
             case actionTypes.LOAD_POSTS_CALL:
+                handler.loadPostsCall();
+                break;
             case actionTypes.LOAD_CATEGORY_POSTS_CALL:
-                draft.posts = action.data.pageToken ? draft.posts : [];
-                draft.hasMorePost = action.data.pageToken
-                    ? draft.hasMorePost
-                    : true;
-                draft.loadingPosts = true;
-                draft.loadPostErrorReason = '';
-                draft.isSinglePost = false;
+                // draft.posts = action.data.pageToken ? draft.posts : [];
+                // draft.hasMorePost = action.data.pageToken
+                //     ? draft.hasMorePost
+                //     : true;
+                // draft.loadingPosts = true;
+                // draft.loadPostErrorReason = '';
+                // draft.isSinglePost = false;
+                handler.loadCategoryPostsCall();
                 break;
             case actionTypes.LOAD_POSTS_DONE:
+                handler.loadPostsDone();
+                break;
             case actionTypes.LOAD_CATEGORY_POSTS_DONE:
-                action.data.records.forEach((v) => {
-                    const postIndex = draft.posts.findIndex(
-                        (x) => x.id === v.id,
-                    );
-                    if (postIndex < 0) {
-                        draft.posts.push(v);
-                        draft.nextPageToken = `${v.id}`;
-                    }
-                });
-                draft.hasMorePost =
-                    action.data.records.length === draft.postsLimit;
-                draft.loadingPosts = false;
-                draft.searchKeyword = action.keyword;
-                draft.currentCategory = action.currentCategory;
-                draft.currentTag = action.currentTag;
+                // action.data.records.forEach((v) => {
+                //     const postIndex = draft.posts.findIndex(
+                //         (x) => x.id === v.id,
+                //     );
+                //     if (postIndex < 0) {
+                //         draft.posts.push(v);
+                //         draft.nextPageToken = `${v.id}`;
+                //     }
+                // });
+                // draft.hasMorePost =
+                //     action.data.records.length === draft.postsLimit;
+                // draft.loadingPosts = false;
+                // draft.searchKeyword = action.keyword;
+                // draft.currentCategory = action.currentCategory;
+                // draft.currentTag = action.currentTag;
+                handler.loadCategoryPostsDone();
                 break;
             case actionTypes.LOAD_POSTS_FAIL:
+                handler.loadPostsFail();
+                break;
             case actionTypes.LOAD_CATEGORY_POSTS_FAIL:
-                draft.loadingPosts = false;
-                draft.loadPostErrorReason = action.error;
+                // draft.loadingPosts = false;
+                // draft.loadPostErrorReason = action.error;
+                handler.loadCategoryPostsFail();
                 break;
 
             // users/:user/posts
             case actionTypes.LOAD_USERS_POSTS_CALL:
-                draft.usersPosts = action.data.pageToken
-                    ? draft.usersPosts
-                    : [];
-                draft.hasMoreUsersPosts = action.data.pageToken
-                    ? draft.hasMoreUsersPosts
-                    : true;
-                draft.loadingUsersPosts = true;
-                draft.loadUsersPostsErrorReason = '';
-                draft.currentUser = action.data.user;
+                // draft.usersPosts = action.data.pageToken
+                //     ? draft.usersPosts
+                //     : [];
+                // draft.hasMoreUsersPosts = action.data.pageToken
+                //     ? draft.hasMoreUsersPosts
+                //     : true;
+                // draft.loadingUsersPosts = true;
+                // draft.loadUsersPostsErrorReason = '';
+                // draft.currentUser = action.data.user;
+                handler.loadUsersPostsCall();
                 break;
             case actionTypes.LOAD_USERS_POSTS_DONE:
-                action.data.forEach((v) => {
-                    const postIndex = draft.usersPosts.findIndex(
-                        (x) => x.id === v.id,
-                    );
-                    if (postIndex < 0) {
-                        draft.usersPosts.push(v);
-                        draft.usersPostsPageToken = `${v.id}`;
-                    }
-                });
-                draft.hasMoreUsersPosts =
-                    action.data.length === draft.postsLimit;
-                draft.loadingUsersPosts = false;
+                // action.data.forEach((v) => {
+                //     const postIndex = draft.usersPosts.findIndex(
+                //         (x) => x.id === v.id,
+                //     );
+                //     if (postIndex < 0) {
+                //         draft.usersPosts.push(v);
+                //         draft.usersPostsPageToken = `${v.id}`;
+                //     }
+                // });
+                // draft.hasMoreUsersPosts =
+                //     action.data.length === draft.postsLimit;
+                // draft.loadingUsersPosts = false;
+                handler.loadUsersPostsDone();
                 break;
             case actionTypes.LOAD_USERS_POSTS_FAIL:
-                draft.loadingUsersPosts = false;
-                draft.loadUsersPostsErrorReason = action.reason;
+                // draft.loadingUsersPosts = false;
+                // draft.loadUsersPostsErrorReason = action.reason;
+                handler.loadUsersPostsFail();
                 break;
 
             case actionTypes.LOAD_USER_CATEGORY_POSTS_CALL:

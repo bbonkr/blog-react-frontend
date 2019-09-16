@@ -9,10 +9,8 @@ import { Layout, Menu, Icon, Drawer } from 'antd';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import UserAvatar from './UserAvatar';
-import { IMeState } from '../reducers/me';
-import { IRootState } from 'reducers';
-import { IUserState } from 'reducers/user';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IUserState, IMeState } from '../typings/reduxStates';
 const { Sider } = Layout;
 
 const menusSide = [
@@ -119,7 +117,9 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
             // setMenuCollapsed(collapsed);
             dispatch({
                 type: actionTypes.SIDE_MENU_COLLAPSE,
-                data: collapsed,
+                data: {
+                    sideMenuCollapsed: collapsed,
+                },
             });
         },
         [dispatch],
@@ -238,9 +238,5 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
         </Layout>
     );
 };
-
-// MeLayout.propTypes = {
-//     children: PropTypes.element.isRequired,
-// };
 
 export default MeLayout;

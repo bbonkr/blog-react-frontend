@@ -1,8 +1,8 @@
 import { IDictionary } from './IDictionary';
 import { IUserModel } from './IUserModel';
 import { IPostModel } from './IPostModel';
-export interface ICategoryModel extends IDictionary<any> {
-    id: number;
+import { IModelBase } from './IModelBase';
+export interface ICategoryModel extends IModelBase {
     /**
      * 이름
      */
@@ -18,6 +18,4 @@ export interface ICategoryModel extends IDictionary<any> {
     userId?: number;
     user?: IUserModel;
     posts?: IPostModel[];
-    createdAt?: Date;
-    updatedAt?: Date;
 }

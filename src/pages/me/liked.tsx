@@ -6,9 +6,8 @@ import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
 import Router from 'next/router';
-import { IRootState } from 'reducers';
-import { IMeState } from 'reducers/me';
 import { actionTypes } from '../../reducers/actionTypes';
+import { IRootState, IMeState } from '../../typings/reduxStates';
 
 const Liked: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -35,7 +34,7 @@ const Liked: FunctionComponent = () => {
 
     const onClickOpnePost = useCallback(
         (post) => () => {
-            const username = `@${post.User.username}`;
+            const username = `@${post.user.username}`;
             const slug = encodeURIComponent(post.slug);
 
             Router.push(`/users/${username}/posts/${slug}`);
@@ -54,7 +53,7 @@ const Liked: FunctionComponent = () => {
                     mode='left'>
                     {likedPosts.map((likePost) => {
                         return (
-                            <Timeline.Item key={likePost.PostId}>
+                            <Timeline.Item key={likePost.slug}>
                                 <Card
                                     title={`Liked at ${moment(
                                         likePost.createdAt,
@@ -62,25 +61,23 @@ const Liked: FunctionComponent = () => {
                                     extra={
                                         <Button
                                             type='primary'
-                                            onClick={onClickOpnePost(
-                                                likePost.Post,
-                                            )}>
+                                            onClick={onClickOpnePost(likePost)}>
                                             Opne
                                         </Button>
                                     }>
                                     <Card.Meta
-                                        title={likePost.Post.title}
+                                        title={likePost.title}
                                         description={
                                             <span>
                                                 <Icon type='clock-circle-o' />
                                                 {` ${moment(
-                                                    likePost.Post.createdAt,
+                                                    likePost.createdAt,
                                                     'YYYY-MM-DD HH:mm:ss',
                                                 ).fromNow()}`}{' '}
                                             </span>
                                         }
                                     />
-                                    {likePost.Post.excerpt}
+                                    {likePost.excerpt}
                                 </Card>
                             </Timeline.Item>
                         );

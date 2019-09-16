@@ -7,13 +7,15 @@ import Helmet from 'react-helmet';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import PropTypes from 'prop-types';
-import { IPostState } from '../../reducers/post';
 import SinglePost from '../../components/SinglePost';
 import { Skeleton, Spin } from 'antd';
-import { IRootState } from 'reducers';
-import { ISettingState } from 'reducers/settings';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IUserModel } from 'typings/IUserModel';
+import {
+    IRootState,
+    IPostState,
+    ISettingState,
+} from '../../typings/reduxStates';
 
 // import '../../styles/prism.css';
 // import '../../styles/singlepost.css';
@@ -39,7 +41,7 @@ const UsersPost: FunctionComponent = () => {
         if (!!singlePost.coverImage) {
             return `${baseUrl}${singlePost.coverImage}`;
         }
-        if (!!singlePost.User && singlePost.user.photo) {
+        if (!!singlePost.user && singlePost.user.photo) {
             return `${baseUrl}${singlePost.user.photo}`;
         }
         return '';

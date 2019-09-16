@@ -3,80 +3,15 @@ import { ShowNotification } from '../components/ShowNotification';
 import Router from 'next/router';
 import { actionTypes } from './actionTypes';
 import { IPostModel } from '../typings/IPostModel';
-import { ICategoryModel } from '../typings/ICategoryModel';
-import { ITagModel } from '../typings/ITagModel';
-
-export interface IMeState {
-    myPost: IPostModel;
-    postsLimit: number;
-    hasMorePost: boolean;
-    searchKeyword?: string;
-    nextPageToken?: string;
-    postsCount: number;
-
-    // category
-    categories: ICategoryModel[];
-    loadingCategories: boolean;
-    loadCategoriesErrorReason?: string;
-    hasMoreCategories: boolean;
-    categorySearchKeyword?: string;
-    categoryNextPageToken?: string;
-    categoryLimit: number;
-    categoriesCount: number;
-
-    // tag
-    tags: ITagModel[];
-    myPosts: IPostModel[];
-
-    loadingMyPost: boolean;
-    loadingTags: boolean;
-    loadingMyPosts: boolean;
-
-    loadTagsErrorReason?: string;
-    loadMyPostsErrorReason?: string;
-    loadMyPostErrorReason?: string;
-    writingPost: boolean;
-    writePostErrorReason?: string;
-
-    // media
-    mediaFiles: any[];
-    mediaFilesNextPageToken?: string;
-    mediaFilesSearchKeyword?: string;
-    mediaFilesCount: number;
-    mediaFilesLimit: number;
-    hasMoreMediaFiles: boolean;
-    loadingMediaFiles: boolean;
-    loadMediaFilesErrorReason?: string;
-    uploading: boolean;
-
-    // menu
-    sideMenuCollapsed: boolean;
-
-    // liked
-    likedPosts: any[];
-    likedPostsLoading: boolean;
-    likedPostsKeyword?: string;
-    likedPostsErrorReason?: string;
-    likedPostsLimit: number;
-    likedPostsHasMore: boolean;
-    likedPostsPageToken?: string;
-    likedPostsTotal: number;
-
-    // stat - general
-    statGeneral: any;
-    statGeneralLoading: boolean;
-    statGeneralErrorReason?: string;
-
-    statRead: any;
-    statReadLoading: boolean;
-    statReadErrorReason?: string;
-}
+import { IBlogAction } from '../typings/IBlogAction';
+import { MeHanlder } from './hanlders/me.handler';
+import { IMeState } from '../typings/reduxStates';
 
 export const initialState: IMeState = {
     myPosts: [],
     postsLimit: 10,
     hasMorePost: false,
-    searchKeyword: '',
+    // searchKeyword: '',
     nextPageToken: '',
     postsCount: 0,
 
@@ -85,7 +20,7 @@ export const initialState: IMeState = {
     loadingCategories: false,
     loadCategoriesErrorReason: '',
     hasMoreCategories: false,
-    categorySearchKeyword: '',
+    // categorySearchKeyword: '',
     categoryNextPageToken: '',
     categoryLimit: 10,
     categoriesCount: 0,
@@ -138,112 +73,46 @@ export const initialState: IMeState = {
     statReadErrorReason: '',
 };
 
-// export const LOAD_MY_POSTS_CALL = 'LOAD_MY_POSTS_CALL';
-// export const LOAD_MY_POSTS_DONE = 'LOAD_MY_POSTS_DONE';
-// export const LOAD_MY_POSTS_FAIL = 'LOAD_MY_POSTS_FAIL';
-
-// export const LOAD_MY_POST_CALL = 'LOAD_MY_POST_CALL';
-// export const LOAD_MY_POST_DONE = 'LOAD_MY_POST_DONE';
-// export const LOAD_MY_POST_FAIL = 'LOAD_MY_POST_FAIL';
-
-// export const LOAD_MY_CATEGORIES_CALL = 'LOAD_MY_CATEGORIES_CALL';
-// export const LOAD_MY_CATEGORIES_DONE = 'LOAD_MY_CATEGORIES_DONE';
-// export const LOAD_MY_CATEGORIES_FAIL = 'LOAD_MY_CATEGORIES_FAIL';
-
-// export const LOAD_MY_TAGS_CALL = 'LOAD_MY_TAGS_CALL';
-// export const LOAD_MY_TAGS_DONE = 'LOAD_MY_TAGS_DONE';
-// export const LOAD_MY_TAGS_FAIL = 'LOAD_MY_TAGS_FAIL';
-
-// export const WRITE_NEW_POST_CALL = 'WRITE_NEW_POST_CALL';
-// export const WRITE_NEW_POST_DONE = 'WRITE_NEW_POST_DONE';
-// export const WRITE_NEW_POST_FAIL = 'WRITE_NEW_POST_FAIL';
-
-// export const WRITE_POST_CALL = 'WRITE_POST_CALL';
-// export const WRITE_POST_DONE = 'WRITE_POST_DONE';
-// export const WRITE_POST_FAIL = 'WRITE_POST_FAIL';
-
-// export const EDIT_POST_CALL = 'EDIT_POST_CALL';
-// export const EDIT_POST_DONE = 'EDIT_POST_DONE';
-// export const EDIT_POST_FAIL = 'EDIT_POST_FAIL';
-
-// export const DELETE_POST_CALL = 'DELETE_POST_CALL';
-// export const DELETE_POST_DONE = 'DELETE_POST_DONE';
-// export const DELETE_POST_FAIL = 'DELETE_POST_FAIL';
-
-// export const LOAD_MY_MEDIA_FILES_CALL = 'LOAD_MY_MEDIA_FILES_CALL';
-// export const LOAD_MY_MEDIA_FILES_DONE = 'LOAD_MY_MEDIA_FILES_DONE';
-// export const LOAD_MY_MEDIA_FILES_FAIL = 'LOAD_MY_MEDIA_FILES_FAIL';
-
-// export const UPLOAD_MY_MEDIA_FILES_CALL = 'UPLOAD_MY_MEDIA_FILES_CALL';
-// export const UPLOAD_MY_MEDIA_FILES_DONE = 'UPLOAD_MY_MEDIA_FILES_DONE';
-// export const UPLOAD_MY_MEDIA_FILES_FAIL = 'UPLOAD_MY_MEDIA_FILES_FAIL';
-
-// export const EDIT_MY_MEDIA_FILES_CALL = 'EDIT_MY_MEDIA_FILES_CALL';
-// export const EDIT_MY_MEDIA_FILES_DONE = 'EDIT_MY_MEDIA_FILES_DONE';
-// export const EDIT_MY_MEDIA_FILES_FAIL = 'EDIT_MY_MEDIA_FILES_FAIL';
-
-// export const DELETE_MY_MEDIA_FILES_CALL = 'DELETE_MY_MEDIA_FILES_CALL';
-// export const DELETE_MY_MEDIA_FILES_DONE = 'DELETE_MY_MEDIA_FILES_DONE';
-// export const DELETE_MY_MEDIA_FILES_FAIL = 'DELETE_MY_MEDIA_FILES_FAIL';
-
-// export const EDIT_MY_CATEGORY_CALL = 'EDIT_MY_CATEGORY_CALL';
-// export const EDIT_MY_CATEGORY_DONE = 'EDIT_MY_CATEGORY_DONE';
-// export const EDIT_MY_CATEGORY_FAIL = 'EDIT_MY_CATEGORY_FAIL';
-
-// export const DELETE_MY_CATEGORY_CALL = 'DELETE_MY_CATEGORY_CALL';
-// export const DELETE_MY_CATEGORY_DONE = 'DELETE_MY_CATEGORY_DONE';
-// export const DELETE_MY_CATEGORY_FAIL = 'DELETE_MY_CATEGORY_FAIL';
-
-// export const SIDE_MENU_COLLAPSE = 'SIDE_MENU_COLLAPSE';
-
-// export const LOAD_LIKED_POSTS_CALL = 'LOAD_LIKED_POSTS_CALL';
-// export const LOAD_LIKED_POSTS_DONE = 'LOAD_LIKED_POSTS_DONE';
-// export const LOAD_LIKED_POSTS_FAIL = 'LOAD_LIKED_POSTS_FAIL';
-
-// export const LOAD_STAT_GENERAL_CALL = 'LOAD_STAT_GENERAL_CALL';
-// export const LOAD_STAT_GENERAL_DONE = 'LOAD_STAT_GENERAL_DONE';
-// export const LOAD_STAT_GENERAL_FAIL = 'LOAD_STAT_GENERAL_FAIL';
-
-// export const LOAD_STAT_READ_CALL = 'LOAD_STAT_READ_CALL';
-// export const LOAD_STAT_READ_DONE = 'LOAD_STAT_READ_DONE';
-// export const LOAD_STAT_READ_FAIL = 'LOAD_STAT_READ_FAIL';
-
-const reducer = (state: IMeState = initialState, action) =>
+const reducer = (state: IMeState = initialState, action: IBlogAction) =>
     produce(state, (draft) => {
         // https://lannstark.github.io/nodejs/console/3
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
-
+        const handler = new MeHanlder({ draft, action });
         switch (action.type) {
             case actionTypes.LOAD_MY_POSTS_CALL:
-                draft.myPosts = action.data.pageToken ? draft.myPosts : [];
-                draft.hasMorePost = action.data.pageToken
-                    ? draft.hasMorePost
-                    : true;
-                draft.loadingMyPosts = true;
-                draft.loadMyPostsErrorReason = '';
-
+                // draft.myPosts = action.data.pageToken ? draft.myPosts : [];
+                // draft.hasMorePost = action.data.pageToken
+                //     ? draft.hasMorePost
+                //     : true;
+                // draft.loadingMyPosts = true;
+                // draft.loadMyPostsErrorReason = '';
+                handler.loadMyPostCall();
                 break;
             case actionTypes.LOAD_MY_POSTS_DONE:
-                draft.loadingMyPosts = false;
-                // draft.myPosts = action.data;
+                // draft.loadingMyPosts = false;
 
-                action.data.posts.forEach((v) => {
-                    const postIndex = draft.myPosts.findIndex(
-                        (x) => x.id === v.id,
-                    );
-                    if (postIndex < 0) {
-                        draft.myPosts.push(v);
-                        draft.nextPageToken = `${v.id}`;
-                    }
-                });
-                draft.hasMorePost = action.data.length === draft.postsLimit;
-                draft.loadingMyPosts = false;
-                draft.searchKeyword = action.keyword;
-                draft.postsCount = action.data.postsCount;
+                // const resultData: IListResult<
+                //     IPostModel
+                // > = action.data as IListResult<IPostModel>;
+
+                // resultData.records.forEach((v) => {
+                //     const postIndex = draft.myPosts.findIndex(
+                //         (x) => x.id === v.id,
+                //     );
+                //     if (postIndex < 0) {
+                //         draft.myPosts.push(v);
+                //         draft.nextPageToken = `${v.id}`;
+                //     }
+                // });
+                // draft.hasMorePost = action.data.length === draft.postsLimit;
+                // draft.loadingMyPosts = false;
+                // // draft.searchKeyword = action.keyword;
+                // draft.postsCount = resultData.total;
+                handler.loadMyPostsDone(action);
                 break;
             case actionTypes.LOAD_MY_POSTS_FAIL:
                 draft.loadingMyPosts = false;
-                draft.loadMyPostsErrorReason = action.reason;
+                draft.loadMyPostsErrorReason = action.message;
                 break;
 
             case actionTypes.LOAD_MY_POST_CALL:
@@ -252,11 +121,11 @@ const reducer = (state: IMeState = initialState, action) =>
                 break;
             case actionTypes.LOAD_MY_POST_DONE:
                 draft.loadingMyPost = false;
-                draft.myPost = action.data;
+                draft.myPost = action.data as IPostModel;
                 break;
             case actionTypes.LOAD_MY_POST_FAIL:
                 draft.loadingMyPost = false;
-                draft.loadMyPostErrorReason = action.reason;
+                draft.loadMyPostErrorReason = action.message;
                 break;
 
             case actionTypes.LOAD_MY_CATEGORIES_CALL:
@@ -270,36 +139,43 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.loadCategoriesErrorReason = '';
                 break;
             case actionTypes.LOAD_MY_CATEGORIES_DONE:
-                draft.loadingCategories = false;
-                // draft.categories = action.data;
+                // draft.loadingCategories = false;
+                // // draft.categories = action.data;
+                // const { records, total } = action.data as IListResult<
+                //     ICategoryModel
+                // >;
 
-                action.data.items.forEach((v) => {
-                    const postIndex = draft.categories.findIndex(
-                        (x) => x.id === v.id,
-                    );
-                    if (postIndex < 0) {
-                        draft.categories.push(v);
-                        draft.categoryNextPageToken = `${v.id}`;
-                    }
-                });
-                draft.categoriesCount = action.data.total;
-                draft.hasMoreCategories =
-                    action.data.items.length === draft.categoryLimit;
-                draft.categorySearchKeyword = action.keyword;
-                draft.categoriesCount = action.data.total;
-
+                // records.forEach((v) => {
+                //     const postIndex = draft.categories.findIndex(
+                //         (x) => x.id === v.id,
+                //     );
+                //     if (postIndex < 0) {
+                //         draft.categories.push(v);
+                //         draft.categoryNextPageToken = `${v.id}`;
+                //     }
+                // });
+                // draft.categoriesCount = total;
+                // draft.hasMoreCategories =
+                //     action.data.items.length === draft.categoryLimit;
+                // // draft.categorySearchKeyword = action.keyword;
+                // // draft.categoriesCount = total;
+                handler.loadMyCategoryDone(action);
                 break;
             case actionTypes.LOAD_MY_CATEGORIES_FAIL:
                 draft.loadingCategories = false;
-                draft.loadCategoriesErrorReason = action.reason;
+                draft.loadCategoriesErrorReason = action.message;
                 break;
 
             case actionTypes.LOAD_MY_TAGS_CALL:
                 draft.loadingTags = true;
                 break;
             case actionTypes.LOAD_MY_TAGS_DONE:
-                draft.loadingTags = false;
-                draft.tags = action.data;
+                // const { records, totla } = action.data as IListResult<
+                //     ITagModel
+                // >;
+                // draft.loadingTags = false;
+                // draft.tags = records;
+                handler.loadMyTagsDone(action);
                 break;
             case actionTypes.LOAD_MY_TAGS_FAIL:
                 draft.loadingTags = false;
@@ -400,11 +276,11 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.hasMoreMediaFiles =
                     action.data.length === draft.mediaFilesLimit;
                 draft.loadingMediaFiles = false;
-                draft.mediaFilesSearchKeyword = action.keyword;
+                draft.mediaFilesSearchKeyword = action.message;
                 break;
             case actionTypes.LOAD_MY_MEDIA_FILES_FAIL:
                 draft.loadingMediaFiles = true;
-                draft.loadMediaFilesErrorReason = action.reason;
+                draft.loadMediaFilesErrorReason = action.message;
                 break;
             case actionTypes.UPLOAD_MY_MEDIA_FILES_CALL:
                 draft.uploading = true;
@@ -435,36 +311,37 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.loadingCategories = true;
                 break;
             case actionTypes.EDIT_MY_CATEGORY_DONE:
-                const foundCategoryIndex = draft.categories.findIndex(
-                    (v) => v.id === action.data.id,
-                );
-                if (foundCategoryIndex < 0) {
-                    draft.categories.push(action.data);
-                    draft.categoriesCount = draft.categoriesCount + 1;
-                } else {
-                    draft.categories[foundCategoryIndex] = action.data;
-                }
+                // const foundCategoryIndex = draft.categories.findIndex(
+                //     (v) => v.id === action.data.id,
+                // );
+                // if (foundCategoryIndex < 0) {
+                //     draft.categories.push(action.data);
+                //     draft.categoriesCount = draft.categoriesCount + 1;
+                // } else {
+                //     draft.categories[foundCategoryIndex] = action.data;
+                // }
 
-                draft.categories
-                    .filter(
-                        (v) =>
-                            v.id !== action.data.id &&
-                            v.ordinal >= action.data.ordinal,
-                    )
-                    .forEach((v) => {
-                        v.ordinal = v.ordinal + 1;
-                    });
+                // draft.categories
+                //     .filter(
+                //         (v) =>
+                //             v.id !== action.data.id &&
+                //             v.ordinal >= action.data.ordinal,
+                //     )
+                //     .forEach((v) => {
+                //         v.ordinal = v.ordinal + 1;
+                //     });
 
-                draft.categories = draft.categories
-                    .sort((a, b) => {
-                        return a.ordinal > b.ordinal ? 1 : -1;
-                    })
-                    .map((v, i) => {
-                        v.ordinal = i + 1;
-                        return v;
-                    });
+                // draft.categories = draft.categories
+                //     .sort((a, b) => {
+                //         return a.ordinal > b.ordinal ? 1 : -1;
+                //     })
+                //     .map((v, i) => {
+                //         v.ordinal = i + 1;
+                //         return v;
+                //     });
 
-                draft.loadingCategories = false;
+                // draft.loadingCategories = false;
+                handler.editMyCategoryDone(action);
                 break;
             case actionTypes.EDIT_MY_CATEGORY_FAIL:
                 draft.loadingCategories = false;
@@ -497,7 +374,7 @@ const reducer = (state: IMeState = initialState, action) =>
                 break;
 
             case actionTypes.SIDE_MENU_COLLAPSE:
-                draft.sideMenuCollapsed = action.data;
+                draft.sideMenuCollapsed = action.data.sideMenuCollapsed;
                 break;
 
             case actionTypes.LOAD_LIKED_POSTS_CALL:
@@ -511,24 +388,25 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.likedPostsErrorReason = '';
                 break;
             case actionTypes.LOAD_LIKED_POSTS_DONE:
-                action.data.records.forEach((x) => {
-                    const post = draft.likedPosts.find(
-                        (v) => v.UserId === x.UserId && v.PostId === x.PostId,
-                    );
-                    if (!post) {
-                        draft.likedPosts.push(x);
-                        draft.likedPostsPageToken = `${x.UserId}|${x.PostId}`;
-                    }
-                });
-                draft.likedPostsTotal = action.data.total;
-                draft.likedPostsHasMore =
-                    action.data.records.length === draft.likedPostsLimit;
-                draft.likedPostsKeyword = action.keyword;
-                draft.likedPostsLoading = false;
+                // action.data.records.forEach((x) => {
+                //     const post = draft.likedPosts.find(
+                //         (v) => v.UserId === x.UserId && v.PostId === x.PostId,
+                //     );
+                //     if (!post) {
+                //         draft.likedPosts.push(x);
+                //         draft.likedPostsPageToken = `${x.UserId}|${x.PostId}`;
+                //     }
+                // });
+                // draft.likedPostsTotal = action.data.total;
+                // draft.likedPostsHasMore =
+                //     action.data.records.length === draft.likedPostsLimit;
+                // draft.likedPostsKeyword = action.keyword;
+                // draft.likedPostsLoading = false;
+                handler.loadLikedPostsDone(action);
                 break;
             case actionTypes.LOAD_LIKED_POSTS_FAIL:
                 draft.likedPostsLoading = false;
-                draft.likedPostsErrorReason = action.reason;
+                draft.likedPostsErrorReason = action.message;
                 break;
 
             // 통계
@@ -541,7 +419,7 @@ const reducer = (state: IMeState = initialState, action) =>
                 break;
             case actionTypes.LOAD_STAT_GENERAL_FAIL:
                 draft.statGeneralLoading = false;
-                draft.statGeneralErrorReason = action.reason;
+                draft.statGeneralErrorReason = action.message;
                 break;
 
             // 통계 읽은수
@@ -553,7 +431,7 @@ const reducer = (state: IMeState = initialState, action) =>
                 draft.statReadLoading = false;
                 break;
             case actionTypes.LOAD_STAT_READ_FAIL:
-                draft.statReadErrorReason = action.reason;
+                draft.statReadErrorReason = action.message;
                 draft.statReadLoading = false;
                 break;
 

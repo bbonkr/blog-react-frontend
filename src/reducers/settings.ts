@@ -1,10 +1,6 @@
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
-
-export interface ISettingState {
-    currentUrl: string;
-    baseUrl: string;
-}
+import { ISettingState } from '../typings/reduxStates';
 
 export const initialState: ISettingState = {
     currentUrl: '', // 현재 URL 참조 eg.) /users/@test/posts/post-slug

@@ -4,16 +4,14 @@ import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import { PageHeader, Button, Spin, Divider } from 'antd';
 import Router from 'next/router';
-import { IUserState } from '../reducers/user';
-import { IRootState } from 'reducers';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IUserState } from '../typings/reduxStates';
 
 const SignOut: FunctionComponent = () => {
-    const {
-        me,
-        signOutLoading,
-        signOutReturnUrl,
-    } = useSelector<IRootState, IUserState>((s) => s.user);
+    const { me, signOutLoading, signOutReturnUrl } = useSelector<
+        IRootState,
+        IUserState
+    >((s) => s.user);
 
     useEffect(() => {
         if (!me) {

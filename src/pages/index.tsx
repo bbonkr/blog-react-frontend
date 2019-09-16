@@ -4,11 +4,10 @@ import ListExcerpt from '../components/ListExcerpt';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
 import { actionTypes } from '../reducers/actionTypes';
-import { IRootState } from 'reducers';
-import { IPostState } from 'reducers/post';
 import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
+import { IRootState, IPostState } from '../typings/reduxStates';
 
 const Home: FunctionComponent = () => {
     const dispatch = useDispatch();

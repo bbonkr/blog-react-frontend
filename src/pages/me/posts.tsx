@@ -7,9 +7,8 @@ import { withAuth } from '../../utils/auth';
 import moment from 'moment';
 import { formatNumber } from '../../helpers/stringHelper';
 import Router from 'next/router';
-import { IRootState } from 'reducers';
-import { IMeState } from 'reducers/me';
 import { actionTypes } from '../../reducers/actionTypes';
+import { IRootState, IMeState } from '../../typings/reduxStates';
 
 const Posts: FunctionComponent = () => {
     const dispatch = useDispatch();

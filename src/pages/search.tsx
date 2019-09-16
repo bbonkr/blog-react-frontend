@@ -5,9 +5,8 @@ import { Input, Divider } from 'antd';
 import ListExcerpt from '../components/ListExcerpt';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
-import { IRootState } from 'reducers';
-import { IPostState } from 'reducers/post';
 import { actionTypes } from '../reducers/actionTypes';
+import { IPostState, IRootState } from '../typings/reduxStates';
 
 const KEYWORD_INPUT_PLACEHOLDER = 'Searching keyword';
 

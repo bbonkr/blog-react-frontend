@@ -1,18 +1,11 @@
 import { combineReducers, Reducer, ReducersMapObject } from 'redux';
-import user, { IUserState } from './user';
-import post, { IPostState } from './post';
-import category, { ICategoryState } from './category';
-import settings, { ISettingState } from './settings';
-import me, { IMeState } from './me';
+import user from './user';
+import post from './post';
+import category from './category';
+import settings from './settings';
+import me from './me';
 import { IBlogAction } from '../typings/IBlogAction';
-
-export interface IRootState {
-    user: IUserState;
-    post: IPostState;
-    category: ICategoryState;
-    settings: ISettingState;
-    me: IMeState;
-}
+import { IRootState } from '../typings/reduxStates';
 
 export type BlogReducer = Reducer<IRootState, IBlogAction>;
 

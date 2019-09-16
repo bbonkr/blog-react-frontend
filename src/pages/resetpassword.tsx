@@ -10,9 +10,8 @@ import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import { ChangePasswordValidator } from '../helpers/ChangePasswordValidator';
 import Router from 'next/router';
-import { IUserState } from '../reducers/user';
-import { IRootState } from 'reducers';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IUserState } from '../typings/reduxStates';
 
 export interface IResetPasswordProps {
     email: string;

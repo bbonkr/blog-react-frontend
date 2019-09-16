@@ -9,7 +9,12 @@ export interface IIconTextProps {
     iconProps?: IconProps;
 }
 
-const IconText: FunctionComponent<IIconTextProps> = ({ type, text, spanProps, iconProps }) => (
+const IconText: FunctionComponent<IIconTextProps> = ({
+    type,
+    text,
+    spanProps,
+    iconProps,
+}) => (
     <span {...spanProps}>
         <Icon type={type} style={{ marginRight: 8 }} {...iconProps} />
         {text}

@@ -20,9 +20,8 @@ import StackGrid from 'react-stack-grid';
 import { withSize, SizeMeProps } from 'react-sizeme';
 import ImageViewer from './ImageViewer';
 import CroppedImage from './CroppedImage';
-import { IRootState } from 'reducers';
-import { IMeState } from 'reducers/me';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IMeState } from '../typings/reduxStates';
 
 const Paragraph = Typography.Paragraph;
 const Dragger = Upload.Dragger;

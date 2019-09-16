@@ -8,8 +8,11 @@ import {
     actionChannel,
     throttle,
 } from 'redux-saga/effects';
-import {http} from './httpHelper';
+import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
+import { IJsonResult } from '../typings/IJsonResult';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IUserModel } from '../typings/IUserModel';
 
 function getMyInfoApi() {
     return http.get('/me');
@@ -18,16 +21,16 @@ function getMyInfoApi() {
 function* getMyInfo(action) {
     try {
         const result = yield call(getMyInfoApi);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.ME_DONE,
             data: result.data,
         });
     } catch (e) {
         // console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.ME_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -37,7 +40,6 @@ function* watchGetMyInfo() {
 }
 
 function signInApi(data) {
-
     return http.post('/account/signin', data);
 }
 
@@ -45,19 +47,29 @@ function* signIn(action) {
     try {
         const result = yield call(signInApi, action.data);
 
-        console.log('response: ==> ', result);
-
-        yield put({
-            type: actionTypes.SIGN_IN_DONE,
-            data: result.data,
-            returnUrl: action.returnUrl,
-        });
+        const resultData = result.data as IJsonResult<IUserModel>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.SIGN_IN_DONE,
+                data: {
+                    ...data,
+                    returnUrl: action.returnUrl,
+                },
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.SIGN_IN_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
-        yield put({
+        // console.error(e);
+        yield put<IBlogAction>({
             type: actionTypes.SIGN_IN_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -73,17 +85,28 @@ function signOutApi() {
 function* signOut(action) {
     try {
         const result = yield call(signOutApi);
-        yield put({
-            type: actionTypes.SIGN_OUT_DONE,
-            data: result.data,
-            returnUrl: action.returnUrl,
-        });
+        const { success, data, message } = result.data as IJsonResult<string>;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.SIGN_OUT_DONE,
+                data: {
+                    message: data as string,
+                    returnUrl: action.returnUrl,
+                },
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.SIGN_OUT_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
-        yield put({
+        // console.error(e);
+        yield put<IBlogAction>({
             type: actionTypes.SIGN_OUT_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -99,16 +122,16 @@ function signUpApi(formData) {
 function* signUp(action) {
     try {
         const result = yield call(signUpApi, action.data);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.SIGN_UP_DONE,
             data: result.data,
         });
     } catch (e) {
         console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.SIGN_UP_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -124,16 +147,16 @@ function changePasswordApi(formData) {
 function* changePassword(action) {
     try {
         const result = yield call(changePasswordApi, action.data);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.CHANGE_PASSWORD_DONE,
             data: result.data,
         });
     } catch (e) {
         console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.CHANGE_PASSWORD_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -149,16 +172,16 @@ function changeInfoApi(formData) {
 function* changeInfo(action) {
     try {
         const result = yield call(changeInfoApi, action.data);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.CHANGE_INFO_DONE,
             data: result.data,
         });
     } catch (e) {
         console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.CHANGE_INFO_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -174,16 +197,16 @@ function verifyEmailApi(formData) {
 function* verifyEmail(action) {
     try {
         const result = yield call(verifyEmailApi, action.data);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.VERIFY_EMAIL_DONE,
             data: result.data,
         });
     } catch (e) {
         console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.VERIFY_EMAIL_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -199,16 +222,16 @@ function makeVerifyEmaiApi() {
 function* makeVerifyEmail(action) {
     try {
         const result = yield call(makeVerifyEmaiApi);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.MAKE_VERIFY_EMAIL_DONE,
             data: result.data,
         });
     } catch (e) {
         console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.MAKE_VERIFY_EMAIL_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -224,22 +247,25 @@ function requestResetPasswordApi(formData) {
 function* requestResetPassword(action) {
     try {
         const result = yield call(requestResetPasswordApi, action.data);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.REQUEST_RESET_PASSWORD_DONE,
             data: result,
         });
     } catch (e) {
         console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.REQUEST_RESET_PASSWORD_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
 
 function* watchRequestResetPassword() {
-    yield takeLatest(actionTypes.REQUEST_RESET_PASSWORD_CALL, requestResetPassword);
+    yield takeLatest(
+        actionTypes.REQUEST_RESET_PASSWORD_CALL,
+        requestResetPassword,
+    );
 }
 
 function resetPasswordApi(formData) {
@@ -249,16 +275,16 @@ function resetPasswordApi(formData) {
 function* resetPassword(action) {
     try {
         const result = yield call(resetPasswordApi, action.data);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.RESET_PASSWORD_DONE,
             data: result.data,
         });
     } catch (e) {
         console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.RESET_PASSWORD_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }
@@ -274,16 +300,16 @@ function unregisterApi(formData) {
 function* unregister(action) {
     try {
         const result = yield call(unregisterApi, action.data);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.UNREGISTER_DONE,
             data: result.data,
         });
     } catch (e) {
         console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.UNREGISTER_FAIL,
             error: e,
-            reason: e.response && e.response.data,
+            message: e.response && e.response.data,
         });
     }
 }

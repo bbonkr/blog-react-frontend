@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { IUserModel } from 'typings/IUserModel';
 
 export interface ILinkUsersPostsProps {
@@ -27,10 +26,5 @@ const LinkUsersPosts: FunctionComponent<ILinkUsersPostsProps> = ({
         </Link>
     );
 };
-
-// LinkUsersPosts.propTypes = {
-//     user: PropTypes.object.isRequired,
-//     children: PropTypes.element.isRequired,
-// };
 
 export default LinkUsersPosts;

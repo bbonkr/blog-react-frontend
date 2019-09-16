@@ -1,8 +1,8 @@
 import { IDictionary } from './IDictionary';
 import { IUserModel } from './IUserModel';
 import { IPostModel } from './IPostModel';
-export interface ICommentModel extends IDictionary<any> {
-    id: number;
+import { IModelBase } from './IModelBase';
+export interface ICommentModel extends IModelBase {
     markdown?: string;
     html?: string;
     text?: string;
@@ -10,6 +10,4 @@ export interface ICommentModel extends IDictionary<any> {
     user?: IUserModel;
     postId?: number;
     post?: IPostModel;
-    createdAt?: Date;
-    updatedAt?: Date;
 }

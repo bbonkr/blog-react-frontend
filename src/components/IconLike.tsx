@@ -6,11 +6,9 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icon } from 'antd';
-import { IPostState } from '../reducers/post';
-import { IRootState } from 'reducers';
-import { IUserState } from 'reducers/user';
 import { actionTypes } from '../reducers/actionTypes';
 import { IPostModel } from '../typings/IPostModel';
+import { IRootState, IUserState, IPostState } from '../typings/reduxStates';
 
 const LIKE_COLOR = '#eb2f96';
 
@@ -34,7 +32,7 @@ const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
 
     const likersCount = useMemo(() => {
         return (post.likers && post.likers.length) || 0;
-    }, [post.Likers]);
+    }, [post.likers]);
 
     const liked = useMemo(() => {
         return (

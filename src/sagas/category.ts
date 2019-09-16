@@ -11,13 +11,22 @@ function loadCategoriesApi() {
 function* loadCategories(action?: IBlogAction) {
     try {
         const result = yield call(loadCategoriesApi);
-        yield put({
-            type: actionTypes.LOAD_CATEGORIES_DONE,
-            data: result.data,
-        });
+        const { success, data, message } = result;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_CATEGORIES_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_CATEGORIES_FAIL,
+                error: data,
+                message: message,
+            });
+        }
     } catch (e) {
         // console.error(e);
-        yield put({
+        yield put<IBlogAction>({
             type: actionTypes.LOAD_CATEGORIES_FAIL,
             error: e,
         });

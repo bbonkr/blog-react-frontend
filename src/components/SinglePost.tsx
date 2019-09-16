@@ -1,7 +1,4 @@
 import React, { useEffect, FunctionComponent } from 'react';
-import { useSelector } from 'react-redux';
-import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { Card, Divider, Avatar, Typography, Icon } from 'antd';
 import LinkCategory from './LinkCategory';
 import LinkTag from './LinkTag';
@@ -38,8 +35,8 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                     }>
                     <Card.Meta
                         avatar={
-                            <LinkUsersPosts user={post.User}>
-                                <UserAvatar user={post.User} />
+                            <LinkUsersPosts user={post.user}>
+                                <UserAvatar user={post.user} />
                             </LinkUsersPosts>
                         }
                         title={
@@ -59,12 +56,12 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                             </div>
                         }
                         description={
-                            post.Categories &&
-                            post.Categories.map((category) => {
+                            post.categories &&
+                            post.categories.map((category) => {
                                 return (
                                     <LinkCategory
                                         key={category.slug}
-                                        user={post.User}
+                                        user={post.user}
                                         category={category}
                                     />
                                 );
@@ -90,8 +87,8 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
 
                     <Divider dashed={true} />
 
-                    {post.Tags &&
-                        post.Tags.map((v) => {
+                    {post.tags &&
+                        post.tags.map((v) => {
                             return <LinkTag key={v.slug} tag={v} />;
                         })}
                 </Card>
@@ -99,9 +96,5 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
         </>
     );
 };
-
-// SinglePost.propTypes = {
-//     post: PropTypes.object.isRequired,
-// };
 
 export default SinglePost;

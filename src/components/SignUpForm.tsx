@@ -6,12 +6,11 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
-import { IUserState } from '../reducers/user';
 import Router from 'next/router';
 import { ErrorMessageWrapper } from '../styledComponents/Wrapper';
-import { IRootState } from 'reducers';
 import { actionTypes } from '../reducers/actionTypes';
 import { SignUpFormValidator } from 'helpers/SignUpFormValidator';
+import { IRootState, IUserState } from '../typings/reduxStates';
 
 const formValidator = new SignUpFormValidator();
 

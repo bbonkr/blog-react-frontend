@@ -8,19 +8,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Modal, Icon } from 'antd';
 import FileList from './FileList';
 import FullSizeModal from '../styledComponents/FullSizeModal';
-import { IRootState } from 'reducers';
-import { IUserState } from 'reducers/user';
 import { actionTypes } from '../reducers/actionTypes';
 import { ChangeInfoValidator } from '../helpers/ChangeInfoValidator';
+import { IRootState, IUserState } from '../typings/reduxStates';
 
 const validator = new ChangeInfoValidator();
 
 const ChangeInfoForm: FunctionComponent = () => {
     const dispatch = useDispatch();
-    const { loadingChangeInfo } = useSelector<IRootState, IUserState>(
+    const { me, loadingChangeInfo } = useSelector<IRootState, IUserState>(
         (s) => s.user,
     );
-    const { me } = useSelector<IRootState, IUserState>((s) => s.user);
 
     const [email, setEmail] = useState('');
     const [emailErrorMessage, setemailErrorMessage] = useState('');

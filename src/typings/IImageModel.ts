@@ -1,8 +1,8 @@
 import { IDictionary } from './IDictionary';
 import { IUserModel } from './IUserModel';
 import { IPostModel } from './IPostModel';
-export interface IImageModel extends IDictionary<any> {
-    id: number;
+import { IModelBase } from './IModelBase';
+export interface IImageModel extends IModelBase {
     src?: string;
     // path: string;
     fileName?: string;
@@ -12,6 +12,4 @@ export interface IImageModel extends IDictionary<any> {
     userId?: number;
     user?: IUserModel;
     posts?: IPostModel[];
-    createdAt?: Date;
-    updatedAt?: Date;
 }

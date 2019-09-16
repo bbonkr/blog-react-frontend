@@ -13,9 +13,8 @@ import xssFilter from 'showdown-xss-filter';
 import FullSizeModal from '../styledComponents/FullSizeModal';
 import FileList from './FileList';
 import { WriteFormValaidator } from 'helpers/WriteFormValaidator';
-import { IRootState } from 'reducers';
-import { IMeState } from 'reducers/me';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IMeState } from '../typings/reduxStates';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 const SELECT_FILE_TARGET_MARKDOWN = 'markdown';
@@ -98,21 +97,21 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
             setMarkdown(myPost.markdown);
             setCoverImage(myPost.coverImage);
             setSelectedCategoryValues(
-                !!myPost.Categories ? myPost.Categories.map((v) => v.slug) : [],
+                !!myPost.categories ? myPost.categories.map((v) => v.slug) : [],
             );
             setSelectedTagValues(
-                !!myPost.Tags ? myPost.Tags.map((v) => v.slug) : [],
+                !!myPost.tags ? myPost.tags.map((v) => v.slug) : [],
             );
             setSelectedCategories(
-                myPost.Categories
-                    ? myPost.Categories.map((v) => {
+                myPost.categories
+                    ? myPost.categories.map((v) => {
                           return { name: v.name, slug: v.slug };
                       })
                     : [],
             );
             setSelectedTags(
-                myPost.Tags
-                    ? myPost.Tags.map((v) => {
+                myPost.tags
+                    ? myPost.tags.map((v) => {
                           return {
                               name: v.name,
                               slug: v.slug,

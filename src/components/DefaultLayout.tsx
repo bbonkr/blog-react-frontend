@@ -6,27 +6,11 @@ import React, {
 } from 'react';
 import Link from 'next/link';
 import { Menu, Input, Button, Modal, Layout } from 'antd';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import Router from 'next/router';
-// import styled from 'styled-components';
 import SubMenu from 'antd/lib/menu/SubMenu';
-import { IUserState } from '../reducers/user';
 import UserAvatar from './UserAvatar';
-import { IRootState } from 'reducers';
-import { ISettingState } from 'reducers/settings';
-
-// const ContentLeft = styled(Col)`
-//     padding: 0.6em 1em 0.6em;
-// `;
-
-// const ContentMain = styled(Col)`
-//     padding: 0.6em 1em 0.6em;
-// `;
-
-// const ContentRight = styled(Col)`
-//     padding: 0.6em 1em 0.6em;
-// `;
+import { IRootState, IUserState, ISettingState } from '../typings/reduxStates';
 
 export interface IDefaultLayoutProps {
     children: React.ReactNode;
@@ -193,9 +177,5 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
         </div>
     );
 };
-
-// DefaultLayout.propTypes = {
-//     children: PropTypes.element.isRequired,
-// };
 
 export default DefaultLayout;

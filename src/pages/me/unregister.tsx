@@ -11,9 +11,8 @@ import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { PageHeader, Form, Input, Button, Modal, Divider } from 'antd';
 import { SignUpFormValidator } from '../../helpers/SignUpFormValidator';
 import Router from 'next/router';
-import { IRootState } from 'reducers';
-import { IUserState } from 'reducers/user';
 import { actionTypes } from '../../reducers/actionTypes';
+import { IRootState, IUserState } from '../../typings/reduxStates';
 
 const Validator = new SignUpFormValidator();
 

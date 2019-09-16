@@ -2,51 +2,9 @@ import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import { actionTypes } from './actionTypes';
 import { IUserModel } from 'typings/IUserModel';
-
-export interface IUserState {
-    me: IUserModel;
-    signInFailMessage?: string;
-    signInInProcess: boolean;
-
-    // sign Up
-    signUpFailMessage: string;
-    signUpInProcess: boolean;
-    signUpSuccess: boolean;
-
-    loadingChangePassword: boolean;
-    changePasswordSuccess: boolean;
-
-    loadingChangeInfo: boolean;
-    changeInfoSuccess: boolean;
-
-    // sign out
-    signOutLoading: boolean;
-    signOutErrorReason?: string;
-    signOutReturnUrl?: string;
-
-    // verify email
-    verifyEmailInfo: any; // todo type email
-    verifyEmailLoading: boolean;
-    verifyEmailErrorReason?: string;
-
-    // make verify email code
-    makeVerifyEmailLoading: boolean;
-    makeVerifyEmailErrorReason?: string;
-
-    // request reset password
-    requestResetPasswordLoading: boolean;
-    requestResetPasswordErrorReason?: string;
-
-    // reset password
-    resetPasswordLoading: boolean;
-    resetPasswordErrorReason?: string;
-    resetPasswordSuccess: boolean;
-
-    // unregister
-    unregisterLoading: boolean;
-    unregisterErrorReason?: string;
-    unregisterSuccess: boolean;
-}
+import { IUserState } from '../typings/reduxStates';
+import { IBlogAction } from '../typings/IBlogAction';
+import { UserHandler } from './hanlders/user.handler';
 
 export const initialState: IUserState = {
     me: null,
@@ -136,9 +94,12 @@ export const initialState: IUserState = {
 // export const UNREGISTER_DONE = 'UNREGISTER_DONE';
 // export const UNREGISTER_FAIL = 'UNREGISTER_FAIL';
 
-const reducer = (state: IUserState = initialState, action) =>
+const reducer = (state: IUserState = initialState, action: IBlogAction) =>
     produce(state, (draft) => {
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
+
+        const handler = new UserHandler({ draft, action });
+
         switch (action.type) {
             case actionTypes.SIGN_IN_PREPARE:
                 draft.signInFailMessage = '';
@@ -147,34 +108,35 @@ const reducer = (state: IUserState = initialState, action) =>
                 draft.signInInProcess = true;
                 break;
             case actionTypes.SIGN_IN_DONE:
-                draft.signInInProcess = false;
-                draft.me = action.data;
+                // draft.signInInProcess = false;
+                // draft.me = action.data;
+                handler.signInDone();
                 break;
             case actionTypes.SIGN_IN_FAIL:
                 draft.signInInProcess = false;
-                draft.signInFailMessage = action.reason
-                    ? action.reason
-                    : action.error;
+                draft.signInFailMessage = action.message;
                 break;
             case actionTypes.SIGN_OUT_CALL:
                 draft.signOutLoading = true;
                 break;
             case actionTypes.SIGN_OUT_DONE:
-                draft.me = null;
-                // Router.push(!!action.returnUrl ? action.returnUrl : '/');
-                draft.signOutLoading = false;
-                draft.signOutReturnUrl = !!action.returnUrl
-                    ? action.returnUrl
-                    : '/';
+                // draft.me = null;
+                // // Router.push(!!action.returnUrl ? action.returnUrl : '/');
+                // draft.signOutLoading = false;
+                // draft.signOutReturnUrl = !!action.returnUrl
+                //     ? action.returnUrl
+                //     : '/';
+                handler.signOutDone();
                 break;
             case actionTypes.SIGN_OUT_FAIL:
                 draft.signOutLoading = false;
-                draft.signOutErrorReason = action.reason;
+                draft.signOutErrorReason = action.message;
                 break;
             case actionTypes.ME_CALL:
                 break;
             case actionTypes.ME_DONE:
-                draft.me = action.data;
+                // draft.me = action.data;
+                handler.meDone();
                 break;
             case actionTypes.ME_FAIL:
                 break;
@@ -191,9 +153,7 @@ const reducer = (state: IUserState = initialState, action) =>
             case actionTypes.SIGN_UP_FAIL:
                 draft.signUpInProcess = false;
                 draft.signUpSuccess = false;
-                draft.signUpFailMessage = action.reason
-                    ? action.reason
-                    : action.error;
+                draft.signUpFailMessage = action.message;
                 break;
             case actionTypes.CHANGE_PASSWORD_CALL:
                 draft.loadingChangePassword = true;
@@ -214,7 +174,7 @@ const reducer = (state: IUserState = initialState, action) =>
                 draft.changePasswordSuccess = false;
                 ShowNotification({
                     title: 'Fail to change a password.',
-                    message: action.reason,
+                    message: action.message,
                     onClick: null,
                     icon: null,
                 });
@@ -224,16 +184,17 @@ const reducer = (state: IUserState = initialState, action) =>
                 draft.changeInfoSuccess = false;
                 break;
             case actionTypes.CHANGE_INFO_DONE:
-                draft.loadingChangeInfo = false;
-                draft.changeInfoSuccess = true;
-                draft.me = action.data;
+                // draft.loadingChangeInfo = false;
+                // draft.changeInfoSuccess = true;
+                // draft.me = action.data;
+                handler.changeInfoDone();
                 break;
             case actionTypes.CHANGE_INFO_FAIL:
                 draft.loadingChangeInfo = false;
                 draft.changeInfoSuccess = false;
                 ShowNotification({
                     title: 'Fail to change account information',
-                    message: action.reason,
+                    message: action.message,
                     icon: null,
                     onClick: null,
                 });
@@ -254,7 +215,7 @@ const reducer = (state: IUserState = initialState, action) =>
                 }
                 break;
             case actionTypes.VERIFY_EMAIL_FAIL:
-                draft.verifyEmailErrorReason = action.reason;
+                draft.verifyEmailErrorReason = action.message;
                 draft.verifyEmailLoading = false;
                 break;
 
@@ -266,11 +227,11 @@ const reducer = (state: IUserState = initialState, action) =>
                 draft.makeVerifyEmailLoading = false;
                 break;
             case actionTypes.MAKE_VERIFY_EMAIL_FAIL:
-                draft.makeVerifyEmailErrorReason = action.reason;
+                draft.makeVerifyEmailErrorReason = action.message;
                 draft.makeVerifyEmailLoading = false;
                 ShowNotification({
                     title: 'Fail to make verify email code.',
-                    message: action.reason,
+                    message: action.message,
                     icon: null,
                     onClick: null,
                 });
@@ -292,10 +253,10 @@ const reducer = (state: IUserState = initialState, action) =>
                 break;
             case actionTypes.REQUEST_RESET_PASSWORD_FAIL:
                 draft.requestResetPasswordLoading = false;
-                draft.requestResetPasswordErrorReason = action.reason;
+                draft.requestResetPasswordErrorReason = action.message;
                 ShowNotification({
                     title: 'Fail a request to reset password.',
-                    message: action.reason,
+                    message: action.message,
                     icon: null,
                     onClick: null,
                 });
@@ -313,10 +274,10 @@ const reducer = (state: IUserState = initialState, action) =>
                 break;
             case actionTypes.RESET_PASSWORD_FAIL:
                 draft.resetPasswordLoading = false;
-                draft.resetPasswordErrorReason = action.reason;
+                draft.resetPasswordErrorReason = action.message;
                 ShowNotification({
                     title: 'Fail to reset password.',
-                    message: action.reason,
+                    message: action.message,
                     icon: null,
                     onClick: null,
                 });
@@ -335,7 +296,7 @@ const reducer = (state: IUserState = initialState, action) =>
                 break;
             case actionTypes.UNREGISTER_FAIL:
                 draft.unregisterLoading = false;
-                draft.unregisterErrorReason = action.reason;
+                draft.unregisterErrorReason = action.message;
                 draft.unregisterSuccess = false;
                 break;
             default:

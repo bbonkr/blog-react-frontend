@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import PropTypes from 'prop-types';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Icon } from 'antd';
@@ -28,9 +27,5 @@ const LinkTag: FunctionComponent<ILinkTagProps> = ({ tag }) => {
         </LinkWrapper>
     );
 };
-
-// LinkTag.propTypes = {
-//     tag: PropTypes.object.isRequired,
-// };
 
 export default LinkTag;

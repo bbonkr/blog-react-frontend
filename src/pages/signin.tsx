@@ -15,10 +15,9 @@ import {
     ErrorMessageWrapper,
 } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
-import { IRootState } from 'reducers';
-import { IUserState } from 'reducers/user';
 import { actionTypes } from '../reducers/actionTypes';
 import { SignInFormValidator } from 'helpers/SignInFormValidator';
+import { IRootState, IUserState } from '../typings/reduxStates';
 
 const validator = new SignInFormValidator();
 

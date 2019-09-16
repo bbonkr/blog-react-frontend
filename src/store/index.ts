@@ -1,9 +1,10 @@
 import createSagaMiddleware from 'redux-saga';
 import { createStore, compose, applyMiddleware, Store } from 'redux';
-import { rootReducer, IRootState } from '../reducers';
+import { rootReducer } from '../reducers';
 import { rootSaga } from '../sagas';
 import { MakeStoreOptions } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
+import { IRootState } from '../typings/reduxStates';
 
 export const configureStore = (
     initialState: any,

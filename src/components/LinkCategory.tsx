@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-// import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Icon } from 'antd';
 import styled from 'styled-components';

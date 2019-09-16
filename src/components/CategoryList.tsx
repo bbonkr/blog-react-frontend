@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { List, Badge } from 'antd';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { ICategoryModel } from '../typings/ICategoryModel';
 
 export interface ICategoryListProps {
@@ -24,7 +23,7 @@ const CategoryList: FunctionComponent<ICategoryListProps> = ({
                     <List.Item
                         extra={
                             <Badge
-                                count={item.Posts ? item.Posts.length : 0}
+                                count={item.posts ? item.posts.length : 0}
                                 overflowCount={999}
                             />
                         }>
@@ -42,9 +41,5 @@ const CategoryList: FunctionComponent<ICategoryListProps> = ({
         />
     );
 };
-
-// CategoryList.propTypes = {
-//     categories: PropTypes.array.isRequired,
-// };
 
 export default CategoryList;

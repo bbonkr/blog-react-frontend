@@ -4,15 +4,16 @@ import { PageHeader, Form, Input, Button, Icon, Divider } from 'antd';
 import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import { SignUpFormValidator } from '../helpers/SignUpFormValidator';
-import { IUserState } from '../reducers/user';
-import { IRootState } from 'reducers';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IUserState } from '../typings/reduxStates';
 
 const signUpFormValidator = new SignUpFormValidator();
 
 const RequestResetPassword: FunctionComponent = () => {
     const dispatch = useDispatch();
-    const { requestResetPasswordLoading } = useSelector<IRootState, IUserState>((s) => s.user);
+    const { requestResetPasswordLoading } = useSelector<IRootState, IUserState>(
+        (s) => s.user,
+    );
 
     const [email, setEmail] = useState('');
     const [emailErrorMessage, setEmailErrorMessage] = useState('');

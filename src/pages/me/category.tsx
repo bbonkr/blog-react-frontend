@@ -19,10 +19,9 @@ import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
 import { formatNumber, makeSlug } from '../../helpers/stringHelper';
-import { IRootState } from '../../reducers';
-import { IMeState } from '../../reducers/me';
 import { actionTypes } from '../../reducers/actionTypes';
 import { CategoryFormValidator } from '../../helpers/CategoryFormValidator';
+import { IRootState, IMeState } from '../../typings/reduxStates';
 
 const validator = new CategoryFormValidator();
 

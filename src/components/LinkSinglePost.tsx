@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
-// import PropTypes from 'prop-types';
 import { IPostModel } from '../typings/IPostModel';
 
 export interface ILinkSinglePostProps {
@@ -29,10 +28,5 @@ const LinkSinglePost: FunctionComponent<ILinkSinglePostProps> = ({
         </Link>
     );
 };
-
-// LinkSinglePost.propTypes = {
-//     post: PropTypes.object.isRequired,
-//     children: PropTypes.element.isRequired,
-// };
 
 export default LinkSinglePost;

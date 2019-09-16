@@ -5,9 +5,8 @@ import { PageHeader, Button, Form, Spin, Alert, Divider } from 'antd';
 import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import Router from 'next/router';
-import { IRootState } from 'reducers';
-import { IUserState } from 'reducers/user';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IUserState } from '../typings/reduxStates';
 
 export interface IVerifyEmailProps {
     email: string;

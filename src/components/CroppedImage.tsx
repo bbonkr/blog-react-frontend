@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useCallback } from 'react';
-// import PropTypes from 'prop-types';
 import { IImageModel } from '../typings/IImageModel';
 
 export interface ICroppedImageProps {

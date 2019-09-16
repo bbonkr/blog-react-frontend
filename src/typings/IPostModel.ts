@@ -5,8 +5,8 @@ import { IImageModel } from './IImageModel';
 import { IUserModel } from './IUserModel';
 import { ITagModel } from './ITagModel';
 import { IPostAccessLogModel } from './IPostAccessLogModel';
-export interface IPostModel extends IDictionary<any> {
-    id: number;
+import { IModelBase } from './IModelBase';
+export interface IPostModel extends IModelBase {
     title?: string;
     slug?: string;
     markdown?: string;
@@ -28,6 +28,4 @@ export interface IPostModel extends IDictionary<any> {
     images?: IImageModel[];
     tags?: ITagModel[];
     likers?: IUserModel[];
-    createdAt?: Date;
-    updatedAt?: Date;
 }

@@ -5,9 +5,8 @@ import { Divider, PageHeader } from 'antd';
 import ListExcerpt from '../components/ListExcerpt';
 import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
-import { IRootState } from 'reducers';
-import { IPostState } from 'reducers/post';
 import { actionTypes } from '../reducers/actionTypes';
+import { IRootState, IPostState } from '../typings/reduxStates';
 
 export interface ITagProps {
     slug: string;

@@ -1,10 +1,8 @@
 import { IDictionary } from './IDictionary';
 import { IPostModel } from './IPostModel';
-export interface ITagModel extends IDictionary<any> {
-    id: number;
+import { IModelBase } from './IModelBase';
+export interface ITagModel extends IModelBase {
     name?: string;
     slug?: string;
     posts?: IPostModel[];
-    createdAt?: Date;
-    updatedAt?: Date;
 }

@@ -24,11 +24,8 @@ import {
 import MeLayout from '../../components/MeLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
-import { IRootState } from 'reducers';
-import { IUserState } from 'reducers/user';
-import { IMeState } from 'reducers/me';
 import { actionTypes } from '../../reducers/actionTypes';
-// import { withAuthSync } from '../../utils/auth';
+import { IRootState, IUserState, IMeState } from '../../typings/reduxStates';
 
 const Me: FunctionComponent = () => {
     const { me } = useSelector<IRootState, IUserState>((state) => state.user);

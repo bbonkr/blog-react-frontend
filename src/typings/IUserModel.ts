@@ -3,8 +3,9 @@ import { ICategoryModel } from './ICategoryModel';
 import { ICommentModel } from './ICommentModel';
 import { IImageModel } from './IImageModel';
 import { IPostModel } from './IPostModel';
-export interface IUserModel extends IDictionary<any> {
-    id: number;
+import { IModelBase } from './IModelBase';
+
+export interface IUserModel extends IModelBase {
     username?: string;
     displayName?: string;
     email?: string;
@@ -16,6 +17,4 @@ export interface IUserModel extends IDictionary<any> {
     images?: IImageModel[];
     posts?: IPostModel[];
     likedPosts?: IPostModel[];
-    createdAt?: Date;
-    updatedAt?: Date;
 }

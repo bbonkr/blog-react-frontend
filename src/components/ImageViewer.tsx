@@ -5,19 +5,8 @@ import React, {
     FunctionComponent,
 } from 'react';
 import { PageHeader, Carousel, Icon, Typography } from 'antd';
-// import styled from 'styled-components';
 import FullSizeModal from '../styledComponents/FullSizeModal';
 import { IImageModel } from 'typings/IImageModel';
-// const FullSizeModal = styled(Modal)`
-//     position: fixed;
-//     z-index: 5000;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     height: 100vh;
-//     overflow-y: auto;
-// `;
 
 export interface IImageViewerProps {
     files: IImageModel[];
@@ -83,7 +72,7 @@ const ImageViewer: FunctionComponent<IImageViewerProps> = ({
                         <div key={f.id} style={{ textAlign: 'center' }}>
                             <img
                                 src={f.src}
-                                alt={`${f.fileName}${f.fileExtention}`}
+                                alt={`${f.fileName}${f.fileExtension}`}
                                 style={{ maxWidth: '100%', margin: '0 auto' }}
                             />
                         </div>

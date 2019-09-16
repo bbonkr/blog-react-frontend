@@ -4,7 +4,6 @@ import React, {
     FunctionComponent,
     useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 import { Button, Divider, Card, Typography, Icon, Spin } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
@@ -107,12 +106,13 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                                         <IconLike post={post} />,
                                     ]}
                                     extra={
-                                        <IconText
-                                            type='clock-circle'
-                                            text={moment(createdAt).format(
-                                                'YYYY-MM-DD HH:mm:ss',
-                                            )}
-                                        />
+                                        null
+                                        // <IconText
+                                        //     type='clock-circle'
+                                        //     text={moment(createdAt).format(
+                                        //         'YYYY-MM-DD HH:mm:ss',
+                                        //     )}
+                                        // />
                                     }>
                                     <Card.Meta
                                         avatar={
@@ -155,7 +155,7 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
 
                                         <div>{excerpt}</div>
 
-                                        {post.Tags && post.Tags.length > 0 && (
+                                        {post.tags && post.tags.length > 0 && (
                                             <Divider dashed={true} />
                                         )}
                                         <div>
@@ -186,15 +186,4 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
     );
 };
 
-// ListExcerpt.propTypes = {
-//     posts: PropTypes.array.isRequired,
-//     loading: PropTypes.bool.isRequired,
-//     hasMore: PropTypes.bool.isRequired,
-//     loadMoreHandler: PropTypes.func.isRequired,
-//     // size: PropTypes.shape({
-//     //     width: PropTypes.number,
-//     // }),
-// };
-
-// export default sizeMe()(ListExcerpt);
 export default withSize({ noPlaceholder: true })(ListExcerpt);
