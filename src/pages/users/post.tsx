@@ -15,6 +15,7 @@ import {
     IRootState,
     IPostState,
     ISettingState,
+    ISinglePostState,
 } from '../../typings/reduxStates';
 
 // import '../../styles/prism.css';
@@ -27,9 +28,10 @@ export interface IUsersPostProps {
 
 const UsersPost: FunctionComponent = () => {
     const siteName = 'nodeblog';
-    const { loadingPost, singlePost } = useSelector<IRootState, IPostState>(
-        (s) => s.post,
-    );
+    const { loadingPost, singlePost } = useSelector<
+        IRootState,
+        ISinglePostState
+    >((s) => s.singlePost);
     const { baseUrl, currentUrl } = useSelector<IRootState, ISettingState>(
         (s) => s.settings,
     );
@@ -74,11 +76,6 @@ const UsersPost: FunctionComponent = () => {
         </>
     );
 };
-
-// UsersPost.propTypes = {
-//     user: PropTypes.string.isRequired,
-//     slug: PropTypes.string.isRequired,
-// };
 
 UsersPost.getInitialProps = async (context) => {
     const { user, slug } = context.query;

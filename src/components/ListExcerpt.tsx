@@ -80,100 +80,113 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                     gutterHeight={16}
                     enableSSR={false}
                     monitorImagesLoaded={true}>
-                    {posts.map((post) => {
-                        const { title, excerpt, createdAt } = post;
-                        return (
-                            <div key={post.id}>
-                                <Card
-                                    cover={
-                                        post.coverImage && (
-                                            <img
-                                                src={post.coverImage}
-                                                alt={post.title}
-                                            />
-                                        )
-                                    }
-                                    actions={[
-                                        <IconText
-                                            type='eye'
-                                            text={`${
-                                                post.accessLogs &&
-                                                post.accessLogs.length > 0
-                                                    ? post.accessLogs.length
-                                                    : 0
-                                            }`}
-                                        />,
-                                        <IconLike post={post} />,
-                                    ]}
-                                    extra={
-                                        null
-                                        // <IconText
-                                        //     type='clock-circle'
-                                        //     text={moment(createdAt).format(
-                                        //         'YYYY-MM-DD HH:mm:ss',
-                                        //     )}
-                                        // />
-                                    }>
-                                    <Card.Meta
-                                        avatar={
-                                            <LinkUsersPosts user={post.user}>
-                                                <UserAvatar user={post.user} />
-                                            </LinkUsersPosts>
+                    {posts &&
+                        posts.map((post) => {
+                            const { title, excerpt, createdAt } = post;
+                            return (
+                                <div key={post.id}>
+                                    <Card
+                                        cover={
+                                            post.coverImage && (
+                                                <img
+                                                    src={post.coverImage}
+                                                    alt={post.title}
+                                                />
+                                            )
                                         }
-                                        title={
-                                            <LinkSinglePost post={post}>
-                                                <Typography.Title
-                                                    level={3}
-                                                    ellipsis={true}>
-                                                    {title}
-                                                </Typography.Title>
-                                            </LinkSinglePost>
-                                        }
-                                        description={
-                                            post.categories &&
-                                            post.categories.map((category) => {
-                                                return (
-                                                    <LinkCategory
-                                                        key={category.slug}
+                                        actions={[
+                                            <IconText
+                                                type='eye'
+                                                text={`${
+                                                    post.accessLogs &&
+                                                    post.accessLogs.length > 0
+                                                        ? post.accessLogs.length
+                                                        : 0
+                                                }`}
+                                            />,
+                                            <IconLike post={post} />,
+                                        ]}
+                                        extra={
+                                            null
+                                            // <IconText
+                                            //     type='clock-circle'
+                                            //     text={moment(createdAt).format(
+                                            //         'YYYY-MM-DD HH:mm:ss',
+                                            //     )}
+                                            // />
+                                        }>
+                                        <Card.Meta
+                                            avatar={
+                                                <LinkUsersPosts
+                                                    user={post.user}>
+                                                    <UserAvatar
                                                         user={post.user}
-                                                        category={category}
                                                     />
-                                                );
-                                            })
-                                        }
-                                    />
-                                    <div>
-                                        <Divider orientation='right'>
-                                            <span>
-                                                <Icon type='clock-circle' />{' '}
-                                                {moment(
-                                                    new Date(post.createdAt),
-                                                    'YYYY-MM-DD HH:mm:ss',
-                                                ).fromNow()}
-                                            </span>
-                                        </Divider>
-
-                                        <div>{excerpt}</div>
-
-                                        {post.tags && post.tags.length > 0 && (
-                                            <Divider dashed={true} />
-                                        )}
+                                                </LinkUsersPosts>
+                                            }
+                                            title={
+                                                <LinkSinglePost post={post}>
+                                                    <Typography.Title
+                                                        level={3}
+                                                        ellipsis={true}>
+                                                        {title}
+                                                    </Typography.Title>
+                                                </LinkSinglePost>
+                                            }
+                                            description={
+                                                post.categories &&
+                                                post.categories.map(
+                                                    (category) => {
+                                                        return (
+                                                            <LinkCategory
+                                                                key={
+                                                                    category.slug
+                                                                }
+                                                                user={post.user}
+                                                                category={
+                                                                    category
+                                                                }
+                                                            />
+                                                        );
+                                                    },
+                                                )
+                                            }
+                                        />
                                         <div>
+                                            <Divider orientation='right'>
+                                                <span>
+                                                    <Icon type='clock-circle' />{' '}
+                                                    {moment(
+                                                        new Date(
+                                                            post.createdAt,
+                                                        ),
+                                                        'YYYY-MM-DD HH:mm:ss',
+                                                    ).fromNow()}
+                                                </span>
+                                            </Divider>
+
+                                            <div>{excerpt}</div>
+
                                             {post.tags &&
-                                                post.tags.map((v) => {
-                                                    return (
-                                                        <LinkTag
-                                                            tag={v}
-                                                            key={v.slug}
-                                                        />
-                                                    );
-                                                })}
+                                                post.tags.length > 0 && (
+                                                    <Divider dashed={true} />
+                                                )}
+                                            <div>
+                                                {post.tags &&
+                                                    post.tags.map((v) => {
+                                                        return (
+                                                            <LinkTag
+                                                                tag={v}
+                                                                key={v.slug}
+                                                            />
+                                                        );
+                                                    })}
+                                            </div>
                                         </div>
-                                    </div>
-                                </Card>
-                            </div>
-                        );
-                    })}
+                                    </Card>
+                                </div>
+                            );
+                        })}
                 </StackGrid>
             </Spin>
             <Divider />

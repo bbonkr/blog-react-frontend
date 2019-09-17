@@ -9,7 +9,10 @@ import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IUserModel } from '../../typings/IUserModel';
-import { IRootState, IPostState } from '../../typings/reduxStates';
+import { IRootState, IUsersPostsState } from '../../typings/reduxStates';
+import { PageHeader, Divider, Spin } from 'antd';
+import LinkUsersPosts from '../../components/LinkUsersPosts';
+import UserAvatar from '../../components/UserAvatar';
 
 export interface IUsersPostsProps {
     user: IUserModel;
@@ -21,17 +24,17 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
         usersPosts,
         hasMoreUsersPosts,
         loadingUsersPosts,
+        currentUser,
+        currentUsername,
+        currentPage,
         postsLimit,
-    } = useSelector<IRootState, IPostState>((s) => s.post);
+    } = useSelector<IRootState, IUsersPostsState>((s) => s.usersPosts);
     const onClickLoadMore = useCallback(() => {
         dispatch({
             type: actionTypes.LOAD_USERS_POSTS_CALL,
             data: {
                 user: user,
-                pageToken:
-                    usersPosts &&
-                    usersPosts.length > 0 &&
-                    usersPosts[usersPosts.length - 1].id,
+                page: (currentPage || 0) + 1,
                 limit: postsLimit,
                 keyword: '',
             },
@@ -40,12 +43,27 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
     return (
         <DefaultLayout>
             <ContentWrapper>
-                <ListExcerpt
-                    posts={usersPosts}
-                    hasMore={hasMoreUsersPosts}
-                    loading={loadingUsersPosts}
-                    loadMoreHandler={onClickLoadMore}
-                />
+                <Spin spinning={loadingUsersPosts}>
+                    <PageHeader
+                        title={
+                            <div>
+                                <LinkUsersPosts user={currentUser}>
+                                    <UserAvatar user={currentUser} />
+                                </LinkUsersPosts>
+                                <span>
+                                    {currentUser && currentUser.displayName}
+                                </span>
+                            </div>
+                        }
+                    />
+                    <Divider />
+                    <ListExcerpt
+                        posts={usersPosts}
+                        hasMore={hasMoreUsersPosts}
+                        loading={loadingUsersPosts}
+                        loadMoreHandler={onClickLoadMore}
+                    />
+                </Spin>
             </ContentWrapper>
         </DefaultLayout>
     );
@@ -58,24 +76,25 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
 UsersPosts.getInitialProps = async (context) => {
     const state = context.store.getState();
     const { user } = context.query;
-    const { postsLimit, usersPosts, currentUser } = state.post;
-    const lastPost =
-        usersPosts &&
-        usersPosts.length > 0 &&
-        usersPosts[usersPosts.length - 1];
+    const {
+        postsLimit,
+        usersPosts,
+        currentUser,
+        currentUsername,
+    } = state.usersPosts;
 
     if (
         context.isServer ||
         !usersPosts ||
         usersPosts.length === 0 ||
-        user !== currentUser
+        user !== currentUsername
     ) {
         // 서버 요청 || 사용자 글 목록이 없음 || 현재 사용자와 요청 사용자가 다름
         context.store.dispatch({
             type: actionTypes.LOAD_USERS_POSTS_CALL,
             data: {
                 user: user,
-                pageToken: null,
+                // page: null,
                 limit: postsLimit,
                 keyword: '',
             },

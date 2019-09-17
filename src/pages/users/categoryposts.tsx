@@ -4,17 +4,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
-import { PageHeader, Divider } from 'antd';
+import { PageHeader, Divider, Spin } from 'antd';
 import UserAvatar from '../../components/UserAvatar';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IUserModel } from '../../typings/IUserModel';
 import { ICategoryModel } from '../../typings/ICategoryModel';
-import { IRootState, IPostState } from '../../typings/reduxStates';
+import { IRootState, IUserCategoryPostsState } from '../../typings/reduxStates';
 
 export interface IUserCategoryPostsProps {
-    user: IUserModel;
-    category: ICategoryModel;
+    user: string;
+    category: string;
 }
 
 const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
@@ -29,64 +29,68 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
         postsLimit,
         userCategoryPostsCategory,
         userCategoryPostsUser,
-    } = useSelector<IRootState, IPostState>((s) => s.post);
+        currentPage,
+    } = useSelector<IRootState, IUserCategoryPostsState>(
+        (s) => s.userCategoryPosts,
+    );
 
     const onClickLoadMore = useCallback(() => {
-        const pageToken =
-            userCategoryPosts &&
-            userCategoryPosts.length > 0 &&
-            userCategoryPosts[userCategoryPosts.length - 1].id;
+        // const pageToken =
+        //     userCategoryPosts &&
+        //     userCategoryPosts.length > 0 &&
+        //     userCategoryPosts[userCategoryPosts.length - 1].id;
 
         dispatch({
             type: actionTypes.LOAD_USER_CATEGORY_POSTS_CALL,
             data: {
                 user: user,
                 category: category,
-                pageToken: `${pageToken}`,
+                page: (currentPage || 0) + 1,
                 limit: postsLimit,
                 keyword: '',
             },
         });
-    }, [category, dispatch, postsLimit, user, userCategoryPosts]);
+    }, [category, dispatch, postsLimit, user, currentPage]);
 
     return (
         <DefaultLayout>
             <ContentWrapper>
-                <PageHeader
-                    title={
-                        <div>
-                            <span>CATEGORY: </span>
-                            <LinkUsersPosts user={userCategoryPostsUser}>
-                                <UserAvatar user={userCategoryPostsUser} />
-                            </LinkUsersPosts>
-                            <span>
-                                {!!userCategoryPostsCategory &&
-                                    userCategoryPostsCategory.name}
-                            </span>
-                        </div>
-                    }
-                />
-                <Divider />
-                <ListExcerpt
-                    posts={userCategoryPosts}
-                    hasMore={userCategoryPostsHasMore}
-                    loading={userCategoryPostsLoading}
-                    loadMoreHandler={onClickLoadMore}
-                />
+                <Spin spinning={userCategoryPostsLoading}>
+                    <PageHeader
+                        title={
+                            <div>
+                                <span>CATEGORY: </span>
+                                <LinkUsersPosts user={userCategoryPostsUser}>
+                                    <UserAvatar user={userCategoryPostsUser} />
+                                </LinkUsersPosts>
+                                <span>
+                                    {!!userCategoryPostsCategory &&
+                                        userCategoryPostsCategory.name}
+                                </span>
+                            </div>
+                        }
+                    />
+                    <Divider />
+                    <ListExcerpt
+                        posts={userCategoryPosts}
+                        hasMore={userCategoryPostsHasMore}
+                        loading={userCategoryPostsLoading}
+                        loadMoreHandler={onClickLoadMore}
+                    />
+                </Spin>
             </ContentWrapper>
         </DefaultLayout>
     );
 };
 
-// UserCategoryPosts.propTypes = {
-//     user: PropTypes.string.isRequired,
-//     category: PropTypes.string.isRequired,
-// };
-
 UserCategoryPosts.getInitialProps = async (context) => {
     const state = context.store.getState();
     const { user, category } = context.query;
-    const { userCategoryPosts, postsLimit, currentUserCategory } = state.post;
+    const {
+        userCategoryPosts,
+        postsLimit,
+        currentUserCategory,
+    }: IUserCategoryPostsState = state.userCategoryPosts;
 
     if (
         context.isServer ||
@@ -100,7 +104,8 @@ UserCategoryPosts.getInitialProps = async (context) => {
             data: {
                 user: user,
                 category: category,
-                pageToken: null,
+                // pageToken: null,
+                // page: null,
                 limit: postsLimit,
                 keyword: '',
             },

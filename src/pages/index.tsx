@@ -7,7 +7,8 @@ import { actionTypes } from '../reducers/actionTypes';
 import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
-import { IRootState, IPostState } from '../typings/reduxStates';
+import { IRootState, IPostsState } from '../typings/reduxStates';
+import { Spin } from 'antd';
 
 const Home: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const Home: FunctionComponent = () => {
         postsLimit,
         loadingPosts,
         hasMorePost,
-    } = useSelector<IRootState, IPostState>((s) => s.post);
+    } = useSelector<IRootState, IPostsState>((s) => s.posts);
 
     const onClickLoadMorePosts = useCallback(() => {
         const nextPageToken =
@@ -38,12 +39,14 @@ const Home: FunctionComponent = () => {
     return (
         <DefaultLayout>
             <ContentWrapper>
-                <ListExcerpt
-                    posts={posts}
-                    loading={loadingPosts}
-                    hasMore={hasMorePost}
-                    loadMoreHandler={onClickLoadMorePosts}
-                />
+                <Spin spinning={loadingPosts}>
+                    <ListExcerpt
+                        posts={posts}
+                        loading={loadingPosts}
+                        hasMore={hasMorePost}
+                        loadMoreHandler={onClickLoadMorePosts}
+                    />
+                </Spin>
             </ContentWrapper>
         </DefaultLayout>
     );
@@ -58,7 +61,7 @@ Home.getInitialProps = async (
 ) => {
     const state = context.store.getState();
 
-    const { postsLimit, posts } = state.post;
+    const { postsLimit, posts } = state.posts;
 
     if (context.isServer || !posts || posts.length === 0) {
         context.store.dispatch<IBlogAction>({

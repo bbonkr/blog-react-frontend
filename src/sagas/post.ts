@@ -215,9 +215,10 @@ function* watchLoadTagPosts() {
     yield takeLatest(actionTypes.LOAD_TAG_POSTS_CALL, loadTagPosts);
 }
 
-function loadUsersPostsApi(user, pageToken = '', limit = 10, keyword = '') {
+function loadUsersPostsApi(query) {
+    const { user, page = 1, limit = 10, keyword = '' } = query;
     return http.get(
-        `/users/${user}/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
+        `/users/${user}/posts?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
@@ -225,21 +226,26 @@ function loadUsersPostsApi(user, pageToken = '', limit = 10, keyword = '') {
 
 function* loadUsersPosts(action) {
     try {
-        const { user, pageToken, limit, keyword } = action.data;
-        const result = yield call(
-            loadUsersPostsApi,
-            user,
-            pageToken,
-            limit || 10,
-            keyword,
-        );
+        const { user, page, limit, keyword } = action.data;
+        const result = yield call(loadUsersPostsApi, {
+            user: user,
+            page: page,
+            limit: limit || 10,
+            keyword: keyword,
+        });
 
         const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
         const { success, data, message } = resultData;
         if (success) {
             yield put<IBlogAction>({
                 type: actionTypes.LOAD_USERS_POSTS_DONE,
-                data: data,
+                data: {
+                    ...data, // { records, total, user }
+                    page: page,
+                    limit: limit,
+                    keyword: keyword,
+                    username: user,
+                },
             });
         } else {
             yield put<IBlogAction>({
@@ -263,21 +269,29 @@ function* watchLoadUsersPosts() {
 }
 
 function loadUserCategoryPostsApi(query) {
-    const { user, category, pageToken, limit, keyword } = query;
+    const { user, category, page = 1, limit, keyword } = query;
+
     return http.get(
-        `/users/${user}/categories/${category}/posts?pageToken=${pageToken}&limit=${limit}&keyword=${keyword}`,
+        `/users/${user}/categories/${category}/posts?page=${page}&limit=${limit}&keyword=${keyword}`,
     );
 }
 
 function* loadUserCategoryPosts(action) {
     try {
+        const { user, category, page, limit, keyword } = action.data;
         const result = yield call(loadUserCategoryPostsApi, action.data);
         const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
         const { success, data, message } = resultData;
         if (success) {
             yield put<IBlogAction>({
                 type: actionTypes.LOAD_USER_CATEGORY_POSTS_DONE,
-                data: data,
+                data: {
+                    // todo type result data
+                    ...data, // { records, total, user, category }
+                    page: page || 1,
+                    limit: limit,
+                    keyword: keyword,
+                },
             });
         } else {
             yield put<IBlogAction>({

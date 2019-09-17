@@ -1,12 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Input, Divider } from 'antd';
+import { Input, Divider, Spin } from 'antd';
 import ListExcerpt from '../components/ListExcerpt';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
 import { actionTypes } from '../reducers/actionTypes';
-import { IPostState, IRootState } from '../typings/reduxStates';
+import {
+    IPostState,
+    IRootState,
+    ISearchPostsState,
+} from '../typings/reduxStates';
 
 const KEYWORD_INPUT_PLACEHOLDER = 'Searching keyword';
 
@@ -19,7 +23,7 @@ const Search = ({ keyword }) => {
         searchPostsLoading,
         searchPostsKeyword,
         postsLimit,
-    } = useSelector<IRootState, IPostState>((s) => s.post);
+    } = useSelector<IRootState, ISearchPostsState>((s) => s.searchPosts);
     const onChangeKeyword = useCallback((e) => {
         setKeywordText(e.target.value);
     }, []);
@@ -58,22 +62,24 @@ const Search = ({ keyword }) => {
     return (
         <DefaultLayout>
             <ContentWrapper>
-                <Input.Search
-                    enterButton
-                    name='keyword'
-                    value={keywordText}
-                    onChange={onChangeKeyword}
-                    onSearch={onSearch}
-                    placeholder={KEYWORD_INPUT_PLACEHOLDER}
-                />
+                <Spin spinning={searchPostsLoading}>
+                    <Input.Search
+                        enterButton
+                        name='keyword'
+                        value={keywordText}
+                        onChange={onChangeKeyword}
+                        onSearch={onSearch}
+                        placeholder={KEYWORD_INPUT_PLACEHOLDER}
+                    />
 
-                <Divider />
-                <ListExcerpt
-                    posts={searchPosts}
-                    hasMore={searchPostsHasMore}
-                    loading={searchPostsLoading}
-                    loadMoreHandler={loadMoreHandler}
-                />
+                    <Divider />
+                    <ListExcerpt
+                        posts={searchPosts}
+                        hasMore={searchPostsHasMore}
+                        loading={searchPostsLoading}
+                        loadMoreHandler={loadMoreHandler}
+                    />
+                </Spin>
             </ContentWrapper>
         </DefaultLayout>
     );
@@ -84,7 +90,7 @@ Search.getInitialProps = async (context) => {
 
     if (keyword) {
         const state = context.store.getState();
-        const { postsLimit } = state.post;
+        const { postsLimit } = state.searchPosts;
         context.store.dispatch({
             type: actionTypes.LOAD_SEARCH_POSTS_CALL,
             data: {

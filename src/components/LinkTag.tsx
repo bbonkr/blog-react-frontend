@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, memo } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Icon } from 'antd';
@@ -12,8 +12,10 @@ export interface ILinkTagProps {
     tag: ITagModel;
 }
 
-const LinkTag: FunctionComponent<ILinkTagProps> = ({ tag }) => {
-    const { name, slug } = tag;
+const LinkTag: FunctionComponent<ILinkTagProps> = memo(({ tag }) => {
+    // const { name, slug } = tag;
+    const name = (tag && tag.name) || '';
+    const slug = (tag && tag.slug) || '';
     const encodedSlug = encodeURIComponent(slug);
     return (
         <LinkWrapper>
@@ -26,6 +28,6 @@ const LinkTag: FunctionComponent<ILinkTagProps> = ({ tag }) => {
             </Link>
         </LinkWrapper>
     );
-};
+});
 
 export default LinkTag;

@@ -9,6 +9,12 @@ export interface IRootState {
     category: ICategoryState;
     settings: ISettingState;
     me: IMeState;
+    posts: IPostsState;
+    tagPosts: ITagPostsState;
+    userCategoryPosts: IUserCategoryPostsState;
+    searchPosts: ISearchPostsState;
+    usersPosts: IUsersPostsState;
+    singlePost: ISinglePostState;
 }
 
 export interface IMeState {
@@ -85,63 +91,63 @@ export interface ICategoryState {
 
 export interface IPostState {
     /** posts */
-    posts: IPostModel[];
-    /** posts loading */
-    loadingPosts: boolean;
-    hasMorePost: boolean;
-    loadPostErrorReason?: string;
-    postsLimit: number;
-    nextPageToken: string;
-    currentPage: number;
-    searchKeyword: string;
+    // posts: IPostModel[];
+    // /** posts loading */
+    // loadingPosts: boolean;
+    // hasMorePost: boolean;
+    // loadPostErrorReason?: string;
+    // postsLimit: number;
+    // nextPageToken: string;
+    // currentPage: number;
+    // searchKeyword: string;
 
     /** singlePost */
-    singlePost: IPostModel;
-    loadSinglePostErrorReason?: string;
+    // singlePost: IPostModel;
+    // loadSinglePostErrorReason?: string;
 
-    /** post loading  */
-    loadingPost: boolean;
-    isSinglePost: boolean;
-    currentCategory?: string;
+    // /** post loading  */
+    // loadingPost: boolean;
+    // isSinglePost: boolean;
+    // currentCategory?: string;
 
     writingPost: boolean;
 
-    /** users posts */
-    usersPosts: IPostModel[];
-    usersPostsPageToken?: string;
-    loadingUsersPosts: boolean;
-    loadUsersPostsErrorReason?: string;
-    hasMoreUsersPosts: boolean;
-    currentUser?: string; // 현재 선택된 사용자; 데이터 소스 초기화에 사용
+    // /** users posts */
+    // usersPosts: IPostModel[];
+    // usersPostsPageToken?: string;
+    // loadingUsersPosts: boolean;
+    // loadUsersPostsErrorReason?: string;
+    // hasMoreUsersPosts: boolean;
+    // currentUser?: string; // 현재 선택된 사용자; 데이터 소스 초기화에 사용
 
     /** users category posts */
-    userCategoryPosts: IPostModel[];
-    userCategoryPostsPageToken?: string;
-    userCategoryPostsLoading: boolean;
-    userCategoryPostsErrorReason?: string;
-    userCategoryPostsHasMore: boolean;
-    userCategoryPostsKeyword?: string;
-    currentUserCategory?: string; // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
-    userCategoryPostsUser: IUserModel;
-    userCategoryPostsCategory: ICategoryModel;
+    // userCategoryPosts: IPostModel[];
+    // userCategoryPostsPageToken?: string;
+    // userCategoryPostsLoading: boolean;
+    // userCategoryPostsErrorReason?: string;
+    // userCategoryPostsHasMore: boolean;
+    // userCategoryPostsKeyword?: string;
+    // currentUserCategory?: string; // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
+    // userCategoryPostsUser: IUserModel;
+    // userCategoryPostsCategory: ICategoryModel;
 
     /** tag posts */
-    tagPosts: IPostModel[];
-    tagPostsPageToken?: string;
-    tagPostsLoading: boolean;
-    tagPostsErrorReason?: string;
-    tagPostsHasMore: boolean;
-    tagPostsKeyword?: string;
-    currentTag?: ITagModel;
-    currentTagSlug?: string;
+    // tagPosts: IPostModel[];
+    // tagPostsPageToken?: string;
+    // tagPostsLoading: boolean;
+    // tagPostsErrorReason?: string;
+    // tagPostsHasMore: boolean;
+    // tagPostsKeyword?: string;
+    // currentTag?: ITagModel;
+    // currentTagSlug?: string;
 
     /** search posts */
-    searchPosts: IPostModel[];
-    searchPostsPageToken?: string;
-    searchPostsLoading: boolean;
-    searchPostsErrorReason?: string;
-    searchPostsHasMore: boolean;
-    searchPostsKeyword?: string;
+    // searchPosts: IPostModel[];
+    // searchPostsPageToken?: string;
+    // searchPostsLoading: boolean;
+    // searchPostsErrorReason?: string;
+    // searchPostsHasMore: boolean;
+    // searchPostsKeyword?: string;
 
     /** like post */
     likePostLoading: boolean;
@@ -196,4 +202,79 @@ export interface IUserState {
     unregisterLoading: boolean;
     unregisterErrorReason?: string;
     unregisterSuccess: boolean;
+}
+
+export interface IPostsState {
+    posts: IPostModel[];
+    /** posts loading */
+    loadingPosts: boolean;
+    hasMorePost: boolean;
+    loadPostErrorReason?: string;
+    postsLimit: number;
+    nextPageToken: string;
+    currentPage?: number;
+    searchKeyword: string;
+}
+
+export interface ITagPostsState {
+    /** tag posts */
+    tagPosts: IPostModel[];
+    tagPostsPageToken: string;
+    tagPostsLoading: boolean;
+    tagPostsErrorReason?: string;
+    tagPostsHasMore: boolean;
+    tagPostsKeyword: string;
+    currentTag: ITagModel;
+    currentTagSlug: string;
+    hasMorePost: boolean;
+    postsLimit: number;
+    currentPage?: number;
+}
+
+export interface IUserCategoryPostsState {
+    userCategoryPosts: IPostModel[];
+    userCategoryPostsPageToken?: string;
+    userCategoryPostsLoading: boolean;
+    userCategoryPostsErrorReason?: string;
+    userCategoryPostsHasMore: boolean;
+    userCategoryPostsKeyword?: string;
+    currentUserCategory?: string; // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
+    userCategoryPostsUser: IUserModel;
+    userCategoryPostsCategory: ICategoryModel;
+    postsLimit: number;
+    currentPage?: number;
+}
+
+export interface ISearchPostsState {
+    /** search posts */
+    searchPosts: IPostModel[];
+    searchPostsPageToken?: string;
+    searchPostsLoading: boolean;
+    searchPostsErrorReason?: string;
+    searchPostsHasMore: boolean;
+    searchPostsKeyword?: string;
+    postsLimit: number;
+}
+
+export interface IUsersPostsState {
+    /** users posts */
+    usersPosts: IPostModel[];
+    // usersPostsPageToken?: string;
+    currentPage?: number;
+    loadingUsersPosts: boolean;
+    loadUsersPostsErrorReason?: string;
+    hasMoreUsersPosts: boolean;
+    currentUser?: IUserModel;
+    currentUsername?: string; // 현재 선택된 사용자; 데이터 소스 초기화에 사용
+    postsLimit: number;
+}
+
+export interface ISinglePostState {
+    singlePost?: IPostModel;
+    loadSinglePostErrorReason?: string;
+
+    /** post loading  */
+    loadingPost: boolean;
+    // isSinglePost: boolean;
+    // currentCategory?: string;
 }
