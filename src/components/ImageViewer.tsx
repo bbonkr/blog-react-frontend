@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { PageHeader, Carousel, Icon, Typography } from 'antd';
 import FullSizeModal from '../styledComponents/FullSizeModal';
-import { IImageModel } from 'typings/IImageModel';
+import { IImageModel } from '../typings/IImageModel';
 
 export interface IImageViewerProps {
     files: IImageModel[];

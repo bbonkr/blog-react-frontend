@@ -76,8 +76,8 @@ export class PostHandler {
     }
 
     private internalLoadPostsCall(): void {
-        this.draft.posts = this.action.data.pageToken ? this.draft.posts : [];
-        this.draft.hasMorePost = this.action.data.pageToken
+        this.draft.posts = this.action.data.page ? this.draft.posts : [];
+        this.draft.hasMorePost = this.action.data.page
             ? this.draft.hasMorePost
             : true;
         this.draft.loadingPosts = true;
@@ -87,7 +87,7 @@ export class PostHandler {
 
     private internalLoadPostDone(): void {
         const resultData = this.action.data as IListResult<IPostModel>;
-        const { records, total, limit, keyword } = resultData;
+        const { records, total, limit, keyword, page } = resultData;
 
         records.forEach((v) => {
             const postIndex = this.draft.posts.findIndex((x) => x.id === v.id);
@@ -97,6 +97,7 @@ export class PostHandler {
             }
         });
 
+        this.draft.currentPage = page || 1;
         this.draft.hasMorePost =
             this.action.data.records.length === this.draft.postsLimit;
         this.draft.loadingPosts = false;

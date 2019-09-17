@@ -8,8 +8,8 @@ import { PageHeader, Divider } from 'antd';
 import UserAvatar from '../../components/UserAvatar';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IUserModel } from 'typings/IUserModel';
-import { ICategoryModel } from 'typings/ICategoryModel';
+import { IUserModel } from '../../typings/IUserModel';
+import { ICategoryModel } from '../../typings/ICategoryModel';
 import { IRootState, IPostState } from '../../typings/reduxStates';
 
 export interface IUserCategoryPostsProps {

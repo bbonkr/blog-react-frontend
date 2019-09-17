@@ -8,7 +8,7 @@ import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IUserModel } from 'typings/IUserModel';
+import { IUserModel } from '../../typings/IUserModel';
 import { IRootState, IPostState } from '../../typings/reduxStates';
 
 export interface IUsersPostsProps {

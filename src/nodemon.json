@@ -19,7 +19,7 @@
         "nodemon.json"
     ],
     "ignore": ["*.test.js", "__snapshots__"],
-    "exec": "node server.js",
+    "exec": "node ./server.js",
     "ext": "js json jsx",
     "delay": 2500
 }

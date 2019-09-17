@@ -2,7 +2,7 @@ import React from 'react';
 import Document, { Main, NextScript } from 'next/document';
 import Helmet, { HelmetData } from 'react-helmet';
 import { ServerStyleSheet } from 'styled-components';
-import { IDictionary } from 'typings/IDictionary';
+import { IDictionary } from '../typings/IDictionary';
 
 export interface IBlogDocumentProps extends IDictionary<any> {
     helmet: HelmetData;

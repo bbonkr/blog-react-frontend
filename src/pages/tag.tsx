@@ -63,6 +63,7 @@ Tag.getInitialProps = async (context) => {
     context.store.dispatch({
         type: actionTypes.LOAD_TAG_POSTS_CALL,
         data: {
+            page: null,
             pageToken: null,
             limit: postsLimit,
             keyword: '',

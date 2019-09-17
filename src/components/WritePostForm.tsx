@@ -12,7 +12,7 @@ import showdown from 'showdown';
 import xssFilter from 'showdown-xss-filter';
 import FullSizeModal from '../styledComponents/FullSizeModal';
 import FileList from './FileList';
-import { WriteFormValaidator } from 'helpers/WriteFormValaidator';
+import { WriteFormValaidator } from '../helpers/WriteFormValaidator';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, IMeState } from '../typings/reduxStates';
 

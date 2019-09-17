@@ -92,6 +92,7 @@ export interface IPostState {
     loadPostErrorReason?: string;
     postsLimit: number;
     nextPageToken: string;
+    currentPage: number;
     searchKeyword: string;
 
     /** singlePost */

@@ -1,4 +1,4 @@
-import { IDictionary } from 'typings/IDictionary';
+import { IDictionary } from '../typings/IDictionary';
 import { IPasswordFormValue } from './IPasswordFormValue';
 import { IPasswordConfirmFormValue } from './IPasswordConfirmFormValue';
 import { ICurrentPasswordFormValue } from './ICurrentPasswordFormValue';

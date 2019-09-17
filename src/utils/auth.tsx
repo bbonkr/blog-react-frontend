@@ -2,7 +2,7 @@ import React from 'react';
 import Router from 'next/router';
 import { Spin } from 'antd';
 import { normalizeReturnUrl } from '../helpers/stringHelper';
-import { IUserModel } from 'typings/IUserModel';
+import { IUserModel } from '../typings/IUserModel';
 const { Component } = React;
 
 export interface IWithAuthProps {

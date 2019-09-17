@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import SinglePost from '../../components/SinglePost';
 import { Skeleton, Spin } from 'antd';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IUserModel } from 'typings/IUserModel';
+import { IUserModel } from '../../typings/IUserModel';
 import {
     IRootState,
     IPostState,

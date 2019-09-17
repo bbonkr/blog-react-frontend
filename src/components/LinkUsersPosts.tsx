@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
-import { IUserModel } from 'typings/IUserModel';
+import { IUserModel } from '../typings/IUserModel';
 
 export interface ILinkUsersPostsProps {
     user: IUserModel;

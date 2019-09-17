@@ -1,4 +1,4 @@
-import { IDictionary } from 'typings/IDictionary';
+import { IDictionary } from '../typings/IDictionary';
 import { ICategoryNameFormValue } from './ICategoryNameFormValue';
 import { ICategorySlugFormValue } from './ICategorySlugFormValue';
 import { ICategoryOrdinalFormValue } from './ICategoryOrdinalFormValue';

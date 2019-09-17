@@ -1,3 +1,13 @@
+// import {
+//     all,
+//     fork,
+//     call,
+//     delay,
+//     takeLatest,
+//     put,
+//     actionChannel,
+//     throttle,
+// } from 'redux-saga/effects';
 import {
     all,
     fork,
@@ -7,7 +17,7 @@ import {
     put,
     actionChannel,
     throttle,
-} from 'redux-saga/effects';
+} from '@redux-saga/core/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
 import { IJsonResult } from '../typings/IJsonResult';
@@ -15,8 +25,13 @@ import { IListResult } from '../typings/IListResult';
 import { IPostModel } from '../typings/IPostModel';
 import { IImageModel } from '../typings/IImageModel';
 import { IBlogAction } from '../typings/IBlogAction';
+import { ITagModel } from '../typings/ITagModel';
+import { ICategoryModel } from '../typings/ICategoryModel';
+import { IDictionary } from '../typings/IDictionary';
 
-function loadMyPostsApi(pageToken = '', limit = 10, keyword = '') {
+function loadMyPostsApi(query) {
+    const { pageToken, limit, keyword } = query;
+
     return http.get(
         `/me/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
@@ -28,14 +43,14 @@ function* loadMyPosts(action) {
     try {
         const { pageToken, limit, keyword } = action.data;
 
-        const result: IJsonResult<IListResult<IPostModel>> = yield call(
-            loadMyPostsApi,
-            pageToken || '',
-            limit || 10,
-            keyword,
-        );
+        const result = yield call(loadMyPostsApi, {
+            pageToken: pageToken || '',
+            limit: limit || 10,
+            keyword: keyword,
+        });
 
-        const { success, data, message } = result;
+        const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
+        const { success, data, message } = resultData;
 
         if (success) {
             yield put<IBlogAction>({
@@ -50,7 +65,7 @@ function* loadMyPosts(action) {
             });
         }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_MY_POSTS_FAIL,
             error: e,
@@ -64,16 +79,26 @@ function* watchLoadMyPosts() {
 }
 
 function writePostApi(formData) {
-    return http.post('/post', formData);
+    return http.post('/me/post', formData);
 }
 
 function* writePost(action) {
     try {
         const result = yield call(writePostApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.WRITE_POST_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<IPostModel>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.WRITE_POST_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.WRITE_POST_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
         yield put<IBlogAction>({
             type: actionTypes.WRITE_POST_FAIL,
@@ -104,13 +129,22 @@ function* loadCategories(action) {
             limit,
             keyword,
         });
-        yield put<IBlogAction>({
-            type: actionTypes.LOAD_MY_CATEGORIES_DONE,
-            data: {
-                items: result.data.items,
-                total: result.data.total,
-            },
-        });
+        const resultData = result.data as IJsonResult<
+            IListResult<ICategoryModel>
+        >;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_MY_CATEGORIES_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_MY_CATEGORIES_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
         yield put<IBlogAction>({
             type: actionTypes.LOAD_MY_CATEGORIES_FAIL,
@@ -125,16 +159,26 @@ function* watchLoadCategories() {
 }
 
 function loadTagsApi() {
-    return http.get('/tags');
+    return http.get('/me/tags');
 }
 
 function* loadTags(action) {
     try {
         const result = yield call(loadTagsApi);
-        yield put<IBlogAction>({
-            type: actionTypes.LOAD_MY_TAGS_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<IListResult<ITagModel>>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_MY_TAGS_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_MY_TAGS_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
         yield put<IBlogAction>({
             type: actionTypes.LOAD_MY_TAGS_FAIL,
@@ -149,16 +193,26 @@ function* watchLoadTags() {
 }
 
 function editPostApi(id, data) {
-    return http.patch(`/post/${id}`, data);
+    return http.patch(`/me/post/${id}`, data);
 }
 
 function* editPost(action) {
     try {
         const result = yield call(editPostApi, action.id, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.EDIT_POST_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<IPostModel>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.EDIT_POST_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.EDIT_POST_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
         yield put<IBlogAction>({
             type: actionTypes.EDIT_POST_FAIL,
@@ -179,18 +233,28 @@ function* watchEditPost() {
  *
  */
 function deletePostApi(id) {
-    return http.delete(`/post/${id}`);
+    return http.delete(`/me/post/${id}`);
 }
 
 function* deletePost(action) {
     try {
         const result = yield call(deletePostApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.DELETE_POST_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<number>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.DELETE_POST_DONE,
+                data: { id: data },
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.DELETE_POST_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.DELETE_POST_FAIL,
             error: e,
@@ -210,13 +274,22 @@ function loadMyPostApi(id) {
 function* loadMyPost(action) {
     try {
         const result = yield call(loadMyPostApi, action.data);
-
-        yield put<IBlogAction>({
-            type: actionTypes.LOAD_MY_POST_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<IPostModel>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_MY_POST_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_MY_POST_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_MY_POST_FAIL,
             error: e,
@@ -343,10 +416,22 @@ function deleteMediaFileApi(id) {
 function* deleteMediaFile(action) {
     try {
         const result = yield call(deleteMediaFileApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.DELETE_MY_MEDIA_FILES_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<number>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.DELETE_MY_MEDIA_FILES_DONE,
+                data: {
+                    id: data,
+                },
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.DELETE_MY_MEDIA_FILES_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
         console.error(e);
         yield put<IBlogAction>({
@@ -372,12 +457,22 @@ function editCategoryApi(formData) {
 function* editCategory(action) {
     try {
         const result = yield call(editCategoryApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.EDIT_MY_CATEGORY_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<ICategoryModel>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.EDIT_MY_CATEGORY_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.EDIT_MY_CATEGORY_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.EDIT_MY_CATEGORY_FAIL,
             error: e,
@@ -398,12 +493,24 @@ function* deleteCategory(action) {
     try {
         const { id } = action.data;
         const result = yield call(deleteCategoryApi, id);
-        yield put<IBlogAction>({
-            type: actionTypes.DELETE_MY_CATEGORY_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<number>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.DELETE_MY_CATEGORY_DONE,
+                data: {
+                    id: data,
+                },
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.DELETE_MY_CATEGORY_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.DELETE_MY_CATEGORY_FAIL,
             error: e,
@@ -470,12 +577,22 @@ function loadStatGeneralApi(query) {
 function* loadStatGeneral(action) {
     try {
         const result = yield call(loadStatGeneralApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.LOAD_STAT_GENERAL_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<IDictionary<any>>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_STAT_GENERAL_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_STAT_GENERAL_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_STAT_GENERAL_FAIL,
             error: e,
@@ -495,12 +612,22 @@ function loadStatReadApi(query) {
 function* loadStatRead(action) {
     try {
         const result = yield call(loadStatReadApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.LOAD_STAT_READ_DONE,
-            data: result.data,
-        });
+        const resultData = result.data as IJsonResult<IDictionary<any>>;
+        const { success, data, message } = resultData;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_STAT_READ_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.LOAD_STAT_READ_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_STAT_READ_FAIL,
             error: e,

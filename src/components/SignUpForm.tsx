@@ -9,7 +9,7 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import Router from 'next/router';
 import { ErrorMessageWrapper } from '../styledComponents/Wrapper';
 import { actionTypes } from '../reducers/actionTypes';
-import { SignUpFormValidator } from 'helpers/SignUpFormValidator';
+import { SignUpFormValidator } from '../helpers/SignUpFormValidator';
 import { IRootState, IUserState } from '../typings/reduxStates';
 
 const formValidator = new SignUpFormValidator();

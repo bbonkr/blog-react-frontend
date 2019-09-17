@@ -2,8 +2,8 @@ import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
 import { Icon } from 'antd';
 import styled from 'styled-components';
-import { IUserModel } from 'typings/IUserModel';
-import { ICategoryModel } from 'typings/ICategoryModel';
+import { IUserModel } from '../typings/IUserModel';
+import { ICategoryModel } from '../typings/ICategoryModel';
 
 const LinkWrapper = styled.span`
     margin-right: 1em;

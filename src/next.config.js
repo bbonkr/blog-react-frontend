@@ -27,7 +27,6 @@ module.exports = withBundleAnalyzer(
     withCSS(
         withSass({
             distDir: '.next',
-
             webpack(config) {
                 // console.log('config', config);
                 const prod = process.env.NODE_ENV === 'production';

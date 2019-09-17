@@ -1,5 +1,5 @@
 export interface IJsonResult<T> {
     success: boolean;
-    data?: T | T[] | null;
+    data?: T | null;
     message?: string;
 }

@@ -17,6 +17,7 @@ export const initialState: IPostState = {
     loadPostErrorReason: '',
     postsLimit: 10,
     nextPageToken: '',
+    currentPage: 1,
     searchKeyword: '',
 
     /** singlePost */
@@ -70,42 +71,6 @@ export const initialState: IPostState = {
     likePostLoading: false,
     likePostErrorMessage: '',
 };
-
-// export const LOAD_POSTS_CALL = 'LOAD_POSTS_CALL';
-// export const LOAD_POSTS_DONE = 'LOAD_POSTS_DONE';
-// export const LOAD_POSTS_FAIL = 'LOAD_POSTS_FAIL';
-
-// export const LOAD_SINGLE_POST_CALL = 'LOAD_SINGLE_POST_CALL';
-// export const LOAD_SINGLE_POST_DONE = 'LOAD_SINGLE_POST_DONE';
-// export const LOAD_SINGLE_POST_FAIL = 'LOAD_SINGLE_POST_FAIL';
-
-// export const LOAD_USERS_POSTS_CALL = 'LOAD_USERS_POSTS_CALL';
-// export const LOAD_USERS_POSTS_DONE = 'LOAD_USERS_POSTS_DONE';
-// export const LOAD_USERS_POSTS_FAIL = 'LOAD_USERS_POSTS_FAIL';
-
-// export const LOAD_CATEGORY_POSTS_CALL = 'LOAD_CATEGORY_POSTS_CALL';
-// export const LOAD_CATEGORY_POSTS_DONE = 'LOAD_CATEGORY_POSTS_DONE';
-// export const LOAD_CATEGORY_POSTS_FAIL = 'LOAD_CATEGORY_POSTS_FAIL';
-
-// export const LOAD_TAG_POSTS_CALL = 'LOAD_TAG_POSTS_CALL';
-// export const LOAD_TAG_POSTS_DONE = 'LOAD_TAG_POSTS_DONE';
-// export const LOAD_TAG_POSTS_FAIL = 'LOAD_TAG_POSTS_FAIL';
-
-// export const LOAD_USER_CATEGORY_POSTS_CALL = 'LOAD_USER_CATEGORY_POSTS_CALL';
-// export const LOAD_USER_CATEGORY_POSTS_DONE = 'LOAD_USER_CATEGORY_POSTS_DONE';
-// export const LOAD_USER_CATEGORY_POSTS_FAIL = 'LOAD_USER_CATEGORY_POSTS_FAIL';
-
-// export const LOAD_SEARCH_POSTS_CALL = 'LOAD_SEARCH_POSTS_CALL';
-// export const LOAD_SEARCH_POSTS_DONE = 'LOAD_SEARCH_POSTS_DONE';
-// export const LOAD_SEARCH_POSTS_FAIL = 'LOAD_SEARCH_POSTS_FAIL';
-
-// export const ADD_LIKE_POST_CALL = 'ADD_LIKE_POST_CALL';
-// export const ADD_LIKE_POST_DONE = 'ADD_LIKE_POST_DONE';
-// export const ADD_LIKE_POST_FAIL = 'ADD_LIKE_POST_FAIL';
-
-// export const REMOVE_LIKE_POST_CALL = 'REMOVE_LIKE_POST_CALL';
-// export const REMOVE_LIKE_POST_DONE = 'REMOVE_LIKE_POST_DONE';
-// export const REMOVE_LIKE_POST_FAIL = 'REMOVE_LIKE_POST_FAIL';
 
 /**
  * 글의 좋아요 사용자를 갱신합니다.

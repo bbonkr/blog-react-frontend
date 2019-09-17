@@ -9,7 +9,7 @@ const path = require('path');
 const dev = process.env.NODE_ENV !== 'production';
 const prod = process.env.NODE_ENV === 'production';
 
-const app = next({ dev });
+const app = next({ dev: dev });
 const requestHandler = app.getRequestHandler();
 
 dotenv.config();
@@ -67,8 +67,8 @@ app.prepare().then(() => {
 
     server.get('*', (req, res) => requestHandler(req, res));
 
-    server.listen(port, err => {
-        if(err){
+    server.listen(port, (err) => {
+        if (err) {
             throw err;
         }
 

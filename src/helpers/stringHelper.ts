@@ -1,4 +1,4 @@
-import { IDictionary } from 'typings/IDictionary';
+import { IDictionary } from '../typings/IDictionary';
 
 /**
  * URL과 쿼리 정보를 사용해서 URL을 작성합니다.

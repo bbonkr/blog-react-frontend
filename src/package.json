@@ -5,10 +5,10 @@
     "main": "index.js",
     "scripts": {
         "test": "react-scripts test --testMatch ./**/*.test.{js,jsx,ts,tsx}",
-        "lint": "tslint --project ./ --config ./tslint.json --fix",
+        "lint": "tslint ./**/*.ts{x} --config ./tslint.json --fix",
         "dev": "cross-env PORT=3000 nodemon",
-        "build": "cross-env BUNDLE_ANALYZER=both next build",
-        "start": "cross-env NODE_ENV=production next start -p 3000"
+        "build": "cross-env BUNDLE_ANALYZER=both next build ./",
+        "start": "cross-env NODE_ENV=production next start ./ -p 3000"
     },
     "keywords": [],
     "author": "Pon Cheol Ku <bbon@bbon.kr>",
@@ -42,7 +42,7 @@
         "react-stack-grid": "^0.7.1",
         "recharts": "^1.7.1",
         "redux": "^4.0.1",
-        "redux-saga": "^1.0.2",
+        "redux-saga": "^1.0.5",
         "showdown": "^1.9.0",
         "showdown-xss-filter": "^0.2.0",
         "styled-components": "^4.2.0"
@@ -86,7 +86,7 @@
     },
     "jest": {
         "collectCoverageFrom": [
-            "**/*.{js,jsx,ts,tsx}",
+            "src/**/*.{js,jsx,ts,tsx}",
             "!<rootDir>/node_modules/",
             "!<rootDir>/**/__tests__/**/*.*",
             "!<rootDir>/**/*.test.*"

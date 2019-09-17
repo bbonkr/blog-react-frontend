@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Avatar } from 'antd';
-import { IUserModel } from 'typings/IUserModel';
+import { IUserModel } from '../typings/IUserModel';
 
 export interface IUserAvatarProps {
     user: IUserModel;

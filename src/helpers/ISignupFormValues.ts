@@ -1,4 +1,4 @@
-import { IDictionary } from 'typings/IDictionary';
+import { IDictionary } from '../typings/IDictionary';
 import { IEmailFormValue } from './IEmailFormValue';
 import { IUsernameFormValue } from './IUsernameFormValue';
 import { IDisplayNameFormValue } from './IDisplayNameFormValue';

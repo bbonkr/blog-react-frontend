@@ -1,3 +1,13 @@
+// import {
+//     all,
+//     fork,
+//     call,
+//     delay,
+//     takeLatest,
+//     put,
+//     actionChannel,
+//     throttle,
+// } from 'redux-saga/effects';
 import {
     all,
     fork,
@@ -7,7 +17,7 @@ import {
     put,
     actionChannel,
     throttle,
-} from 'redux-saga/effects';
+} from '@redux-saga/core/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
 import { IJsonResult } from '../typings/IJsonResult';

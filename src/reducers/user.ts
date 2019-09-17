@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import { actionTypes } from './actionTypes';
-import { IUserModel } from 'typings/IUserModel';
+import { IUserModel } from '../typings/IUserModel';
 import { IUserState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { UserHandler } from './hanlders/user.handler';

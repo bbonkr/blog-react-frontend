@@ -16,7 +16,7 @@ import {
 } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
 import { actionTypes } from '../reducers/actionTypes';
-import { SignInFormValidator } from 'helpers/SignInFormValidator';
+import { SignInFormValidator } from '../helpers/SignInFormValidator';
 import { IRootState, IUserState } from '../typings/reduxStates';
 
 const validator = new SignInFormValidator();

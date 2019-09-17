@@ -1,8 +1,11 @@
-import { all, fork, call, takeLatest, put } from 'redux-saga/effects';
-// import axios from 'axios';
+// import { all, fork, call, takeLatest, put } from 'redux-saga/effects';
+import { all, fork, call, takeLatest, put } from '@redux-saga/core/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
-import { IBlogAction } from 'typings/IBlogAction';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IJsonResult } from '../typings/IJsonResult';
+import { IListResult } from '../typings/IListResult';
+import { ICategoryModel } from '../typings/ICategoryModel';
 
 function loadCategoriesApi() {
     return http.get('/category');
@@ -11,7 +14,10 @@ function loadCategoriesApi() {
 function* loadCategories(action?: IBlogAction) {
     try {
         const result = yield call(loadCategoriesApi);
-        const { success, data, message } = result;
+        const resultData = result.data as IJsonResult<
+            IListResult<ICategoryModel>
+        >;
+        const { success, data, message } = resultData;
         if (success) {
             yield put<IBlogAction>({
                 type: actionTypes.LOAD_CATEGORIES_DONE,
@@ -20,7 +26,7 @@ function* loadCategories(action?: IBlogAction) {
         } else {
             yield put<IBlogAction>({
                 type: actionTypes.LOAD_CATEGORIES_FAIL,
-                error: data,
+                error: new Error(message),
                 message: message,
             });
         }

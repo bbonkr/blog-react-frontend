@@ -1,3 +1,13 @@
+// import {
+//     all,
+//     fork,
+//     call,
+//     delay,
+//     takeLatest,
+//     put,
+//     actionChannel,
+//     throttle,
+// } from 'redux-saga/effects';
 import {
     all,
     fork,
@@ -7,17 +17,19 @@ import {
     put,
     actionChannel,
     throttle,
-} from 'redux-saga/effects';
+} from '@redux-saga/core/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
 import { IListResult } from '../typings/IListResult';
 import { IPostModel } from '../typings/IPostModel';
 import { IJsonResult } from '../typings/IJsonResult';
 import { IBlogAction } from '../typings/IBlogAction';
+import { IDictionary } from '../typings/IDictionary';
 
-function loadPostsApi(pageToken = '', limit = 10, keyword = '') {
+function loadPostsApi(query: IDictionary<any>) {
+    const { page, pageToken, limit, keyword } = query;
     return http.get(
-        `/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
+        `/posts?page=${page}pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
@@ -25,13 +37,13 @@ function loadPostsApi(pageToken = '', limit = 10, keyword = '') {
 
 function* loadPosts(action) {
     try {
-        const { pageToken, limit, keyword } = action.data;
-        const result = yield call(
-            loadPostsApi,
-            pageToken,
-            limit || 10,
-            keyword,
-        );
+        const { page, pageToken, limit, keyword } = action.data;
+        const result = yield call(loadPostsApi, {
+            page: page,
+            pageToken: pageToken,
+            limit: limit || 10,
+            keyword: keyword,
+        });
 
         const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
         const { success, data, message } = resultData;
@@ -40,6 +52,7 @@ function* loadPosts(action) {
                 type: actionTypes.LOAD_POSTS_DONE,
                 data: {
                     ...data,
+                    page: page,
                     limit: limit,
                     keyword: keyword,
                 },

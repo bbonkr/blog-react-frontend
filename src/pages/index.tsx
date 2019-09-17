@@ -13,22 +13,27 @@ const Home: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         posts,
-        nextPageToken,
+        // nextPageToken,
+        currentPage,
         postsLimit,
         loadingPosts,
         hasMorePost,
     } = useSelector<IRootState, IPostState>((s) => s.post);
 
     const onClickLoadMorePosts = useCallback(() => {
+        const nextPageToken =
+            posts && posts.length > 0 && posts[posts.length - 1].id;
+
         dispatch({
             type: actionTypes.LOAD_POSTS_CALL,
             data: {
-                pageToken: nextPageToken,
+                // pageToken: nextPageToken,
+                page: (currentPage || 0) + 1,
                 limit: postsLimit,
                 keyword: '',
             },
         });
-    }, [dispatch, nextPageToken, postsLimit]);
+    }, [dispatch, currentPage, postsLimit]);
 
     return (
         <DefaultLayout>
@@ -60,6 +65,7 @@ Home.getInitialProps = async (
             type: actionTypes.LOAD_POSTS_CALL,
             data: {
                 pageToken: null,
+                page: null,
                 limit: postsLimit,
                 keyword: '',
             },
