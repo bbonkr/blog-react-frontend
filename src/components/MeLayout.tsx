@@ -6,7 +6,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout, Menu, Icon, Drawer } from 'antd';
-import PropTypes from 'prop-types';
 import Router from 'next/router';
 import UserAvatar from './UserAvatar';
 import { actionTypes } from '../reducers/actionTypes';

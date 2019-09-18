@@ -7,7 +7,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { Icon } from 'antd';
 import { actionTypes } from '../reducers/actionTypes';
-import { IPostModel } from '../typings/IPostModel';
+import { IPostModel } from '../typings/dto';
 import { IRootState, IUserState, IPostState } from '../typings/reduxStates';
 
 const LIKE_COLOR = '#eb2f96';

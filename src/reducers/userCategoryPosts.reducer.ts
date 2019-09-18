@@ -14,7 +14,7 @@ export const initialState: IUserCategoryPostsState = {
     currentUserCategory: '', // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
     userCategoryPostsUser: null,
     userCategoryPostsCategory: null,
-    postsLimit: 10,
+    postsLimit: 10, // TODO 상수로 변경
 };
 
 const reducer = (

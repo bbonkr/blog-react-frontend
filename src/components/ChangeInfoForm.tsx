@@ -78,7 +78,7 @@ const ChangeInfoForm: FunctionComponent = () => {
     const onClickVerifyEmail = useCallback(() => {
         if (!me.isEmailConfirmed) {
             dispatch({
-                type: actionTypes.MAKE_VERIFY_EMAIL_CALL,
+                type: actionTypes.REQUEST_VERIFY_EMAIL_CALL,
             });
         }
     }, [dispatch, me.isEmailConfirmed]);

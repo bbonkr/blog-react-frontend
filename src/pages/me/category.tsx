@@ -87,7 +87,7 @@ const MyCategory: FunctionComponent = () => {
             dispatch({
                 type: actionTypes.LOAD_MY_CATEGORIES_CALL,
                 data: {
-                    pageToken: categoryNextPageToken,
+                    page: current,
                     limit: size,
                     keyword: '',
                 },
@@ -305,7 +305,7 @@ MyCategory.getInitialProps = async (context) => {
     context.store.dispatch({
         type: actionTypes.LOAD_MY_CATEGORIES_CALL,
         data: {
-            pageToken: null,
+            page: 1,
             limit: categoryLimit,
             keyword: '',
         },

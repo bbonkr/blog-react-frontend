@@ -114,12 +114,12 @@ const Posts: FunctionComponent = () => {
             whidh: '20%',
         },
         {
-            key: 'Categories',
+            key: 'categories',
             title: 'Categories',
-            dataIndex: 'Categories',
-            render: (Categories) => (
+            dataIndex: 'categories',
+            render: (categories) => (
                 <span>
-                    {Categories.map((category) => {
+                    {categories.map((category) => {
                         return <Tag key={category.slug}>{category.name}</Tag>;
                     })}
                 </span>
@@ -127,12 +127,12 @@ const Posts: FunctionComponent = () => {
             whidh: '20%',
         },
         {
-            key: 'Tags',
+            key: 'tags',
             title: 'Tags',
-            dataIndex: 'Tags',
-            render: (Tags) => (
+            dataIndex: 'tags',
+            render: (tags) => (
                 <span>
-                    {Tags.map((tag) => {
+                    {tags.map((tag) => {
                         return <Tag key={tag.slug}>{tag.name}</Tag>;
                     })}
                 </span>

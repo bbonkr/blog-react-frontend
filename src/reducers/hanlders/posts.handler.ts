@@ -1,6 +1,5 @@
 import { IBlogAction } from '../../typings/IBlogAction';
-import { IListResult } from '../../typings/IListResult';
-import { IPostModel } from '../../typings/IPostModel';
+import { IListResult, IPostModel } from '../../typings/dto';
 import { IPostsState } from '../../typings/reduxStates';
 
 export interface IPostHandlerValue {

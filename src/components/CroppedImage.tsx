@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useCallback } from 'react';
-import { IImageModel } from '../typings/IImageModel';
+import { IImageModel } from '../typings/dto';
 
 export interface ICroppedImageProps {
     image: IImageModel;

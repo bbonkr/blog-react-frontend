@@ -5,15 +5,16 @@ import { rootSaga } from '../sagas';
 import { MakeStoreOptions } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IRootState } from '../typings/reduxStates';
+import axios from 'axios';
 
 export const configureStore = (
-    initialState: any,
+    initialState: IRootState,
     options: MakeStoreOptions,
-): Store<any, IBlogAction> => {
+): Store<IRootState, IBlogAction> => {
     const isProd = process.env.NODE_ENV === 'production';
 
     const sagaMiddleware = createSagaMiddleware();
-    const middlewares = [loggingMiddleware, sagaMiddleware];
+    const middlewares = [setTokenMiddleware, loggingMiddleware, sagaMiddleware];
 
     const composeEnhancers =
         (!options.isServer &&
@@ -39,6 +40,31 @@ export const configureStore = (
 const loggingMiddleware = (store) => (next) => (action) => {
     // 액션확인
     // console.log(action);
-    // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
+
+    console.debug('\u001b[34m[REDUX]: dispatch ==> \u001b[0m', action.type);
+
+    next(action);
+};
+
+const setTokenMiddleware = (store: Store<IRootState, IBlogAction>) => (
+    next,
+) => (action: IBlogAction) => {
+    if (/_CALL$/.test(action.type)) {
+        const state = store.getState();
+        const { token } = state.user;
+
+        console.debug(
+            '\u001b[34m[REDUX]: Set token middleware ==> \u001b[0m',
+            action.type,
+        );
+
+        if (token) {
+            axios.defaults.headers = {
+                ...axios.defaults.headers,
+                Authorization: `bearer ${token}`,
+            };
+        }
+    }
+
     next(action);
 };

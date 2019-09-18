@@ -1,5 +1,4 @@
-// import { all, call } from 'redux-saga/effects';
-import { all, fork, call, takeLatest, put } from '@redux-saga/core/effects';
+import { all, fork, call, takeLatest, put } from 'redux-saga/effects';
 import user from './user';
 import post from './post';
 import category from './category';

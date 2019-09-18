@@ -1,7 +1,6 @@
 import { ICategoryState } from '../../typings/reduxStates';
 import { IBlogAction } from '../../typings/IBlogAction';
-import { IListResult } from '../../typings/IListResult';
-import { ICategoryModel } from '../../typings/ICategoryModel';
+import { IListResult, ICategoryModel } from '../../typings/dto';
 
 export interface ICategoryHanlderValue {
     draft: ICategoryState;

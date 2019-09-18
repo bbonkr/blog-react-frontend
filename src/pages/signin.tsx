@@ -18,6 +18,7 @@ import DefaultLayout from '../components/DefaultLayout';
 import { actionTypes } from '../reducers/actionTypes';
 import { SignInFormValidator } from '../helpers/SignInFormValidator';
 import { IRootState, IUserState } from '../typings/reduxStates';
+import { LOCAL_STORAGE_KEY_JWT } from '../typings/constant';
 
 const validator = new SignInFormValidator();
 
@@ -30,9 +31,10 @@ export interface ISignInProps {
 
 const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
     const dispatch = useDispatch();
-    const { me, signInFailMessage } = useSelector<IRootState, IUserState>(
-        (s) => s.user,
-    );
+    const { me, signInFailMessage, token } = useSelector<
+        IRootState,
+        IUserState
+    >((s) => s.user);
 
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -43,6 +45,19 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
     useEffect(() => {
         if (me && me.id) {
             console.log('returnUrl', returnUrl);
+            if (remember) {
+                // window.localStorage.removeItem(LOCAL_STORAGE_KEY_JWT);
+                const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEY_JWT);
+                if (!jwt || jwt !== token) {
+                    window.localStorage.setItem(LOCAL_STORAGE_KEY_JWT, token);
+                }
+
+                console.debug(
+                    'token saved. :',
+                    window.localStorage.getItem(LOCAL_STORAGE_KEY_JWT),
+                );
+            }
+
             Router.push(!!returnUrl ? returnUrl : '/');
         } else {
             setEmail('');

@@ -1,13 +1,3 @@
-// import {
-//     all,
-//     fork,
-//     call,
-//     delay,
-//     takeLatest,
-//     put,
-//     actionChannel,
-//     throttle,
-// } from 'redux-saga/effects';
 import {
     all,
     fork,
@@ -17,29 +7,32 @@ import {
     put,
     actionChannel,
     throttle,
-} from '@redux-saga/core/effects';
+} from 'redux-saga/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
-import { IJsonResult } from '../typings/IJsonResult';
-import { IListResult } from '../typings/IListResult';
-import { IPostModel } from '../typings/IPostModel';
-import { IImageModel } from '../typings/IImageModel';
-import { IBlogAction } from '../typings/IBlogAction';
-import { ITagModel } from '../typings/ITagModel';
-import { ICategoryModel } from '../typings/ICategoryModel';
 import { IDictionary } from '../typings/IDictionary';
+import { AxiosResponse } from 'axios';
+import {
+    IJsonResult,
+    IListResult,
+    IPostModel,
+    ICategoryModel,
+    ITagModel,
+    IImageModel,
+} from '../typings/dto';
+import { IBlogAction } from '../typings/IBlogAction';
 
 function loadMyPostsApi(query) {
     const { pageToken, limit, keyword } = query;
 
-    return http.get(
+    return http().get(
         `/me/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
 }
 
-function* loadMyPosts(action) {
+function* loadMyPosts(action: IBlogAction) {
     try {
         const { pageToken, limit, keyword } = action.data;
 
@@ -79,7 +72,7 @@ function* watchLoadMyPosts() {
 }
 
 function writePostApi(formData) {
-    return http.post('/me/post', formData);
+    return http().post('/me/post', formData);
 }
 
 function* writePost(action) {
@@ -113,9 +106,9 @@ function* watchWritePost() {
 }
 
 function loadCategoriesApi(query) {
-    const { pageToken, limit, keyword } = query;
-    return http.get(
-        `/me/categories?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
+    const { limit, keyword, page } = query;
+    return http().get(
+        `/me/categories?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
@@ -123,9 +116,9 @@ function loadCategoriesApi(query) {
 
 function* loadCategories(action) {
     try {
-        const { pageToken, limit, keyword } = action.data;
+        const { limit, keyword, page } = action.data;
         const result = yield call(loadCategoriesApi, {
-            pageToken,
+            page: page || 1,
             limit,
             keyword,
         });
@@ -159,14 +152,16 @@ function* watchLoadCategories() {
 }
 
 function loadTagsApi() {
-    return http.get('/me/tags');
+    return http().get('/me/tags');
 }
 
 function* loadTags(action) {
     try {
-        const result = yield call(loadTagsApi);
-        const resultData = result.data as IJsonResult<IListResult<ITagModel>>;
-        const { success, data, message } = resultData;
+        const result: AxiosResponse<
+            IJsonResult<IListResult<ITagModel>>
+        > = yield call(loadTagsApi);
+        // const resultData = result.data as IJsonResult<IListResult<ITagModel>>;
+        const { success, data, message } = result.data;
         if (success) {
             yield put<IBlogAction>({
                 type: actionTypes.LOAD_MY_TAGS_DONE,
@@ -193,7 +188,7 @@ function* watchLoadTags() {
 }
 
 function editPostApi(id, data) {
-    return http.patch(`/me/post/${id}`, data);
+    return http().patch(`/me/post/${id}`, data);
 }
 
 function* editPost(action) {
@@ -233,7 +228,7 @@ function* watchEditPost() {
  *
  */
 function deletePostApi(id) {
-    return http.delete(`/me/post/${id}`);
+    return http().delete(`/me/post/${id}`);
 }
 
 function* deletePost(action) {
@@ -268,7 +263,7 @@ function* watchDeletePost() {
 }
 
 function loadMyPostApi(id) {
-    return http.get(`/me/post/${id}`);
+    return http().get(`/me/post/${id}`);
 }
 
 function* loadMyPost(action) {
@@ -320,7 +315,7 @@ function* watchWriteNewPost() {
 }
 
 function uploadMyMediaFilesApi(data) {
-    return http.post('/me/media', data);
+    return http().post('/me/media', data);
 }
 
 function* uploadMyMediaFiles(action) {
@@ -360,9 +355,10 @@ function* watchUploadMyMediaFiles() {
     );
 }
 
-function loadMediaFilesApi(pageToken, limit, keyword) {
-    return http.get(
-        `/me/media/?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
+function loadMediaFilesApi(query) {
+    const { page, limit, keyword } = query;
+    return http().get(
+        `/me/media/?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
@@ -370,13 +366,12 @@ function loadMediaFilesApi(pageToken, limit, keyword) {
 
 function* loadMediaFiles(action) {
     try {
-        const { pageToken, limit, keyword } = action.data;
-        const result = yield call(
-            loadMediaFilesApi,
-            pageToken || '',
-            limit || 10,
-            keyword || '',
-        );
+        const { page, limit, keyword } = action.data;
+        const result = yield call(loadMediaFilesApi, {
+            page: page || 1,
+            limit: limit || 10,
+            keyword: keyword || '',
+        });
 
         const resultData = result.data as IJsonResult<IListResult<IImageModel>>;
         const { success, data, message } = resultData;
@@ -385,7 +380,7 @@ function* loadMediaFiles(action) {
                 type: actionTypes.LOAD_MY_MEDIA_FILES_DONE,
                 data: {
                     ...data,
-                    mediaFilesNextPageToken: pageToken,
+                    page: page || 1,
                 },
             });
         } else {
@@ -410,7 +405,7 @@ function* watchLoadMediaFiles() {
 }
 
 function deleteMediaFileApi(id) {
-    return http.delete(`/me/media/${id}`);
+    return http().delete(`/me/media/${id}`);
 }
 
 function* deleteMediaFile(action) {
@@ -448,9 +443,9 @@ function* watchDeleteMediaFile() {
 
 function editCategoryApi(formData) {
     if (!!formData.id) {
-        return http.patch(`/me/category/${formData.id}`, formData);
+        return http().patch(`/me/category/${formData.id}`, formData);
     } else {
-        return http.post('/me/category', formData);
+        return http().post('/me/category', formData);
     }
 }
 
@@ -486,7 +481,7 @@ function* wacthEditCategory() {
 }
 
 function deleteCategoryApi(id) {
-    return http.delete(`/me/category/${id}`);
+    return http().delete(`/me/category/${id}`);
 }
 
 function* deleteCategory(action) {
@@ -526,7 +521,7 @@ function* watchDeleteCategory() {
 function loadLikedPostsApi(query) {
     const { pageToken, limit, keyword, page } = query;
 
-    return http.get(
+    return http().get(
         `/me/liked?pageToken=${pageToken}&page=${page ||
             '1'}&limit=${limit}&keyword=${encodeURIComponent(keyword)}`,
     );
@@ -571,7 +566,7 @@ function* watchLoadLikedPosts() {
 }
 
 function loadStatGeneralApi(query) {
-    return http.get('/stat/general');
+    return http().get('/me/stat/general');
 }
 
 function* loadStatGeneral(action) {
@@ -606,7 +601,7 @@ function* watchLoadStatGeneral() {
 }
 
 function loadStatReadApi(query) {
-    return http.get('/stat/postread');
+    return http().get('/me/stat/postread');
 }
 
 function* loadStatRead(action) {

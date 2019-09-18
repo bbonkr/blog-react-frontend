@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { List, Badge } from 'antd';
 import Link from 'next/link';
-import { ICategoryModel } from '../typings/ICategoryModel';
+import { ICategoryModel } from '../typings/dto';
 
 export interface ICategoryListProps {
     categories: ICategoryModel[];

@@ -1,7 +1,6 @@
 import { IUsersPostsState } from '../../typings/reduxStates';
 import { IBlogAction } from '../../typings/IBlogAction';
-import { IListResult } from '../../typings/IListResult';
-import { IPostModel } from '../../typings/IPostModel';
+import { IListResult, IPostModel } from '../../typings/dto';
 
 export interface IUserHandlerValue {
     draft: IUsersPostsState;

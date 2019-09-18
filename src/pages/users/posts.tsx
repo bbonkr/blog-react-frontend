@@ -8,7 +8,7 @@ import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IUserModel } from '../../typings/IUserModel';
+import { IUserModel } from '../../typings/dto';
 import { IRootState, IUsersPostsState } from '../../typings/reduxStates';
 import { PageHeader, Divider, Spin } from 'antd';
 import LinkUsersPosts from '../../components/LinkUsersPosts';

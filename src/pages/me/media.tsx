@@ -1,10 +1,6 @@
 import React, { useCallback, useState, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    Upload,
-    Typography,
-    PageHeader,
-} from 'antd';
+import { Upload, Typography, PageHeader } from 'antd';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import MeLayout from '../../components/MeLayout';
 import styled from 'styled-components';
@@ -38,7 +34,7 @@ Media.getInitialProps = async (context) => {
     context.store.dispatch({
         type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
         data: {
-            pageToken: null,
+            page: 1,
             limit: mediaFilesLimit,
             keyword: '',
         },

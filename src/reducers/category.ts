@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
-import { ICategoryModel } from '../typings/ICategoryModel';
+import { ICategoryModel } from '../typings/dto';
 import { ICategoryState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { CategoryHanlder } from './hanlders/category.handler';

@@ -6,6 +6,7 @@ import { PageHeader, Button, Spin, Divider } from 'antd';
 import Router from 'next/router';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, IUserState } from '../typings/reduxStates';
+import { LOCAL_STORAGE_KEY_JWT } from '../typings/constant';
 
 const SignOut: FunctionComponent = () => {
     const { me, signOutLoading, signOutReturnUrl } = useSelector<
@@ -15,6 +16,8 @@ const SignOut: FunctionComponent = () => {
 
     useEffect(() => {
         if (!me) {
+            window.localStorage.removeItem(LOCAL_STORAGE_KEY_JWT);
+
             Router.push(signOutReturnUrl || '/');
         }
     }, [me, signOutReturnUrl]);

@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import Error from 'next/error';
-import PropTypes from 'prop-types';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
 

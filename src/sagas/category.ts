@@ -1,14 +1,11 @@
-// import { all, fork, call, takeLatest, put } from 'redux-saga/effects';
-import { all, fork, call, takeLatest, put } from '@redux-saga/core/effects';
+import { all, fork, call, takeLatest, put } from 'redux-saga/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
 import { IBlogAction } from '../typings/IBlogAction';
-import { IJsonResult } from '../typings/IJsonResult';
-import { IListResult } from '../typings/IListResult';
-import { ICategoryModel } from '../typings/ICategoryModel';
+import { IJsonResult, IListResult, ICategoryModel } from '../typings/dto';
 
 function loadCategoriesApi() {
-    return http.get('/category');
+    return http().get('/category');
 }
 
 function* loadCategories(action?: IBlogAction) {

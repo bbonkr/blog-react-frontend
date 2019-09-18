@@ -7,7 +7,7 @@ import UserAvatar from './UserAvatar';
 import moment from 'moment';
 import LinkUsersPosts from './LinkUsersPosts';
 import IconLike from './IconLike';
-import { IPostModel } from '../typings/IPostModel';
+import { IPostModel } from '../typings/dto';
 import Prism from 'prismjs';
 
 import '../styles/prism.css';

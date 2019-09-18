@@ -1,7 +1,6 @@
 import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import { actionTypes } from './actionTypes';
-import { IUserModel } from '../typings/IUserModel';
 import { IUserState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { UserHandler } from './hanlders/user.handler';
@@ -10,6 +9,7 @@ export const initialState: IUserState = {
     me: null,
     signInFailMessage: '',
     signInInProcess: false,
+    token: '',
 
     // sign Up
     signUpFailMessage: '',
@@ -50,49 +50,6 @@ export const initialState: IUserState = {
     unregisterErrorReason: '',
     unregisterSuccess: false,
 };
-
-// export const SIGN_IN_PREPARE = 'SIGN_IN_PREPARE';
-// export const SIGN_IN_CALL = 'SIGN_IN_CALL';
-// export const SIGN_IN_DONE = 'SIGN_IN_DONE';
-// export const SIGN_IN_FAIL = 'SIGN_IN_FAIL';
-// export const SIGN_OUT_CALL = 'SIGN_OUT_CALL';
-// export const SIGN_OUT_DONE = 'SIGN_OUT_DONE';
-// export const SIGN_OUT_FAIL = 'SIGN_OUT_FAIL';
-// export const SIGN_UP_CALL = 'SIGN_UP_CALL';
-// export const SIGN_UP_DONE = 'SIGN_UP_DONE';
-// export const SIGN_UP_FAIL = 'SIGN_UP_FAIL';
-// export const ME_CALL = 'ME_CALL';
-// export const ME_DONE = 'ME_DONE';
-// export const ME_FAIL = 'ME_FAIL';
-
-// export const CHANGE_PASSWORD_CALL = 'CHANGE_PASSWORD_CALL';
-// export const CHANGE_PASSWORD_DONE = 'CHANGE_PASSWORD_DONE';
-// export const CHANGE_PASSWORD_FAIL = 'CHANGE_PASSWORD_FAIL';
-
-// export const CHANGE_INFO_CALL = 'CHANGE_INFO_CALL';
-// export const CHANGE_INFO_DONE = 'CHANGE_INFO_DONE';
-// export const CHANGE_INFO_FAIL = 'CHANGE_INFO_FAIL';
-
-// export const VERIFY_EMAIL_CALL = 'VERIFY_EMAIL_CALL';
-// export const VERIFY_EMAIL_DONE = 'VERIFY_EMAIL_DONE';
-// export const VERIFY_EMAIL_FAIL = 'VERIFY_EMAIL_FAIL';
-
-// /** 전자우편 확인 코드 생성 및 전자우편 전송 */
-// export const MAKE_VERIFY_EMAIL_CALL = 'MAKE_VERIFY_EMAIL_CALL';
-// export const MAKE_VERIFY_EMAIL_DONE = 'MAKE_VERIFY_EMAIL_DONE';
-// export const MAKE_VERIFY_EMAIL_FAIL = 'MAKE_VERIFY_EMAIL_FAIL';
-
-// export const REQUEST_RESET_PASSWORD_CALL = 'REQUEST_RESET_PASSWORD_CALL';
-// export const REQUEST_RESET_PASSWORD_DONE = 'REQUEST_RESET_PASSWORD_DONE';
-// export const REQUEST_RESET_PASSWORD_FAIL = 'REQUEST_RESET_PASSWORD_FAIL';
-
-// export const RESET_PASSWORD_CALL = 'RESET_PASSWORD_CALL';
-// export const RESET_PASSWORD_DONE = 'RESET_PASSWORD_DONE';
-// export const RESET_PASSWORD_FAIL = 'RESET_PASSWORD_FAIL';
-
-// export const UNREGISTER_CALL = 'UNREGISTER_CALL';
-// export const UNREGISTER_DONE = 'UNREGISTER_DONE';
-// export const UNREGISTER_FAIL = 'UNREGISTER_FAIL';
 
 const reducer = (state: IUserState = initialState, action: IBlogAction) =>
     produce(state, (draft) => {
@@ -141,19 +98,22 @@ const reducer = (state: IUserState = initialState, action: IBlogAction) =>
             case actionTypes.ME_FAIL:
                 break;
             case actionTypes.SIGN_UP_CALL:
-                draft.signUpFailMessage = '';
-                draft.signUpInProcess = true;
-                draft.signUpSuccess = false;
+                // draft.signUpFailMessage = '';
+                // draft.signUpInProcess = true;
+                // draft.signUpSuccess = false;
+                handler.signUpCall();
                 break;
             case actionTypes.SIGN_UP_DONE:
-                draft.signUpInProcess = false;
-                // draft.me = action.data;
-                draft.signUpSuccess = true;
+                // draft.signUpInProcess = false;
+                // // draft.me = action.data;
+                // draft.signUpSuccess = true;
+                handler.signUpDone();
                 break;
             case actionTypes.SIGN_UP_FAIL:
-                draft.signUpInProcess = false;
-                draft.signUpSuccess = false;
-                draft.signUpFailMessage = action.message;
+                // draft.signUpInProcess = false;
+                // draft.signUpSuccess = false;
+                // draft.signUpFailMessage = action.message;
+                handler.signUpFail();
                 break;
             case actionTypes.CHANGE_PASSWORD_CALL:
                 draft.loadingChangePassword = true;
@@ -203,11 +163,10 @@ const reducer = (state: IUserState = initialState, action: IBlogAction) =>
             case actionTypes.VERIFY_EMAIL_CALL:
                 draft.verifyEmailLoading = true;
                 draft.verifyEmailInfo = {};
-                draft.verifyEmailErrorReason = 'Processing ...';
+                draft.verifyEmailErrorReason = '';
                 break;
             case actionTypes.VERIFY_EMAIL_DONE:
                 draft.verifyEmailInfo = action.data;
-                draft.verifyEmailErrorReason = '';
                 draft.verifyEmailLoading = false;
 
                 if (draft.me) {
@@ -219,22 +178,25 @@ const reducer = (state: IUserState = initialState, action: IBlogAction) =>
                 draft.verifyEmailLoading = false;
                 break;
 
-            case actionTypes.MAKE_VERIFY_EMAIL_CALL:
-                draft.makeVerifyEmailErrorReason = '';
-                draft.makeVerifyEmailLoading = true;
+            case actionTypes.REQUEST_VERIFY_EMAIL_CALL:
+                // draft.makeVerifyEmailErrorReason = '';
+                // draft.makeVerifyEmailLoading = true;
+                handler.makeVerifyEmailCall();
                 break;
-            case actionTypes.MAKE_VERIFY_EMAIL_DONE:
-                draft.makeVerifyEmailLoading = false;
+            case actionTypes.REQUEST_VERIFY_EMAIL_DONE:
+                // draft.makeVerifyEmailLoading = false;
+                handler.makeVerifyEmailDone();
                 break;
-            case actionTypes.MAKE_VERIFY_EMAIL_FAIL:
-                draft.makeVerifyEmailErrorReason = action.message;
-                draft.makeVerifyEmailLoading = false;
-                ShowNotification({
-                    title: 'Fail to make verify email code.',
-                    message: action.message,
-                    icon: null,
-                    onClick: null,
-                });
+            case actionTypes.REQUEST_VERIFY_EMAIL_FAIL:
+                // draft.makeVerifyEmailErrorReason = action.message;
+                // draft.makeVerifyEmailLoading = false;
+                // ShowNotification({
+                //     title: 'Fail to make verify email code.',
+                //     message: action.message,
+                //     icon: null,
+                //     onClick: null,
+                // });
+                handler.makeVerifyEmailFail();
                 break;
 
             case actionTypes.REQUEST_RESET_PASSWORD_CALL:
@@ -299,6 +261,11 @@ const reducer = (state: IUserState = initialState, action: IBlogAction) =>
                 draft.unregisterErrorReason = action.message;
                 draft.unregisterSuccess = false;
                 break;
+
+            case actionTypes.SET_JWT:
+                draft.token = action.data.token;
+                break;
+
             default:
                 break;
         }

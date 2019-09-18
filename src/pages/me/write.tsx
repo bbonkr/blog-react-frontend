@@ -1,9 +1,11 @@
-import React, { useState, useCallback, useEffect, FunctionComponent } from 'react';
+import React, {
+    useState,
+    useCallback,
+    useEffect,
+    FunctionComponent,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    Divider,
-    PageHeader,
-} from 'antd';
+import { Divider, PageHeader } from 'antd';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import MeLayout from '../../components/MeLayout';
 import { withAuth } from '../../utils/auth';
@@ -48,7 +50,7 @@ Write.getInitialProps = async (context) => {
     context.store.dispatch({
         type: actionTypes.LOAD_MY_CATEGORIES_CALL,
         data: {
-            pageToken: null,
+            page: 1,
             limit: 0,
             keyword: '',
         },

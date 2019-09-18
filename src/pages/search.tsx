@@ -6,11 +6,7 @@ import ListExcerpt from '../components/ListExcerpt';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
 import { actionTypes } from '../reducers/actionTypes';
-import {
-    IPostState,
-    IRootState,
-    ISearchPostsState,
-} from '../typings/reduxStates';
+import { IRootState, ISearchPostsState } from '../typings/reduxStates';
 
 const KEYWORD_INPUT_PLACEHOLDER = 'Searching keyword';
 

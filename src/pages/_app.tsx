@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react';
 import App, { AppContext, AppInitialProps } from 'next/app';
-import PropTypes from 'prop-types';
 import { Store } from 'redux';
-import withRedux, { NextJSAppContext } from 'next-redux-wrapper';
+import withRedux, { NextJSAppContext, NextJSContext } from 'next-redux-wrapper';
 import withReduxSaga from 'next-redux-saga';
 import { Provider } from 'react-redux';
 import Helmet, { HelmetProps } from 'react-helmet';
@@ -15,6 +14,10 @@ import { IPageProps } from '../typings/IPageProps';
 import { actionTypes } from '../reducers/actionTypes';
 
 import '../styles/styles.scss';
+import { IRootState } from '../typings/reduxStates';
+import { IBlogAction } from '../typings/IBlogAction';
+import { NextPageContext } from 'next';
+import { LOCAL_STORAGE_KEY_JWT } from '../typings/constant';
 
 export interface IBlogAppProp {
     Component: Element;
@@ -23,32 +26,32 @@ export interface IBlogAppProp {
     returnUrl?: string;
 }
 
-class BlogApp extends App<IBlogAppProp, null, null> {
-    // public static propTypes = {
-    //     Component: PropTypes.elementType.isRequired,
-    //     store: PropTypes.object.isRequired,
-    //     pageProps: PropTypes.any,
-    //     returnUrl: PropTypes.string,
-    // };
+type BlogAppContext = AppContext & NextJSAppContext;
 
+class BlogApp extends App<IBlogAppProp, null, null> {
     public static async getInitialProps(
         context: AppContext & NextJSAppContext,
     ): Promise<AppInitialProps & IPageProps> {
-        const { ctx, Component } = context;
+        // const { ctx, Component } = context;
+
+        const ctx: NextPageContext & NextJSContext<IRootState, IBlogAction> =
+            context.ctx;
+        const Component = context.Component;
 
         let pageProps: IPageProps = {};
 
         const state = ctx.store.getState();
         const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
 
-        const { me } = state.user;
+        const { me, token } = state.user;
         let url: string = '';
 
         // HTTP 요청시 쿠키 추가
-        if (ctx.isServer && cookie) {
-            axios.defaults.headers.Cookie = cookie;
+        // if (ctx.isServer && cookie) {
+        if (ctx.isServer) {
+            // axios.defaults.headers.Cookie = cookie;
 
-            if (!me) {
+            if (!me && token) {
                 ctx.store.dispatch({
                     type: actionTypes.ME_CALL,
                 });
@@ -71,7 +74,7 @@ class BlogApp extends App<IBlogAppProp, null, null> {
 
             ctx.store.dispatch({
                 type: actionTypes.SET_CURRENT_URL,
-                data: url,
+                data: { url },
             });
         }
 
@@ -79,6 +82,24 @@ class BlogApp extends App<IBlogAppProp, null, null> {
 
         return { pageProps };
     }
+
+    // componentDidMount() {
+    //     const state: IRootState = this.props.store.getState();
+    //     const { me, token } = state.user;
+    //     let _token = token;
+    //     if (!_token) {
+    //         const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEY_JWT);
+    //         if (jwt) {
+    //             _token = jwt;
+    //         }
+    //     }
+
+    //     if (!me && _token) {
+    //         this.props.store.dispatch({
+    //             type: actionTypes.ME_CALL,
+    //         });
+    //     }
+    // }
 
     public render() {
         const { Component, store, pageProps, returnUrl } = this.props;

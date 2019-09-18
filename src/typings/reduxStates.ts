@@ -1,13 +1,10 @@
-import { ICategoryModel } from './ICategoryModel';
-import { IPostModel } from './IPostModel';
-import { ITagModel } from './ITagModel';
-import { IUserModel } from './IUserModel';
+import { IPostModel, ICategoryModel, ITagModel, IUserModel } from './dto';
 
 export interface IRootState {
     user: IUserState;
     post: IPostState;
     category: ICategoryState;
-    settings: ISettingState;
+    settings?: ISettingState;
     me: IMeState;
     posts: IPostsState;
     tagPosts: ITagPostsState;
@@ -51,8 +48,9 @@ export interface IMeState {
 
     // media
     mediaFiles: any[];
-    mediaFilesNextPageToken?: string;
+    // mediaFilesNextPageToken?: string;
     mediaFilesSearchKeyword?: string;
+    mediaFilesCurrentPage?: number;
     mediaFilesCount: number;
     mediaFilesLimit: number;
     hasMoreMediaFiles: boolean;
@@ -156,13 +154,14 @@ export interface IPostState {
 
 export interface ISettingState {
     currentUrl: string;
-    baseUrl: string;
+    // baseUrl: string;
 }
 
 export interface IUserState {
     me: IUserModel;
     signInFailMessage?: string;
     signInInProcess: boolean;
+    token?: string;
 
     // sign Up
     signUpFailMessage: string;

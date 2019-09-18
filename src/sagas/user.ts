@@ -1,13 +1,3 @@
-// import {
-//     all,
-//     fork,
-//     call,
-//     delay,
-//     takeLatest,
-//     put,
-//     actionChannel,
-//     throttle,
-// } from 'redux-saga/effects';
 import {
     all,
     fork,
@@ -17,24 +7,36 @@ import {
     put,
     actionChannel,
     throttle,
-} from '@redux-saga/core/effects';
+} from 'redux-saga/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
-import { IJsonResult } from '../typings/IJsonResult';
 import { IBlogAction } from '../typings/IBlogAction';
-import { IUserModel } from '../typings/IUserModel';
+import { ISigninResult, IJsonResult, IUserModel } from '../typings/dto';
+import { AxiosResponse } from 'axios';
 
 function getMyInfoApi() {
-    return http.get('/me');
+    return http().get('/me');
 }
 
-function* getMyInfo(action) {
+function* getMyInfo(action: IBlogAction) {
     try {
-        const result = yield call(getMyInfoApi);
-        yield put<IBlogAction>({
-            type: actionTypes.ME_DONE,
-            data: result.data,
-        });
+        const result: AxiosResponse<IJsonResult<IUserModel>> = yield call(
+            getMyInfoApi,
+        );
+
+        const { success, data, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.ME_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.ME_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
         // console.error(e);
         yield put<IBlogAction>({
@@ -50,15 +52,21 @@ function* watchGetMyInfo() {
 }
 
 function signInApi(data) {
-    return http.post('/account/signin', data);
+    return http().post('/account/signin', data);
 }
 
 function* signIn(action) {
     try {
-        const result = yield call(signInApi, action.data);
+        const { email, password } = action.data;
+        const result: AxiosResponse<IJsonResult<ISigninResult>> = yield call(
+            signInApi,
+            {
+                username: email,
+                password: password,
+            },
+        );
 
-        const resultData = result.data as IJsonResult<IUserModel>;
-        const { success, data, message } = resultData;
+        const { success, data, message } = result.data;
         if (success) {
             yield put<IBlogAction>({
                 type: actionTypes.SIGN_IN_DONE,
@@ -89,18 +97,20 @@ function* watchSignIn() {
 }
 
 function signOutApi() {
-    return http.post('/account/signout', {});
+    return http().post('/account/signout', {});
 }
 
 function* signOut(action) {
     try {
-        const result = yield call(signOutApi);
-        const { success, data, message } = result.data as IJsonResult<string>;
+        const result: AxiosResponse<IJsonResult<string>> = yield call(
+            signOutApi,
+        );
+        const { success, data, message } = result.data;
         if (success) {
             yield put<IBlogAction>({
                 type: actionTypes.SIGN_OUT_DONE,
                 data: {
-                    message: data as string,
+                    message: data,
                     returnUrl: action.returnUrl,
                 },
             });
@@ -126,18 +136,31 @@ function* watchSignOut() {
 }
 
 function signUpApi(formData) {
-    return http.post('/user', formData);
+    return http().post('/account/register', formData);
 }
 
 function* signUp(action) {
     try {
-        const result = yield call(signUpApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.SIGN_UP_DONE,
-            data: result.data,
-        });
+        const result: AxiosResponse<IJsonResult<ISigninResult>> = yield call(
+            signUpApi,
+            action.data,
+        );
+
+        const { success, data, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.SIGN_UP_DONE,
+                data: data, // {user, token }
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.SIGN_UP_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.SIGN_UP_FAIL,
             error: e,
@@ -151,18 +174,30 @@ function* watchSignUp() {
 }
 
 function changePasswordApi(formData) {
-    return http.patch('/user/changepassword', formData);
+    return http().patch('/account/changepassword', formData);
 }
 
 function* changePassword(action) {
     try {
-        const result = yield call(changePasswordApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.CHANGE_PASSWORD_DONE,
-            data: result.data,
-        });
+        const result: AxiosResponse<IJsonResult<IUserModel>> = yield call(
+            changePasswordApi,
+            action.data,
+        );
+        const { success, data, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.CHANGE_PASSWORD_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.CHANGE_PASSWORD_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.CHANGE_PASSWORD_FAIL,
             error: e,
@@ -176,18 +211,30 @@ function* watchChangePassword() {
 }
 
 function changeInfoApi(formData) {
-    return http.patch('/user/info', formData);
+    return http().patch('/account/info', formData);
 }
 
 function* changeInfo(action) {
     try {
-        const result = yield call(changeInfoApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.CHANGE_INFO_DONE,
-            data: result.data,
-        });
+        const result: AxiosResponse<IJsonResult<IUserModel>> = yield call(
+            changeInfoApi,
+            action.data,
+        );
+        const { success, data, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.CHANGE_INFO_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.CHANGE_INFO_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.CHANGE_INFO_FAIL,
             error: e,
@@ -201,18 +248,30 @@ function* watchChangeInfo() {
 }
 
 function verifyEmailApi(formData) {
-    return http.post('/user/verifyemail', formData);
+    return http().post('/account/verifyemail', formData);
 }
 
 function* verifyEmail(action) {
     try {
-        const result = yield call(verifyEmailApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.VERIFY_EMAIL_DONE,
-            data: result.data,
-        });
+        const result: AxiosResponse<IJsonResult<IUserModel>> = yield call(
+            verifyEmailApi,
+            action.data,
+        );
+        const { success, data, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.VERIFY_EMAIL_DONE,
+                data: data,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.VERIFY_EMAIL_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.VERIFY_EMAIL_FAIL,
             error: e,
@@ -225,21 +284,32 @@ function* wacthVerifyEmail() {
     yield takeLatest(actionTypes.VERIFY_EMAIL_CALL, verifyEmail);
 }
 
-function makeVerifyEmaiApi() {
-    return http.post('/user/makeverifyemail', {});
+function requestVerifyEmaiApi() {
+    return http().post('/account/requestverifyemail', {});
 }
 
-function* makeVerifyEmail(action) {
+function* requestVerifyEmail(action) {
     try {
-        const result = yield call(makeVerifyEmaiApi);
-        yield put<IBlogAction>({
-            type: actionTypes.MAKE_VERIFY_EMAIL_DONE,
-            data: result.data,
-        });
+        const result: AxiosResponse<IJsonResult<any>> = yield call(
+            requestVerifyEmaiApi,
+        );
+        const { success, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.REQUEST_VERIFY_EMAIL_DONE,
+                message: message,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.REQUEST_VERIFY_EMAIL_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
-            type: actionTypes.MAKE_VERIFY_EMAIL_FAIL,
+            type: actionTypes.REQUEST_VERIFY_EMAIL_FAIL,
             error: e,
             message: e.response && e.response.data,
         });
@@ -247,22 +317,34 @@ function* makeVerifyEmail(action) {
 }
 
 function* watchMakeVerifyEmail() {
-    yield takeLatest(actionTypes.MAKE_VERIFY_EMAIL_CALL, makeVerifyEmail);
+    yield takeLatest(actionTypes.REQUEST_VERIFY_EMAIL_CALL, requestVerifyEmail);
 }
 
 function requestResetPasswordApi(formData) {
-    return http.post('/user/requestresetpassword', formData);
+    return http().post('/account/requestresetpassword', formData);
 }
 
 function* requestResetPassword(action) {
     try {
-        const result = yield call(requestResetPasswordApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.REQUEST_RESET_PASSWORD_DONE,
-            data: result,
-        });
+        const result: AxiosResponse<IJsonResult<any>> = yield call(
+            requestResetPasswordApi,
+            action.data,
+        );
+        const { success, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.REQUEST_RESET_PASSWORD_DONE,
+                message: message,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.REQUEST_RESET_PASSWORD_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.REQUEST_RESET_PASSWORD_FAIL,
             error: e,
@@ -279,18 +361,30 @@ function* watchRequestResetPassword() {
 }
 
 function resetPasswordApi(formData) {
-    return http.post('/user/resetpassword', formData);
+    return http().post('/user/resetpassword', formData);
 }
 
 function* resetPassword(action) {
     try {
-        const result = yield call(resetPasswordApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.RESET_PASSWORD_DONE,
-            data: result.data,
-        });
+        const result: AxiosResponse<IJsonResult<any>> = yield call(
+            resetPasswordApi,
+            action.data,
+        );
+        const { success, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.RESET_PASSWORD_DONE,
+                message: message,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.RESET_PASSWORD_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.RESET_PASSWORD_FAIL,
             error: e,
@@ -304,18 +398,30 @@ function* watchResetPassword() {
 }
 
 function unregisterApi(formData) {
-    return http.post('/user/unregister', formData);
+    return http().post('/account/unregister', formData);
 }
 
 function* unregister(action) {
     try {
-        const result = yield call(unregisterApi, action.data);
-        yield put<IBlogAction>({
-            type: actionTypes.UNREGISTER_DONE,
-            data: result.data,
-        });
+        const result: AxiosResponse<IJsonResult<any>> = yield call(
+            unregisterApi,
+            action.data,
+        );
+        const { success, message } = result.data;
+        if (success) {
+            yield put<IBlogAction>({
+                type: actionTypes.UNREGISTER_DONE,
+                message: message,
+            });
+        } else {
+            yield put<IBlogAction>({
+                type: actionTypes.UNREGISTER_FAIL,
+                error: new Error(message),
+                message: message,
+            });
+        }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.UNREGISTER_FAIL,
             error: e,

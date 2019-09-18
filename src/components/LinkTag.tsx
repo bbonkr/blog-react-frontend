@@ -2,7 +2,7 @@ import React, { FunctionComponent, memo } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Icon } from 'antd';
-import { ITagModel } from '../typings/ITagModel';
+import { ITagModel } from '../typings/dto';
 
 const LinkWrapper = styled.span`
     margin-right: 1em;

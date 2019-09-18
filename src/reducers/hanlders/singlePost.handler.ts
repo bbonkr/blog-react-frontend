@@ -1,6 +1,6 @@
 import { ISinglePostState } from '../../typings/reduxStates';
 import { IBlogAction } from '../../typings/IBlogAction';
-import { IPostModel } from '../../typings/IPostModel';
+import { IPostModel } from '../../typings/dto';
 
 export interface ISinglePostHandlerValue {
     draft: ISinglePostState;

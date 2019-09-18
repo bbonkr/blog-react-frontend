@@ -1,9 +1,11 @@
 import { IBlogAction } from '../../typings/IBlogAction';
-import { IPostModel } from '../../typings/IPostModel';
-import { IListResult } from '../../typings/IListResult';
-import { ICategoryModel } from '../../typings/ICategoryModel';
-import { ITagModel } from '../../typings/ITagModel';
 import { IMeState } from '../../typings/reduxStates';
+import {
+    IListResult,
+    IPostModel,
+    ICategoryModel,
+    ITagModel,
+} from '../../typings/dto';
 
 export interface IMeHandlerValue {
     draft: IMeState;
@@ -52,7 +54,19 @@ export class MeHanlder {
         this.draft.postsCount = resultData.total;
     }
 
-    public loadMyCategoryDone(action: IBlogAction): void {
+    // LOAD_MY_CATEGORIES_CALL
+    public loadMyCategoriesCall(): void {
+        const { page, limit, keyword } = this.action.data;
+        this.draft.loadingCategories = true;
+        this.draft.categories = page ? this.draft.categories : [];
+        this.draft.hasMoreCategories = page
+            ? this.draft.hasMoreCategories
+            : true;
+        this.draft.loadCategoriesErrorReason = '';
+    }
+    // LOAD_MY_CATEGORIES_DONE
+
+    public loadMyCategoriesDone(action: IBlogAction): void {
         this.draft.loadingCategories = false;
         // draft.categories = action.data;
         const actionData = action.data as IListResult<ICategoryModel>;
@@ -72,6 +86,12 @@ export class MeHanlder {
             action.data.items.length === this.draft.categoryLimit;
         // draft.categorySearchKeyword = action.keyword;
         // draft.categoriesCount = total;
+    }
+
+    // LOAD_MY_CATEGORIES_FAIL
+    public loadMyCategoriesFail(): void {
+        this.draft.loadingCategories = false;
+        this.draft.loadCategoriesErrorReason = this.action.message;
     }
 
     public loadMyTagsDone(action: IBlogAction): void {

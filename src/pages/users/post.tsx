@@ -6,17 +6,16 @@ import { useSelector } from 'react-redux';
 import Helmet from 'react-helmet';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
-import PropTypes from 'prop-types';
 import SinglePost from '../../components/SinglePost';
 import { Skeleton, Spin } from 'antd';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IUserModel } from '../../typings/IUserModel';
+import { IUserModel } from '../../typings/dto';
 import {
     IRootState,
-    IPostState,
     ISettingState,
     ISinglePostState,
 } from '../../typings/reduxStates';
+import { appOptions } from '../../config/appOptions';
 
 // import '../../styles/prism.css';
 // import '../../styles/singlepost.css';
@@ -32,9 +31,11 @@ const UsersPost: FunctionComponent = () => {
         IRootState,
         ISinglePostState
     >((s) => s.singlePost);
-    const { baseUrl, currentUrl } = useSelector<IRootState, ISettingState>(
+    const { currentUrl } = useSelector<IRootState, ISettingState>(
         (s) => s.settings,
     );
+
+    const baseUrl: string = appOptions.apiBaseUrl;
 
     const getOgImage = useCallback(() => {
         if (!singlePost) {

@@ -2,7 +2,7 @@ import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import Router from 'next/router';
 import { actionTypes } from './actionTypes';
-import { IPostModel } from '../typings/IPostModel';
+import { IPostModel } from '../typings/dto';
 import { IBlogAction } from '../typings/IBlogAction';
 import { MeHanlder } from './hanlders/me.handler';
 import { IMeState } from '../typings/reduxStates';
@@ -41,7 +41,7 @@ export const initialState: IMeState = {
 
     // media
     mediaFiles: [],
-    mediaFilesNextPageToken: '',
+    // mediaFilesNextPageToken: '',
     mediaFilesSearchKeyword: '',
     mediaFilesCount: 0,
     mediaFilesLimit: 10,
@@ -49,6 +49,7 @@ export const initialState: IMeState = {
     loadingMediaFiles: false,
     loadMediaFilesErrorReason: '',
     uploading: false,
+    mediaFilesCurrentPage: 1,
 
     // menu
     sideMenuCollapsed: false,
@@ -129,14 +130,15 @@ const reducer = (state: IMeState = initialState, action: IBlogAction) =>
                 break;
 
             case actionTypes.LOAD_MY_CATEGORIES_CALL:
-                draft.loadingCategories = true;
-                draft.categories = action.data.pageToken
-                    ? draft.categories
-                    : [];
-                draft.hasMoreCategories = action.data.pageToken
-                    ? draft.hasMoreCategories
-                    : true;
-                draft.loadCategoriesErrorReason = '';
+                // draft.loadingCategories = true;
+                // draft.categories = action.data.pageToken
+                //     ? draft.categories
+                //     : [];
+                // draft.hasMoreCategories = action.data.pageToken
+                //     ? draft.hasMoreCategories
+                //     : true;
+                // draft.loadCategoriesErrorReason = '';
+                handler.loadMyCategoriesCall();
                 break;
             case actionTypes.LOAD_MY_CATEGORIES_DONE:
                 // draft.loadingCategories = false;
@@ -159,11 +161,12 @@ const reducer = (state: IMeState = initialState, action: IBlogAction) =>
                 //     action.data.items.length === draft.categoryLimit;
                 // // draft.categorySearchKeyword = action.keyword;
                 // // draft.categoriesCount = total;
-                handler.loadMyCategoryDone(action);
+                handler.loadMyCategoriesDone(action);
                 break;
             case actionTypes.LOAD_MY_CATEGORIES_FAIL:
-                draft.loadingCategories = false;
-                draft.loadCategoriesErrorReason = action.message;
+                // draft.loadingCategories = false;
+                // draft.loadCategoriesErrorReason = action.message;
+                handler.loadMyCategoriesFail();
                 break;
 
             case actionTypes.LOAD_MY_TAGS_CALL:
@@ -253,30 +256,28 @@ const reducer = (state: IMeState = initialState, action: IBlogAction) =>
                 break;
 
             case actionTypes.LOAD_MY_MEDIA_FILES_CALL:
-                draft.mediaFiles = action.data.pageToken
-                    ? draft.mediaFiles
-                    : [];
-                draft.hasMoreMediaFiles = action.data.pageToken
+                draft.mediaFiles = action.data.page ? draft.mediaFiles : [];
+                draft.hasMoreMediaFiles = action.data.page
                     ? draft.hasMoreMediaFiles
                     : true;
                 draft.loadingMediaFiles = true;
                 draft.loadMediaFilesErrorReason = '';
                 break;
             case actionTypes.LOAD_MY_MEDIA_FILES_DONE:
-                action.data.forEach((v) => {
+                action.data.records.forEach((v) => {
                     const mediaIndex = draft.mediaFiles.findIndex(
                         (x) => x.id === v.id,
                     );
                     if (mediaIndex < 0) {
                         draft.mediaFiles.push(v);
-                        draft.mediaFilesNextPageToken = `${v.id}`;
                     }
                 });
 
                 draft.hasMoreMediaFiles =
-                    action.data.length === draft.mediaFilesLimit;
+                    action.data.records.length === draft.mediaFilesLimit;
                 draft.loadingMediaFiles = false;
                 draft.mediaFilesSearchKeyword = action.message;
+                draft.mediaFilesCurrentPage = action.data.page;
                 break;
             case actionTypes.LOAD_MY_MEDIA_FILES_FAIL:
                 draft.loadingMediaFiles = true;

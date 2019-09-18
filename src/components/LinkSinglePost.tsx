@@ -1,6 +1,6 @@
 import React, { FunctionComponent, memo } from 'react';
 import Link from 'next/link';
-import { IPostModel } from '../typings/IPostModel';
+import { IPostModel } from '../typings/dto';
 
 export interface ILinkSinglePostProps {
     post: IPostModel;

@@ -37,7 +37,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
         mediaFiles,
         loadingMediaFiles,
         hasMoreMediaFiles,
-        mediaFilesNextPageToken,
+        mediaFilesCurrentPage,
         mediaFilesLimit,
         uploading,
     } = useSelector<IRootState, IMeState>((s) => s.me);
@@ -54,7 +54,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
         dispatch({
             type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
             data: {
-                pageToken: null,
+                page: 1,
                 limit: mediaFilesLimit,
                 keyword: '',
             },
@@ -119,13 +119,13 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
             dispatch({
                 type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
                 data: {
-                    pageToken: mediaFilesNextPageToken,
+                    page: (mediaFilesCurrentPage || 0) + 1,
                     limit: mediaFilesLimit,
                     keyword: '',
                 },
             });
         }
-    }, [dispatch, hasMoreMediaFiles, mediaFilesLimit, mediaFilesNextPageToken]);
+    }, [dispatch, hasMoreMediaFiles, mediaFilesLimit, mediaFilesCurrentPage]);
 
     const onClickImage = useCallback(
         (image) => () => {

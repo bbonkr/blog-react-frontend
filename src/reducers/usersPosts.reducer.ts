@@ -13,7 +13,7 @@ export const initialState: IUsersPostsState = {
     currentUser: null, // 현재 선택된 사용자; 데이터 소스 초기화에 사용
     currentUsername: '',
     currentPage: 1,
-    postsLimit: 10, // todo 상수로 변경
+    postsLimit: 10, // TODO 상수로 변경
 };
 
 const reducer = (state: IUsersPostsState = initialState, action: IBlogAction) =>

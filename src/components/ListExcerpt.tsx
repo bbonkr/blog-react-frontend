@@ -16,7 +16,7 @@ import UserAvatar from './UserAvatar';
 import IconLike from './IconLike';
 import StackGrid from 'react-stack-grid';
 import { withSize, SizeMeProps } from 'react-sizeme';
-import { IPostModel } from '../typings/IPostModel';
+import { IPostModel } from '../typings/dto';
 
 const FullWidthButton = styled(Button)`
     width: 100%;

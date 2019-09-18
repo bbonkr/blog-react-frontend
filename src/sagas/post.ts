@@ -1,13 +1,3 @@
-// import {
-//     all,
-//     fork,
-//     call,
-//     delay,
-//     takeLatest,
-//     put,
-//     actionChannel,
-//     throttle,
-// } from 'redux-saga/effects';
 import {
     all,
     fork,
@@ -17,18 +7,16 @@ import {
     put,
     actionChannel,
     throttle,
-} from '@redux-saga/core/effects';
+} from 'redux-saga/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
-import { IListResult } from '../typings/IListResult';
-import { IPostModel } from '../typings/IPostModel';
-import { IJsonResult } from '../typings/IJsonResult';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IDictionary } from '../typings/IDictionary';
+import { IJsonResult, IListResult, IPostModel } from '../typings/dto';
 
 function loadPostsApi(query: IDictionary<any>) {
     const { page, pageToken, limit, keyword } = query;
-    return http.get(
+    return http().get(
         `/posts?page=${page}pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
@@ -79,7 +67,7 @@ function* watchLoadPosts() {
 }
 
 function loadSinglePostApi(user, slug) {
-    return http.get(`/users/${user}/posts/${encodeURIComponent(slug)}`);
+    return http().get(`/users/${user}/posts/${encodeURIComponent(slug)}`);
 }
 
 function* loadSinglePost(action) {
@@ -121,7 +109,7 @@ function* watchLoadSinglePost() {
 //     limit = 10,
 //     keyword = '',
 // ) {
-//     return http.get(
+//     return http().get(
 //         `/posts/category/${category}?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
 //             keyword,
 //         )}`,
@@ -165,7 +153,7 @@ function* watchLoadSinglePost() {
 // }
 
 function loadTagPostsApi(tag, pageToken = '', limit = 10, keyword = '') {
-    return http.get(
+    return http().get(
         `/tags/${encodeURIComponent(
             tag,
         )}/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
@@ -217,7 +205,7 @@ function* watchLoadTagPosts() {
 
 function loadUsersPostsApi(query) {
     const { user, page = 1, limit = 10, keyword = '' } = query;
-    return http.get(
+    return http().get(
         `/users/${user}/posts?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
@@ -271,7 +259,7 @@ function* watchLoadUsersPosts() {
 function loadUserCategoryPostsApi(query) {
     const { user, category, page = 1, limit, keyword } = query;
 
-    return http.get(
+    return http().get(
         `/users/${user}/categories/${category}/posts?page=${page}&limit=${limit}&keyword=${keyword}`,
     );
 }
@@ -318,7 +306,7 @@ function* watchLaodUserCatetoryPosts() {
 
 function loadSearchPostsApi(query) {
     const { pageToken, limit, keyword } = query;
-    return http.get(
+    return http().get(
         `/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
@@ -362,7 +350,7 @@ function* watchLoadSearchPosts() {
 
 function addUserLikePostApi(data) {
     const { user, post } = data;
-    return http.post(`/users/${user}/posts/${post}/like`, {});
+    return http().post(`/users/${user}/posts/${post}/like`, {});
 }
 
 function* addUserLikePost(action) {
@@ -400,7 +388,7 @@ function* watchAddUserLikePost() {
 
 function removeUserLikePostApi(data) {
     const { user, post } = data;
-    return http.delete(`/users/${user}/posts/${post}/like`);
+    return http().delete(`/users/${user}/posts/${post}/like`);
 }
 
 function* removeUserLikePost(action) {

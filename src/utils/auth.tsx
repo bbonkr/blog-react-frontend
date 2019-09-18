@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Router from 'next/router';
 import { Spin } from 'antd';
 import { normalizeReturnUrl } from '../helpers/stringHelper';
-import { IUserModel } from '../typings/IUserModel';
-const { Component } = React;
+import { NextJSContext } from 'next-redux-wrapper';
+import { NextPageContext } from 'next';
+import { IRootState } from '../typings/reduxStates';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IUserModel } from '../typings/dto';
 
 export interface IWithAuthProps {
     me: IUserModel;
@@ -16,7 +19,9 @@ export interface IWithAuthState {
 
 export const withAuth = (WrappedComponent) => {
     return class extends Component<IWithAuthProps, IWithAuthState> {
-        public static async getInitialProps(ctx) {
+        public static async getInitialProps(
+            ctx: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+        ) {
             // const url = ctx.isServer
             //     ? ctx.req.url
             //     : !!ctx.asPath
@@ -44,9 +49,7 @@ export const withAuth = (WrappedComponent) => {
         constructor(props) {
             super(props);
 
-            this.state = {
-                loading: true,
-            };
+            this.state = { loading: true };
         }
 
         public componentDidMount() {
