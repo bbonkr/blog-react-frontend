@@ -10,14 +10,43 @@ export interface IBlogDocumentProps extends IDictionary<any> {
 }
 
 class BlogDocument extends Document<IBlogDocumentProps> {
-    public static getInitialProps(context) {
+    public static async getInitialProps(ctx) {
         const styleSheet = new ServerStyleSheet();
-        const page = context.renderPage((App) => (props) =>
+        const page = ctx.renderPage((App) => (props) =>
             styleSheet.collectStyles(<App {...props} />),
         );
         const styleTags = styleSheet.getStyleElement();
+        try {
+            return { ...page, helmet: Helmet.renderStatic(), styleTags };
+        } finally {
+            styleSheet.seal();
+        }
 
-        return { ...page, helmet: Helmet.renderStatic(), styleTags };
+        // https://github.com/zeit/next.js/blob/master/examples/with-styled-components/pages/_document.js
+        // const sheet = new ServerStyleSheet();
+        // const originalRenderPage = ctx.renderPage;
+
+        // try {
+        //     ctx.renderPage = () =>
+        //         originalRenderPage({
+        //             enhanceApp: (App) => (props) =>
+        //                 sheet.collectStyles(<App {...props} />),
+        //         });
+
+        //     const initialProps = await Document.getInitialProps(ctx);
+        //     return {
+        //         ...initialProps,
+        //         helmet: Helmet.renderStatic(),
+        //         styles: (
+        //             <>
+        //                 {initialProps.styles}
+        //                 {sheet.getStyleElement()}
+        //             </>
+        //         ),
+        //     };
+        // } finally {
+        //     sheet.seal();
+        // }
     }
 
     public render() {
@@ -40,7 +69,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                     {Object.values(helmet).map((el) => el.toComponent())}
 
                     {cssFiles.map((css) => {
-                        // console.log('=========> css file: ', css);
+                        console.log('=========> css file: ', css);
                         return (
                             <link
                                 key={`${css}`}
@@ -51,6 +80,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                         );
                     })}
                     {this.props.styleTags && this.props.styleTags.map((v) => v)}
+                    {/* {this.props.styles} */}
                 </head>
                 <body {...bodyAttrs}>
                     <Main />

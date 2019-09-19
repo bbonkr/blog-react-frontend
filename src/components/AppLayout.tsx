@@ -24,7 +24,6 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
     const { me, token } = useSelector<IRootState, IUserState>((s) => s.user);
 
     useEffect(() => {
-        console.debug('[APP] AppLayout token ==> ', token);
         if (!token) {
             let jwt: string;
             const jwtLocalStorage = window.localStorage.getItem(
@@ -58,10 +57,7 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
                 jwt = null;
             }
 
-            console.debug('[APP] AppLayout jwt ==> ', jwt);
-
             if (jwt) {
-                // _token = jwt;
                 dispatch({
                     type: actionTypes.SET_JWT,
                     data: {
@@ -78,7 +74,7 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
         }
     }, []);
 
-    console.info('[APP] AppLayout render');
+    // console.info('[APP] AppLayout render');
 
     return (
         <div style={{ minHeight: '100vh' }}>

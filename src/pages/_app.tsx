@@ -17,7 +17,6 @@ import '../styles/styles.scss';
 import { IRootState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { NextPageContext } from 'next';
-import { LOCAL_STORAGE_KEY_JWT } from '../typings/constant';
 
 export interface IBlogAppProp {
     Component: Element;
@@ -26,9 +25,9 @@ export interface IBlogAppProp {
     returnUrl?: string;
 }
 
-type BlogAppContext = AppContext & NextJSAppContext;
+// type BlogAppContext = AppContext & NextJSAppContext;
 
-class BlogApp extends App<IBlogAppProp, null, null> {
+class BlogApp extends App<IBlogAppProp> {
     public static async getInitialProps(
         context: AppContext & NextJSAppContext,
     ): Promise<AppInitialProps & IPageProps> {
