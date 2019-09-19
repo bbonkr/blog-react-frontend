@@ -15,7 +15,7 @@ const LinkSinglePost: FunctionComponent<ILinkSinglePostProps> = memo(
         return (
             <Link
                 href={{
-                    pathname: '/post',
+                    pathname: '/users/post',
                     query: {
                         user: user,
                         slug: slug,

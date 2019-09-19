@@ -22,11 +22,11 @@ export const withAuth = (WrappedComponent) => {
         public static async getInitialProps(
             ctx: NextPageContext & NextJSContext<IRootState, IBlogAction>,
         ) {
-            // const url = ctx.isServer
-            //     ? ctx.req.url
-            //     : !!ctx.asPath
-            //     ? ctx.asPath
-            //     : normalizeReturnUrl(ctx.pathname, ctx.query);
+            const url = ctx.isServer
+                ? ctx.req.url
+                : !!ctx.asPath
+                ? ctx.asPath
+                : normalizeReturnUrl(ctx.pathname, ctx.query);
 
             // console.log('withAuth ==> url: ', url);
 
@@ -42,7 +42,7 @@ export const withAuth = (WrappedComponent) => {
             return {
                 ...pageProps,
                 me,
-                // returnUrl: url,
+                returnUrl: url,
             };
         }
 

@@ -18,7 +18,10 @@ import DefaultLayout from '../components/DefaultLayout';
 import { actionTypes } from '../reducers/actionTypes';
 import { SignInFormValidator } from '../helpers/SignInFormValidator';
 import { IRootState, IUserState } from '../typings/reduxStates';
-import { LOCAL_STORAGE_KEY_JWT } from '../typings/constant';
+import {
+    LOCAL_STORAGE_KEY_JWT,
+    LOCAL_STORAGE_KEY_SAVED_AT,
+} from '../typings/constant';
 
 const validator = new SignInFormValidator();
 
@@ -45,16 +48,19 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
     useEffect(() => {
         if (me && me.id) {
             console.log('returnUrl', returnUrl);
+            let storage: Storage;
             if (remember) {
-                // window.localStorage.removeItem(LOCAL_STORAGE_KEY_JWT);
-                const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEY_JWT);
-                if (!jwt || jwt !== token) {
-                    window.localStorage.setItem(LOCAL_STORAGE_KEY_JWT, token);
-                }
+                storage = window.localStorage;
+            } else {
+                storage = window.sessionStorage;
+            }
 
-                console.debug(
-                    'token saved. :',
-                    window.localStorage.getItem(LOCAL_STORAGE_KEY_JWT),
+            const jwt = storage.getItem(LOCAL_STORAGE_KEY_JWT);
+            if (!jwt || jwt !== token) {
+                storage.setItem(LOCAL_STORAGE_KEY_JWT, token);
+                storage.setItem(
+                    LOCAL_STORAGE_KEY_SAVED_AT,
+                    new Date().getUTCMilliseconds().toString(),
                 );
             }
 
@@ -65,7 +71,7 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
             setPassword('');
             setPasswordError('');
         }
-    }, [me]);
+    }, [me, token]);
 
     useEffect(() => {
         setEmail('');

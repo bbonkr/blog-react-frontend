@@ -22,6 +22,9 @@ import ImageViewer from './ImageViewer';
 import CroppedImage from './CroppedImage';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, IMeState } from '../typings/reduxStates';
+import { appOptions } from '../config/appOptions';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IImageModel } from '../typings/dto';
 
 const Paragraph = Typography.Paragraph;
 const Dragger = Upload.Dragger;
@@ -136,14 +139,16 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     );
 
     const onClickDeleteFile = useCallback(
-        (media) => () => {
+        (media: IImageModel) => () => {
             Modal.confirm({
                 title: 'Do you want to delete this file?',
                 content: `${media.fileName}${media.fileExtension}`,
                 onOk: () => {
-                    dispatch({
+                    dispatch<IBlogAction>({
                         type: actionTypes.DELETE_MY_MEDIA_FILES_CALL,
-                        data: media.id,
+                        data: {
+                            id: media.id,
+                        },
                     });
                 },
                 onCancel: null,

@@ -24,6 +24,7 @@ export const initialState: IMeState = {
     categoryNextPageToken: '',
     categoryLimit: 10,
     categoriesCount: 0,
+    categoriesCurrentPage: 1,
 
     // tag
     tags: [],

@@ -1,3 +1,8 @@
+/**
+ * 리덕스 액션
+ * !! http 요청이 필요한 액션은 _CALL, _DONE, _FAIL 접미어를 사용
+ * _CALL 접미어가 붙은 경우 http 요청을 위한 axios 설정이 추가됩니다.
+ */
 export enum actionTypes {
     // category
     LOAD_CATEGORIES_CALL = 'LOAD_CATEGORIES_CALL',

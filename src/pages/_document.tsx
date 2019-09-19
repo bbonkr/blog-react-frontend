@@ -33,6 +33,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
         /* IE 지원하려면 true */
         const ieSupport = false;
 
+        console.info('[APP] _document render');
         return (
             <html {...htmlAttrs}>
                 <head>

@@ -5,7 +5,10 @@ import 'antd/dist/antd.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState, IUserState } from '../typings/reduxStates';
 import { actionTypes } from '../reducers/actionTypes';
-import { LOCAL_STORAGE_KEY_JWT } from '../typings/constant';
+import {
+    LOCAL_STORAGE_KEY_JWT,
+    LOCAL_STORAGE_KEY_SAVED_AT,
+} from '../typings/constant';
 
 export interface IAppLayoutProps {
     children: React.ReactNode;
@@ -21,8 +24,42 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
     const { me, token } = useSelector<IRootState, IUserState>((s) => s.user);
 
     useEffect(() => {
+        console.debug('[APP] AppLayout token ==> ', token);
         if (!token) {
-            const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEY_JWT);
+            let jwt: string;
+            const jwtLocalStorage = window.localStorage.getItem(
+                LOCAL_STORAGE_KEY_JWT,
+            );
+            const jwtLocalStorageSavedAt = window.localStorage.getItem(
+                LOCAL_STORAGE_KEY_SAVED_AT,
+            );
+
+            const jwtSessionStorage = window.sessionStorage.getItem(
+                LOCAL_STORAGE_KEY_JWT,
+            );
+            const jwtSessionStorageSavedAt = window.sessionStorage.getItem(
+                LOCAL_STORAGE_KEY_SAVED_AT,
+            );
+
+            if (jwtLocalStorage && jwtSessionStorage) {
+                const l = parseInt(jwtLocalStorageSavedAt, 10);
+                const s = parseInt(jwtSessionStorageSavedAt, 10);
+
+                if (l > s) {
+                    jwt = jwtLocalStorage;
+                } else {
+                    jwt = jwtSessionStorage;
+                }
+            } else if (jwtLocalStorage) {
+                jwt = jwtLocalStorage;
+            } else if (jwtSessionStorage) {
+                jwt = jwtSessionStorage;
+            } else {
+                jwt = null;
+            }
+
+            console.debug('[APP] AppLayout jwt ==> ', jwt);
+
             if (jwt) {
                 // _token = jwt;
                 dispatch({
@@ -40,6 +77,8 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
             });
         }
     }, []);
+
+    console.info('[APP] AppLayout render');
 
     return (
         <div style={{ minHeight: '100vh' }}>

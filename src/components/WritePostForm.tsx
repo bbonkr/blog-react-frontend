@@ -15,11 +15,16 @@ import FileList from './FileList';
 import { WriteFormValaidator } from '../helpers/WriteFormValaidator';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, IMeState } from '../typings/reduxStates';
+import TextArea from 'antd/lib/input/TextArea';
+import { ContentTextArea } from '../styledComponents/ContentTextArea';
+import { MarkdownPreview } from '../styledComponents/MarkdownPreview';
+import { ShowNotification } from './ShowNotification';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 const SELECT_FILE_TARGET_MARKDOWN = 'markdown';
 const SELECT_FILE_TARGET_COVERIMAGE = 'coverimage';
-const TextArea = Input.TextArea;
+// const TextArea = Input.TextArea;
+
 export interface IWritePostFormProps {
     id?: number;
 }
@@ -87,8 +92,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
     const [markdownErrorMessage, setMarkdownErrorMessage] = useState('');
     const [categoriesErrorMessage, setCategoriesErrorMessage] = useState('');
 
-    // const markdownRef = React.createRef();
-    const markdownRef = useRef(null);
+    const markdownRef: React.LegacyRef<HTMLTextAreaElement> = useRef();
 
     useEffect(() => {
         if (id && myPost) {
@@ -235,10 +239,10 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
         (item) => {
             // todo 확인 필요 textAreaRef.refs.input <= HTMLTextAreaElement
             const textAreaRef = markdownRef.current;
-            const textArea = textAreaRef.refs.input as HTMLTextAreaElement;
-            const startIndex = textArea.selectionStart;
+
+            const startIndex = textAreaRef.selectionStart;
             const imageItem = `![${item.fileName}${item.fileExtension}](${item.src})\n`;
-            const currentValue = textArea.value;
+            const currentValue = textAreaRef.value;
             const newValue = `${currentValue.slice(
                 0,
                 startIndex,
@@ -289,7 +293,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                 coverImage: (coverImage || '').trim(),
             };
 
-            const { valid } = Validator.validate(formData);
+            const { valid, messages } = Validator.validate(formData);
             if (valid) {
                 if (!slug || slug.trim().length === 0) {
                     setSlug(title.replace(/\s+/g, '-').toLowerCase());
@@ -307,6 +311,11 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                         data: formData,
                     });
                 }
+            } else {
+                ShowNotification({
+                    title: '알림',
+                    message: messages.join(' '),
+                });
             }
         },
         [
@@ -352,13 +361,12 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                                     <Icon type='file-image' /> Insert image
                                 </Button>
                             </div>
-                            <Input.TextArea
+                            <ContentTextArea
                                 ref={markdownRef}
                                 value={markdown}
                                 onChange={onChangeMarkdown}
                                 placeholder={PLACEHOLDER_MARKDOWN}
-                                autosize={{ minRows: 10, maxRows: 20 }}
-                            />
+                                rows={10}></ContentTextArea>
                         </Tabs.TabPane>
                         <Tabs.TabPane
                             tab={
@@ -367,7 +375,10 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                                 </span>
                             }
                             key='preview'>
-                            <Markdown source={markdown} escapeHtml={false} />
+                            <MarkdownPreview
+                                source={markdown}
+                                escapeHtml={false}
+                            />
                         </Tabs.TabPane>
                         {/* <Tabs.TabPane
                             tab={

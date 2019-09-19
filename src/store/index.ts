@@ -58,11 +58,19 @@ const setTokenMiddleware = (store: Store<IRootState, IBlogAction>) => (
             action.type,
         );
 
+        axios.defaults = {
+            ...axios.defaults,
+            baseURL: 'http://localhost:5000/api',
+            timeout: 180000,
+        };
+
         if (token) {
             axios.defaults.headers = {
                 ...axios.defaults.headers,
                 Authorization: `bearer ${token}`,
             };
+
+            // console.debug('[AXIOS] request config:', axios.defaults);
         }
     }
 

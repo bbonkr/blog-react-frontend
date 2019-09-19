@@ -77,6 +77,8 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     //     [currentUrl, dispatch],
     // );
 
+    console.info('[APP] DefaultLayout render');
+
     return (
         <div style={{ minHeight: '100%' }}>
             <Layout style={{ minHeight: '100%' }}>

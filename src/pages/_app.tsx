@@ -83,24 +83,6 @@ class BlogApp extends App<IBlogAppProp, null, null> {
         return { pageProps };
     }
 
-    // componentDidMount() {
-    //     const state: IRootState = this.props.store.getState();
-    //     const { me, token } = state.user;
-    //     let _token = token;
-    //     if (!_token) {
-    //         const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEY_JWT);
-    //         if (jwt) {
-    //             _token = jwt;
-    //         }
-    //     }
-
-    //     if (!me && _token) {
-    //         this.props.store.dispatch({
-    //             type: actionTypes.ME_CALL,
-    //         });
-    //     }
-    // }
-
     public render() {
         const { Component, store, pageProps, returnUrl } = this.props;
         const fbAdmin = appOptions.fbAdmin;
@@ -173,6 +155,8 @@ class BlogApp extends App<IBlogAppProp, null, null> {
                 },
             ],
         };
+
+        console.info('[APP] _app render');
 
         return (
             <Fragment>

@@ -7,6 +7,7 @@ import React, {
 import { PageHeader, Carousel, Icon, Typography } from 'antd';
 import FullSizeModal from '../styledComponents/FullSizeModal';
 import { IImageModel } from '../typings/dto';
+import { appOptions } from '../config/appOptions';
 
 export interface IImageViewerProps {
     files: IImageModel[];
@@ -68,10 +69,15 @@ const ImageViewer: FunctionComponent<IImageViewerProps> = ({
 
             <Carousel style={{ width: '100%' }} afterChange={onAafterChange}>
                 {files.map((f) => {
+                    let src = f.src;
+                    if (f.src.startsWith('/')) {
+                        src = `${appOptions.apiBaseUrl}${f.src}`;
+                    }
+
                     return (
                         <div key={f.id} style={{ textAlign: 'center' }}>
                             <img
-                                src={f.src}
+                                src={src}
                                 alt={`${f.fileName}${f.fileExtension}`}
                                 style={{ maxWidth: '100%', margin: '0 auto' }}
                             />

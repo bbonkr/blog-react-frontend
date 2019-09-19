@@ -107,6 +107,7 @@ function* watchWritePost() {
 
 function loadCategoriesApi(query) {
     const { limit, keyword, page } = query;
+
     return http().get(
         `/me/categories?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
@@ -114,31 +115,34 @@ function loadCategoriesApi(query) {
     );
 }
 
-function* loadCategories(action) {
+function* loadCategories(action: IBlogAction) {
     try {
         const { limit, keyword, page } = action.data;
-        const result = yield call(loadCategoriesApi, {
+        console.debug('[DEBUG]: category ==> ', action.data);
+        const result: AxiosResponse<
+            IJsonResult<IListResult<ICategoryModel>>
+        > = yield call(loadCategoriesApi, {
             page: page || 1,
             limit,
             keyword,
         });
-        const resultData = result.data as IJsonResult<
-            IListResult<ICategoryModel>
-        >;
-        const { success, data, message } = resultData;
-        if (success) {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_MY_CATEGORIES_DONE,
-                data: data,
-            });
-        } else {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_MY_CATEGORIES_FAIL,
-                error: new Error(message),
-                message: message,
-            });
+
+        const { success, data, message } = result.data;
+
+        console.debug('[DEBUG]: categories ==> ', data);
+
+        if (!success) {
+            throw new Error(message);
         }
+
+        yield put<IBlogAction>({
+            type: actionTypes.LOAD_MY_CATEGORIES_DONE,
+            data: {
+                ...data,
+            },
+        });
     } catch (e) {
+        console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_MY_CATEGORIES_FAIL,
             error: e,
@@ -410,9 +414,13 @@ function deleteMediaFileApi(id) {
 
 function* deleteMediaFile(action) {
     try {
-        const result = yield call(deleteMediaFileApi, action.data);
-        const resultData = result.data as IJsonResult<number>;
-        const { success, data, message } = resultData;
+        const { id } = action.data;
+        const result: AxiosResponse<IJsonResult<number>> = yield call(
+            deleteMediaFileApi,
+            id,
+        );
+
+        const { success, data, message } = result.data;
         if (success) {
             yield put<IBlogAction>({
                 type: actionTypes.DELETE_MY_MEDIA_FILES_DONE,

@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useCallback } from 'react';
 import { IImageModel } from '../typings/dto';
+import { appOptions } from '../config/appOptions';
 
 export interface ICroppedImageProps {
     image: IImageModel;
@@ -22,7 +23,10 @@ const CroppedImage: FunctionComponent<ICroppedImageProps> = ({
         },
         [],
     );
-
+    let src = decodeURIComponent(image.src);
+    if (src.startsWith('/')) {
+        src = `${appOptions.apiBaseUrl}${src}`;
+    }
     return (
         <>
             <figure
@@ -38,7 +42,7 @@ const CroppedImage: FunctionComponent<ICroppedImageProps> = ({
                         width: '177.777%',
                         margin: '0 -38.885%',
                     }}
-                    src={decodeURIComponent(image.src)}
+                    src={src}
                     alt={altText || filename}
                     onClick={onClickImage}
                 />

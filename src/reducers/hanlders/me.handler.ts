@@ -64,8 +64,8 @@ export class MeHanlder {
             : true;
         this.draft.loadCategoriesErrorReason = '';
     }
-    // LOAD_MY_CATEGORIES_DONE
 
+    // LOAD_MY_CATEGORIES_DONE
     public loadMyCategoriesDone(action: IBlogAction): void {
         this.draft.loadingCategories = false;
         // draft.categories = action.data;
@@ -78,12 +78,12 @@ export class MeHanlder {
             );
             if (postIndex < 0) {
                 this.draft.categories.push(v);
-                this.draft.categoryNextPageToken = `${v.id}`;
+                // this.draft.categoryNextPageToken = `${v.id}`;
             }
         });
         this.draft.categoriesCount = total;
         this.draft.hasMoreCategories =
-            action.data.items.length === this.draft.categoryLimit;
+            records.length === this.draft.categoryLimit;
         // draft.categorySearchKeyword = action.keyword;
         // draft.categoriesCount = total;
     }

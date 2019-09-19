@@ -1,4 +1,10 @@
-import { IPostModel, ICategoryModel, ITagModel, IUserModel } from './dto';
+import {
+    IPostModel,
+    ICategoryModel,
+    ITagModel,
+    IUserModel,
+    IImageModel,
+} from './dto';
 
 export interface IRootState {
     user: IUserState;
@@ -31,6 +37,7 @@ export interface IMeState {
     categoryNextPageToken?: string;
     categoryLimit: number;
     categoriesCount: number;
+    categoriesCurrentPage: number;
 
     // tag
     tags: ITagModel[];
@@ -47,7 +54,7 @@ export interface IMeState {
     writePostErrorReason?: string;
 
     // media
-    mediaFiles: any[];
+    mediaFiles: IImageModel[];
     // mediaFilesNextPageToken?: string;
     mediaFilesSearchKeyword?: string;
     mediaFilesCurrentPage?: number;

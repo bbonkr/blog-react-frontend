@@ -17,6 +17,7 @@ import IconLike from './IconLike';
 import StackGrid from 'react-stack-grid';
 import { withSize, SizeMeProps } from 'react-sizeme';
 import { IPostModel } from '../typings/dto';
+import { appOptions } from '../config/appOptions';
 
 const FullWidthButton = styled(Button)`
     width: 100%;
@@ -39,6 +40,17 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
     // const { me } = useSelector<IRootState, IUserState>(s => s.user);
     const { width } = size;
     const [cardWidth, setCardWidth] = useState('100%');
+
+    useEffect(() => {
+        const images = document.getElementsByTagName('img');
+
+        for (let i = 0; i < images.length; i++) {
+            const img = images.item(i);
+            if (img.src.startsWith('/')) {
+                img.src = `${appOptions.apiBaseUrl}${img.src}`;
+            }
+        }
+    }, []);
 
     useEffect(() => {
         let columnWidth = '100%';
@@ -83,13 +95,17 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                     {posts &&
                         posts.map((post) => {
                             const { title, excerpt, createdAt } = post;
+                            let coverSrc = post.coverImage;
+                            if (coverSrc && coverSrc.startsWith('/')) {
+                                coverSrc = `${appOptions.apiBaseUrl}${coverSrc}`;
+                            }
                             return (
                                 <div key={post.id}>
                                     <Card
                                         cover={
                                             post.coverImage && (
                                                 <img
-                                                    src={post.coverImage}
+                                                    src={coverSrc}
                                                     alt={post.title}
                                                 />
                                             )
