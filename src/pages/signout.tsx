@@ -18,12 +18,14 @@ const SignOut: FunctionComponent = () => {
     >((s) => s.user);
 
     useEffect(() => {
-        if (!me) {
-            window.sessionStorage.removeItem(LOCAL_STORAGE_KEY_JWT);
-            window.localStorage.removeItem(LOCAL_STORAGE_KEY_JWT);
-            window.sessionStorage.removeItem(LOCAL_STORAGE_KEY_SAVED_AT);
-            window.localStorage.removeItem(LOCAL_STORAGE_KEY_SAVED_AT);
+        window.sessionStorage.removeItem(LOCAL_STORAGE_KEY_JWT);
+        window.localStorage.removeItem(LOCAL_STORAGE_KEY_JWT);
+        window.sessionStorage.removeItem(LOCAL_STORAGE_KEY_SAVED_AT);
+        window.localStorage.removeItem(LOCAL_STORAGE_KEY_SAVED_AT);
+    }, []);
 
+    useEffect(() => {
+        if (!me) {
             Router.push(signOutReturnUrl || '/');
         }
     }, [me, signOutReturnUrl]);

@@ -33,6 +33,7 @@ export class UserHandler {
     public signOutDone(): void {
         const { message, returnUrl } = this.action.data;
         this.draft.me = null;
+        this.draft.token = null;
         this.draft.signOutLoading = false;
         this.draft.signOutReturnUrl = returnUrl || '/';
     }

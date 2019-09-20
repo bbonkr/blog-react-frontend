@@ -1,5 +1,6 @@
 import { IUserCategoryPostsState } from '../../typings/reduxStates';
 import { IBlogAction } from '../../typings/IBlogAction';
+import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface IUserCategoryPostsHandlerValue {
     draft: IUserCategoryPostsState;
@@ -68,5 +69,12 @@ export class UserCategoryPostsHandler {
         const { message } = this.action;
         this.draft.userCategoryPostsErrorReason = message;
         this.draft.userCategoryPostsLoading = false;
+    }
+    // UPDATE_CATEGORY_POSTS_LIKERS
+    public updateCategoryPostsLikers() {
+        applyUpdatedPostLikers(
+            this.draft.userCategoryPosts,
+            this.action.data.post,
+        );
     }
 }

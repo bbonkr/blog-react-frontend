@@ -1,6 +1,7 @@
 import { ISinglePostState } from '../../typings/reduxStates';
 import { IBlogAction } from '../../typings/IBlogAction';
 import { IPostModel } from '../../typings/dto';
+import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface ISinglePostHandlerValue {
     draft: ISinglePostState;
@@ -33,5 +34,10 @@ export class SinglePostHandler {
     public loadSinglePostFail(): void {
         this.draft.loadSinglePostErrorReason = this.action.message;
         this.draft.loadingPost = false;
+    }
+
+    // UPDATE_SINGLE_POST_LIKERS
+    public updateSinglePostLikers(): void {
+        applyUpdatedPostLikers(this.draft.singlePost, this.action.data.post);
     }
 }

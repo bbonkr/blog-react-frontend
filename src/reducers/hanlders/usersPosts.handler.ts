@@ -1,6 +1,7 @@
 import { IUsersPostsState } from '../../typings/reduxStates';
 import { IBlogAction } from '../../typings/IBlogAction';
 import { IListResult, IPostModel } from '../../typings/dto';
+import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface IUserHandlerValue {
     draft: IUsersPostsState;
@@ -51,5 +52,10 @@ export class UsersPostsHandler {
         const { message } = this.action;
         this.draft.loadingUsersPosts = false;
         this.draft.loadUsersPostsErrorReason = message;
+    }
+
+    // UPDATE_USERS_POSTS_LIKERS
+    public updateUsersPostsLikers() {
+        applyUpdatedPostLikers(this.draft.usersPosts, this.action.data.post);
     }
 }

@@ -31,6 +31,9 @@ const reducer = (state: IUsersPostsState = initialState, action: IBlogAction) =>
                 // draft.loadUsersPostsErrorReason = action.reason;
                 handler.loadUsersPostsFail();
                 break;
+            case actionTypes.UPDATE_USERS_POSTS_LIKERS:
+                handler.updateUsersPostsLikers();
+                break;
             default:
                 break;
         }

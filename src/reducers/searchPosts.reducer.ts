@@ -2,6 +2,7 @@ import { ISearchPostsState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
+import { applyUpdatedPostLikers } from './helpers/updatePostLikers';
 
 export const initialState: ISearchPostsState = {
     searchPosts: [],
@@ -49,6 +50,9 @@ const reducer = (
             case actionTypes.LOAD_SEARCH_POSTS_FAIL:
                 draft.searchPostsLoading = false;
                 draft.searchPostsErrorReason = action.message;
+                break;
+            case actionTypes.UPDATE_SEARCH_POSTS_LIKERS:
+                applyUpdatedPostLikers(draft.searchPosts, action.data.post);
                 break;
             default:
                 break;

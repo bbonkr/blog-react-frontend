@@ -30,6 +30,9 @@ const reducer = (state: IPostsState = initialState, action: IBlogAction) =>
             case actionTypes.LOAD_POSTS_FAIL:
                 handler.loadPostsFail();
                 break;
+            case actionTypes.UPDATE_POSTS_LIKERS:
+                handler.updatePostsLikers();
+                break;
             default:
                 break;
         }

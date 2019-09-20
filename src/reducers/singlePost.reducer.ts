@@ -35,6 +35,9 @@ const reducer = (state: ISinglePostState = initialState, action: IBlogAction) =>
                 // draft.loadingPost = false;
                 handler.loadSinglePostFail();
                 break;
+            case actionTypes.UPDATE_SINGLE_POST_LIKERS:
+                handler.updateSinglePostLikers();
+                break;
             default:
                 break;
         }

@@ -362,18 +362,54 @@ function* addUserLikePost(action) {
         const resultData = result.data as IJsonResult<IPostModel>;
         const { success, data, message } = resultData;
 
-        if (success) {
-            yield put<IBlogAction>({
-                type: actionTypes.ADD_LIKE_POST_DONE,
-                data: data,
-            });
-        } else {
-            yield put<IBlogAction>({
-                type: actionTypes.ADD_LIKE_POST_FAIL,
-                error: new Error(message),
-                message: message,
-            });
+        if (!success) {
+            throw new Error(message);
         }
+
+        yield put<IBlogAction>({
+            type: actionTypes.ADD_LIKE_POST_DONE,
+            data: data,
+        });
+
+        // 좋아요 업데이트
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_CATEGORY_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_SEARCH_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_SINGLE_POST_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_TAG_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_USERS_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
     } catch (e) {
         console.error(e);
         yield put<IBlogAction>({
@@ -395,13 +431,62 @@ function removeUserLikePostApi(data) {
 
 function* removeUserLikePost(action) {
     try {
-        const result = yield call(removeUserLikePostApi, action.data);
+        const result: AxiosResponse<IJsonResult<IPostModel>> = yield call(
+            removeUserLikePostApi,
+            action.data,
+        );
+        const { success, data, message } = result.data;
+
+        if (!success) {
+            throw new Error(message);
+        }
+
         yield put<IBlogAction>({
             type: actionTypes.REMOVE_LIKE_POST_DONE,
             data: result.data,
         });
+
+        // 좋아요 업데이트
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_CATEGORY_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_SEARCH_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_SINGLE_POST_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_TAG_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
+        yield put<IBlogAction>({
+            type: actionTypes.UPDATE_USERS_POSTS_LIKERS,
+            data: {
+                post: data,
+            },
+        });
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.REMOVE_LIKE_POST_FAIL,
             error: e,

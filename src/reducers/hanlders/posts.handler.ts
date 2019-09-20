@@ -1,6 +1,7 @@
 import { IBlogAction } from '../../typings/IBlogAction';
 import { IListResult, IPostModel } from '../../typings/dto';
 import { IPostsState } from '../../typings/reduxStates';
+import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface IPostHandlerValue {
     draft: IPostsState;
@@ -55,5 +56,10 @@ export class PostsHandler {
     public loadPostsFail(): void {
         this.draft.loadingPosts = false;
         this.draft.loadPostErrorReason = this.action.message;
+    }
+
+    // UPDATE_POSTS_LIKERS
+    public updatePostsLikers(): void {
+        applyUpdatedPostLikers(this.draft.posts, this.action.data.post);
     }
 }

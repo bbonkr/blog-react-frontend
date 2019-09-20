@@ -55,6 +55,9 @@ const reducer = (state: ITagPostsState = initialState, action: IBlogAction) =>
                 // draft.tagPostsErrorReason = action.message;
                 handler.loadTagPostsFail();
                 break;
+            case actionTypes.UPDATE_TAG_POSTS_LIKERS:
+                handler.updateTagPostsLikers();
+                break;
             default:
                 break;
         }

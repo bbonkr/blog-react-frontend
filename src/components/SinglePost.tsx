@@ -9,10 +9,10 @@ import LinkUsersPosts from './LinkUsersPosts';
 import IconLike from './IconLike';
 import { IPostModel } from '../typings/dto';
 import Prism from 'prismjs';
+import { appOptions } from '../config/appOptions';
 
 import '../styles/prism.css';
 import '../styles/singlepost.css';
-import { appOptions } from '../config/appOptions';
 
 export interface ISinglePostProps {
     post: IPostModel;

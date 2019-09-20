@@ -1,5 +1,6 @@
 import { ITagPostsState } from '../../typings/reduxStates';
 import { IBlogAction } from '../../typings/IBlogAction';
+import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface ITagPostsHandlerValue {
     draft: ITagPostsState;
@@ -48,5 +49,10 @@ export class TagPostsHandler {
     public loadTagPostsFail(): void {
         this.draft.tagPostsLoading = false;
         this.draft.tagPostsErrorReason = this.action.message;
+    }
+
+    // UPDATE_TAG_POSTS_LIKERS
+    public updateTagPostsLikers() {
+        applyUpdatedPostLikers(this.draft.tagPosts, this.action.data.post);
     }
 }

@@ -77,6 +77,9 @@ const reducer = (
                 // draft.userCategoryPostsLoading = false;
                 handler.loadUserCategoryPostsFail();
                 break;
+            case actionTypes.UPDATE_CATEGORY_POSTS_LIKERS:
+                handler.updateCategoryPostsLikers();
+                break;
             default:
                 break;
         }
