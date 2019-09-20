@@ -26,6 +26,9 @@ import { ContentWrapper } from '../../styledComponents/Wrapper';
 import { withAuth } from '../../utils/auth';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IRootState, IUserState, IMeState } from '../../typings/reduxStates';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../../typings/IBlogAction';
 
 const Me: FunctionComponent = () => {
     const { me } = useSelector<IRootState, IUserState>((state) => state.user);
@@ -120,17 +123,22 @@ const Me: FunctionComponent = () => {
     );
 };
 
-Me.getInitialProps = async (context) => {
-    context.store.dispatch({
-        type: actionTypes.LOAD_STAT_GENERAL_CALL,
-        data: '',
-    });
+Me.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+) => {
+    const state = context.store.getState();
 
-    context.store.dispatch({
-        type: actionTypes.LOAD_STAT_READ_CALL,
-        data: '',
-    });
+    const { me } = state.user;
 
+    if (me) {
+        context.store.dispatch({
+            type: actionTypes.LOAD_STAT_GENERAL_CALL,
+        });
+
+        context.store.dispatch({
+            type: actionTypes.LOAD_STAT_READ_CALL,
+        });
+    }
     return {};
 };
 

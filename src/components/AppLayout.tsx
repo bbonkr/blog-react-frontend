@@ -66,13 +66,15 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
                 });
             }
         }
+    }, []);
 
-        if (!me) {
+    useEffect(() => {
+        if (!me && token) {
             dispatch({
                 type: actionTypes.ME_CALL,
             });
         }
-    }, []);
+    }, [me, token]);
 
     // console.info('[APP] AppLayout render');
 

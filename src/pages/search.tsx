@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { Input, Divider, Spin } from 'antd';
 import ListExcerpt from '../components/ListExcerpt';
 import { ContentWrapper } from '../styledComponents/Wrapper';
@@ -19,7 +18,9 @@ const Search = ({ keyword }) => {
         searchPostsLoading,
         searchPostsKeyword,
         postsLimit,
+        searchPostsCurrentPage,
     } = useSelector<IRootState, ISearchPostsState>((s) => s.searchPosts);
+
     const onChangeKeyword = useCallback((e) => {
         setKeywordText(e.target.value);
     }, []);
@@ -30,7 +31,7 @@ const Search = ({ keyword }) => {
                 dispatch({
                     type: actionTypes.LOAD_SEARCH_POSTS_CALL,
                     data: {
-                        pageToken: null,
+                        page: 1,
                         limit: postsLimit,
                         keyword: value,
                     },
@@ -48,7 +49,7 @@ const Search = ({ keyword }) => {
         dispatch({
             type: actionTypes.LOAD_SEARCH_POSTS_CALL,
             data: {
-                pageToken: `${pageToken}`,
+                page: (searchPostsCurrentPage || 0) + 1,
                 limit: postsLimit,
                 keyword: searchPostsKeyword,
             },
@@ -90,7 +91,7 @@ Search.getInitialProps = async (context) => {
         context.store.dispatch({
             type: actionTypes.LOAD_SEARCH_POSTS_CALL,
             data: {
-                pageToken: null,
+                page: null,
                 limit: postsLimit,
                 keyword: keyword,
             },
@@ -100,14 +101,6 @@ Search.getInitialProps = async (context) => {
     return {
         keyword,
     };
-};
-
-Search.defaultProps = {
-    keyword: '',
-};
-
-Search.propTypes = {
-    keyword: PropTypes.string,
 };
 
 export default Search;

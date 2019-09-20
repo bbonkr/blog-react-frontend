@@ -260,6 +260,7 @@ export interface ISearchPostsState {
     searchPostsHasMore: boolean;
     searchPostsKeyword?: string;
     postsLimit: number;
+    searchPostsCurrentPage: number;
 }
 
 export interface IUsersPostsState {

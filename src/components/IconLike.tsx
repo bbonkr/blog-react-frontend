@@ -45,10 +45,10 @@ const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
 
     const isMyPost: boolean = useMemo(() => {
         if (me) {
-            return me.id === post.userId;
+            return me.id === post.user.id;
         }
         return false;
-    }, []);
+    }, [me, post.user.id]);
 
     const description: string = useMemo(() => {
         if (isMyPost) {

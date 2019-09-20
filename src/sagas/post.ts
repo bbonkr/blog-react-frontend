@@ -13,6 +13,7 @@ import { actionTypes } from '../reducers/actionTypes';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IDictionary } from '../typings/IDictionary';
 import { IJsonResult, IListResult, IPostModel } from '../typings/dto';
+import { AxiosResponse } from 'axios';
 
 function loadPostsApi(query: IDictionary<any>) {
     const { page, pageToken, limit, keyword } = query;
@@ -305,9 +306,9 @@ function* watchLaodUserCatetoryPosts() {
 }
 
 function loadSearchPostsApi(query) {
-    const { pageToken, limit, keyword } = query;
+    const { page, pageToken, limit, keyword } = query;
     return http().get(
-        `/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
+        `/posts?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
@@ -315,25 +316,26 @@ function loadSearchPostsApi(query) {
 
 function* loadSearchPosts(action) {
     try {
-        const { keyword } = action.data;
-        const result = yield call(loadSearchPostsApi, action.data);
-        const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
-        const { success, data, message } = resultData;
-        if (success) {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_SEARCH_POSTS_DONE,
-                data: {
-                    ...data,
-                    keyword: keyword,
-                },
-            });
-        } else {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_SEARCH_POSTS_FAIL,
-                error: new Error(message),
-                message: message,
-            });
+        const { page, keyword } = action.data;
+        const result: AxiosResponse<
+            IJsonResult<IListResult<IPostModel>>
+        > = yield call(loadSearchPostsApi, {
+            ...action.data,
+            page: action.data.page || 1,
+        });
+        const { success, data, message } = result.data;
+
+        if (!success) {
+            throw new Error(message);
         }
+        yield put<IBlogAction>({
+            type: actionTypes.LOAD_SEARCH_POSTS_DONE,
+            data: {
+                ...data,
+                keyword: keyword,
+                page: page,
+            },
+        });
     } catch (e) {
         // console.error(e);
         yield put<IBlogAction>({

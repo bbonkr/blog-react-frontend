@@ -11,6 +11,7 @@ export const initialState: ISearchPostsState = {
     searchPostsHasMore: false,
     searchPostsKeyword: '',
     postsLimit: 10, // todo 상수로 변경
+    searchPostsCurrentPage: 1,
 };
 
 const reducer = (
@@ -30,19 +31,20 @@ const reducer = (
                     : true;
                 break;
             case actionTypes.LOAD_SEARCH_POSTS_DONE:
-                draft.searchPostsLoading = false;
                 action.data.records.forEach((v) => {
                     const index = draft.searchPosts.findIndex(
                         (x) => x.id === v.id,
                     );
                     if (index < 0) {
                         draft.searchPosts.push(v);
-                        draft.searchPostsPageToken = `${v.id}`;
+                        // draft.searchPostsPageToken = `${v.id}`;
                     }
                 });
                 draft.searchPostsHasMore =
                     action.data.records.length === draft.postsLimit;
+                draft.searchPostsCurrentPage = action.data.page;
                 draft.searchPostsKeyword = action.data.keyword;
+                draft.searchPostsLoading = false;
                 break;
             case actionTypes.LOAD_SEARCH_POSTS_FAIL:
                 draft.searchPostsLoading = false;
