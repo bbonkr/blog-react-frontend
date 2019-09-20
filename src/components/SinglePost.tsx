@@ -21,19 +21,6 @@ export interface ISinglePostProps {
 const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
     useEffect(() => {
         Prism.highlightAll();
-
-        const images = document.getElementsByTagName('img');
-
-        for (let i = 0; i < images.length; i++) {
-            const img = images.item(i);
-            img.onerror = (e) => {
-                img.src = `${appOptions.apiBaseUrl}${img.src}`;
-            };
-
-            if (img.src && img.src.startsWith('/')) {
-                img.src = `${appOptions.apiBaseUrl}${img.src}`;
-            }
-        }
     }, []);
 
     let coverImage = post.coverImage;

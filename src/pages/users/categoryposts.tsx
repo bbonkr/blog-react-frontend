@@ -9,6 +9,8 @@ import UserAvatar from '../../components/UserAvatar';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IRootState, IUserCategoryPostsState } from '../../typings/reduxStates';
+import { appOptions } from '../../config/appOptions';
+import Helmet from 'react-helmet';
 
 export interface IUserCategoryPostsProps {
     user: string;
@@ -19,6 +21,7 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
     user,
     category,
 }) => {
+    const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
         userCategoryPosts,
@@ -51,33 +54,43 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
     }, [category, dispatch, postsLimit, user, currentPage]);
 
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Spin spinning={userCategoryPostsLoading}>
-                    <PageHeader
-                        title={
-                            <div>
-                                <span>CATEGORY: </span>
-                                <LinkUsersPosts user={userCategoryPostsUser}>
-                                    <UserAvatar user={userCategoryPostsUser} />
-                                </LinkUsersPosts>
-                                <span>
-                                    {!!userCategoryPostsCategory &&
-                                        userCategoryPostsCategory.name}
-                                </span>
-                            </div>
-                        }
-                    />
-                    <Divider />
-                    <ListExcerpt
-                        posts={userCategoryPosts}
-                        hasMore={userCategoryPostsHasMore}
-                        loading={userCategoryPostsLoading}
-                        loadMoreHandler={onClickLoadMore}
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Helmet
+                title={`${userCategoryPostsUser &&
+                    userCategoryPostsUser.displayName}'s ${userCategoryPostsCategory &&
+                    userCategoryPostsCategory.name} posts | ${siteName}`}
+            />
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Spin spinning={userCategoryPostsLoading}>
+                        <PageHeader
+                            title={
+                                <div>
+                                    <span>CATEGORY: </span>
+                                    <LinkUsersPosts
+                                        user={userCategoryPostsUser}>
+                                        <UserAvatar
+                                            user={userCategoryPostsUser}
+                                        />
+                                    </LinkUsersPosts>
+                                    <span>
+                                        {!!userCategoryPostsCategory &&
+                                            userCategoryPostsCategory.name}
+                                    </span>
+                                </div>
+                            }
+                        />
+                        <Divider />
+                        <ListExcerpt
+                            posts={userCategoryPosts}
+                            hasMore={userCategoryPostsHasMore}
+                            loading={userCategoryPostsLoading}
+                            loadMoreHandler={onClickLoadMore}
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

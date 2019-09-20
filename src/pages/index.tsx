@@ -9,8 +9,11 @@ import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IRootState, IPostsState } from '../typings/reduxStates';
 import { Spin } from 'antd';
+import { appOptions } from '../config/appOptions';
+import Helmet from 'react-helmet';
 
 const Home: FunctionComponent = () => {
+    const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
         posts,
@@ -37,18 +40,21 @@ const Home: FunctionComponent = () => {
     }, [dispatch, currentPage, postsLimit]);
 
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Spin spinning={loadingPosts}>
-                    <ListExcerpt
-                        posts={posts}
-                        loading={loadingPosts}
-                        hasMore={hasMorePost}
-                        loadMoreHandler={onClickLoadMorePosts}
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Helmet title={`${siteName}`} />
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Spin spinning={loadingPosts}>
+                        <ListExcerpt
+                            posts={posts}
+                            loading={loadingPosts}
+                            hasMore={hasMorePost}
+                            loadMoreHandler={onClickLoadMorePosts}
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

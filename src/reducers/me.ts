@@ -288,7 +288,7 @@ const reducer = (state: IMeState = initialState, action: IBlogAction) =>
                 draft.uploading = true;
                 break;
             case actionTypes.UPLOAD_MY_MEDIA_FILES_DONE:
-                draft.mediaFiles = action.data.concat(draft.mediaFiles);
+                draft.mediaFiles = action.data.records.concat(draft.mediaFiles);
                 draft.uploading = false;
                 break;
             case actionTypes.UPLOAD_MY_MEDIA_FILES_FAIL:

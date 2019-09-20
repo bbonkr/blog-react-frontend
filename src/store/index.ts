@@ -6,6 +6,7 @@ import { MakeStoreOptions } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IRootState } from '../typings/reduxStates';
 import axios from 'axios';
+import { appOptions } from '../config/appOptions';
 
 export const configureStore = (
     initialState: IRootState,
@@ -60,7 +61,7 @@ const setTokenMiddleware = (store: Store<IRootState, IBlogAction>) => (
 
         axios.defaults = {
             ...axios.defaults,
-            baseURL: 'http://localhost:5000/api',
+            baseURL: `${appOptions.apiBaseUrl}/api`,
             timeout: 180000,
         };
 

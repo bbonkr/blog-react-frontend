@@ -27,9 +27,10 @@ export class SinglePostHandler {
 
     // LOAD_SINGLE_POST_DONE
     public loadSinglePostDone(): void {
-        this.draft.singlePost = this.action.data as IPostModel;
+        this.draft.singlePost = this.action.data.post as IPostModel;
         this.draft.loadingPost = false;
     }
+
     // LOAD_SINGLE_POST_FAIL
     public loadSinglePostFail(): void {
         this.draft.loadSinglePostErrorReason = this.action.message;

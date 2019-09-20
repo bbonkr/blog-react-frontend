@@ -7,12 +7,15 @@ import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, ITagPostsState } from '../typings/reduxStates';
+import Helmet from 'react-helmet';
+import { appOptions } from '../config/appOptions';
 
 export interface ITagProps {
     slug: string;
 }
 
 const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
+    const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
         tagPosts,
@@ -35,22 +38,25 @@ const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
         });
     }, [dispatch, currentPage, postsLimit, slug]);
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Spin spinning={tagPostsLoading}>
-                    <PageHeader
-                        title={`TAG: ${!!currentTag && currentTag.name}`}
-                    />
-                    <Divider />
-                    <ListExcerpt
-                        posts={tagPosts}
-                        hasMore={tagPostsHasMore}
-                        loading={tagPostsLoading}
-                        loadMoreHandler={loadMoreHandler}
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Helmet title={`${currentTag && currentTag.name} | ${siteName}`} />
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Spin spinning={tagPostsLoading}>
+                        <PageHeader
+                            title={`TAG: ${!!currentTag && currentTag.name}`}
+                        />
+                        <Divider />
+                        <ListExcerpt
+                            posts={tagPosts}
+                            hasMore={tagPostsHasMore}
+                            loading={tagPostsLoading}
+                            loadMoreHandler={loadMoreHandler}
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

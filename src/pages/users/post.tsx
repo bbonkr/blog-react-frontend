@@ -26,7 +26,7 @@ export interface IUsersPostProps {
 }
 
 const UsersPost: FunctionComponent = () => {
-    const siteName = 'nodeblog';
+    const siteName = appOptions.title;
     const { loadingPost, singlePost } = useSelector<
         IRootState,
         ISinglePostState

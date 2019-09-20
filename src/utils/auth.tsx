@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, FunctionComponent, useEffect } from 'react';
 import Router from 'next/router';
 import { Spin } from 'antd';
 import { normalizeReturnUrl } from '../helpers/stringHelper';
 import { NextJSContext } from 'next-redux-wrapper';
 import { NextPageContext } from 'next';
-import { IRootState } from '../typings/reduxStates';
+import { IRootState, IUserState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IUserModel } from '../typings/dto';
+import { IPageProps } from '../typings/IPageProps';
+import { useSelector } from 'react-redux';
 
 export interface IWithAuthProps {
     me: IUserModel;
@@ -16,6 +18,52 @@ export interface IWithAuthProps {
 export interface IWithAuthState {
     loading: boolean;
 }
+
+// export const withAuth = (WrappedComponent) => {
+//     const withAuthInternal: FunctionComponent<IWithAuthProps> = ({
+//         me,
+//         returnUrl,
+//     }) => {
+//         useEffect(() => {
+//             if (!this.props.me) {
+//                 const returnUrl = encodeURIComponent(
+//                     this.props.returnUrl ? this.props.returnUrl : '/',
+//                 );
+
+//                 Router.push(`/signin?returnUrl=${returnUrl}`);
+//             }
+
+//             this.setState({ loading: false });
+//         }, []);
+
+//         return <WrappedComponent {...this.props} />;
+//     };
+
+//     withAuthInternal.getInitialProps = async (
+//         ctx: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+//     ) => {
+//         const { me } = useSelector<IRootState, IUserState>((s) => s.user);
+//         const url = ctx.isServer
+//             ? ctx.req.url
+//             : ctx.asPath
+//             ? ctx.asPath
+//             : normalizeReturnUrl(ctx.pathname, ctx.query);
+
+//         let pageProps: any = {};
+
+//         if (WrappedComponent.getInitialProps) {
+//             pageProps = (await WrappedComponent.getInitialProps(ctx)) || {};
+//         }
+
+//         return {
+//             ...pageProps,
+//             me: me,
+//             returnUrl: url,
+//         };
+//     };
+
+//     return withAuthInternal;
+// };
 
 export const withAuth = (WrappedComponent) => {
     return class extends Component<IWithAuthProps, IWithAuthState> {
@@ -28,12 +76,12 @@ export const withAuth = (WrappedComponent) => {
                 ? ctx.asPath
                 : normalizeReturnUrl(ctx.pathname, ctx.query);
 
-            // console.log('withAuth ==> url: ', url);
+            console.log('withAuth ==> url: ', url);
 
             const state = ctx.store.getState();
             // const { store } = ctx;
             const { me } = state.user;
-            let pageProps = {};
+            let pageProps: any = {};
 
             if (WrappedComponent.getInitialProps) {
                 pageProps = (await WrappedComponent.getInitialProps(ctx)) || {};

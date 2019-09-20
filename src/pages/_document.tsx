@@ -55,16 +55,17 @@ class BlogDocument extends Document<IBlogDocumentProps> {
         const prefixDir = '/_next/';
         const cssFiles = this.props.files.filter((v) => v.endsWith('.css'));
 
-        const htmlAttrs = htmlAttributes.toComponent();
-        const bodyAttrs = bodyAttributes.toComponent();
+        // const htmlAttrs = htmlAttributes.toComponent();
+        // const bodyAttrs = bodyAttributes.toComponent();
 
         const prod = process.env.NODE_ENV === 'production';
         /* IE 지원하려면 true */
         const ieSupport = false;
 
         console.info('[APP] _document render');
+        // {...htmlAttrs} {...bodyAttrs}
         return (
-            <html {...htmlAttrs}>
+            <html {...htmlAttributes}>
                 <head>
                     {Object.values(helmet).map((el) => el.toComponent())}
 
@@ -82,7 +83,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                     {this.props.styleTags && this.props.styleTags.map((v) => v)}
                     {/* {this.props.styles} */}
                 </head>
-                <body {...bodyAttrs}>
+                <body {...bodyAttributes}>
                     <Main />
                     {/** IE supports */ prod && ieSupport && (
                         <script src='https://polyfill.io/v3/polyfill.min.js?features=es7%2Ces6%2Ces5%2Ces2017%2Ces2016%2Ces2015' />

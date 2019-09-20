@@ -24,7 +24,7 @@ app.prepare().then(() => {
 
     // logging https://github.com/expressjs/morgan
     server.use(morgan('dev'));
-
+    server.use('/', express.static(path.join(__dirname, 'static')));
     server.get('/category/:slug', (req, res) => {
         return app.render(req, res, '/category', { slug: req.params.slug });
     });

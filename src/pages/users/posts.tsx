@@ -13,12 +13,15 @@ import { IRootState, IUsersPostsState } from '../../typings/reduxStates';
 import { PageHeader, Divider, Spin } from 'antd';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import UserAvatar from '../../components/UserAvatar';
+import { appOptions } from '../../config/appOptions';
+import Helmet from 'react-helmet';
 
 export interface IUsersPostsProps {
     user: IUserModel;
 }
 
 const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
+    const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
         usersPosts,
@@ -41,31 +44,36 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
         });
     }, [dispatch, postsLimit, user, usersPosts]);
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Spin spinning={loadingUsersPosts}>
-                    <PageHeader
-                        title={
-                            <div>
-                                <LinkUsersPosts user={currentUser}>
-                                    <UserAvatar user={currentUser} />
-                                </LinkUsersPosts>
-                                <span>
-                                    {currentUser && currentUser.displayName}
-                                </span>
-                            </div>
-                        }
-                    />
-                    <Divider />
-                    <ListExcerpt
-                        posts={usersPosts}
-                        hasMore={hasMoreUsersPosts}
-                        loading={loadingUsersPosts}
-                        loadMoreHandler={onClickLoadMore}
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Helmet
+                title={`${currentUser.displayName}'s posts | ${siteName}`}
+            />
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Spin spinning={loadingUsersPosts}>
+                        <PageHeader
+                            title={
+                                <div>
+                                    <LinkUsersPosts user={currentUser}>
+                                        <UserAvatar user={currentUser} />
+                                    </LinkUsersPosts>
+                                    <span>
+                                        {currentUser && currentUser.displayName}
+                                    </span>
+                                </div>
+                            }
+                        />
+                        <Divider />
+                        <ListExcerpt
+                            posts={usersPosts}
+                            hasMore={hasMoreUsersPosts}
+                            loading={loadingUsersPosts}
+                            loadMoreHandler={onClickLoadMore}
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

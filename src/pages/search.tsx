@@ -6,10 +6,13 @@ import { ContentWrapper } from '../styledComponents/Wrapper';
 import DefaultLayout from '../components/DefaultLayout';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, ISearchPostsState } from '../typings/reduxStates';
+import Helmet from 'react-helmet';
+import { appOptions } from '../config/appOptions';
 
 const KEYWORD_INPUT_PLACEHOLDER = 'Searching keyword';
 
 const Search = ({ keyword }) => {
+    const siteName = appOptions.title;
     const dispatch = useDispatch();
     const [keywordText, setKeywordText] = useState(keyword);
     const {
@@ -57,28 +60,31 @@ const Search = ({ keyword }) => {
     }, [dispatch, postsLimit, searchPosts, searchPostsKeyword]);
 
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Spin spinning={searchPostsLoading}>
-                    <Input.Search
-                        enterButton
-                        name='keyword'
-                        value={keywordText}
-                        onChange={onChangeKeyword}
-                        onSearch={onSearch}
-                        placeholder={KEYWORD_INPUT_PLACEHOLDER}
-                    />
+        <>
+            <Helmet title={`${searchPostsKeyword} | ${siteName}`} />
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Spin spinning={searchPostsLoading}>
+                        <Input.Search
+                            enterButton
+                            name='keyword'
+                            value={keywordText}
+                            onChange={onChangeKeyword}
+                            onSearch={onSearch}
+                            placeholder={KEYWORD_INPUT_PLACEHOLDER}
+                        />
 
-                    <Divider />
-                    <ListExcerpt
-                        posts={searchPosts}
-                        hasMore={searchPostsHasMore}
-                        loading={searchPostsLoading}
-                        loadMoreHandler={loadMoreHandler}
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+                        <Divider />
+                        <ListExcerpt
+                            posts={searchPosts}
+                            hasMore={searchPostsHasMore}
+                            loading={searchPostsLoading}
+                            loadMoreHandler={loadMoreHandler}
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 
