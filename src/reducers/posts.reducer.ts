@@ -12,7 +12,6 @@ export const initialState: IPostsState = {
     hasMorePost: true,
     loadPostErrorReason: '',
     postsLimit: 10,
-    nextPageToken: '',
     currentPage: 1,
     searchKeyword: '',
 };

@@ -7,6 +7,9 @@ import { IBlogAction } from '../typings/IBlogAction';
 import { IRootState } from '../typings/reduxStates';
 import axios from 'axios';
 import { appOptions } from '../config/appOptions';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 export const configureStore = (
     initialState: IRootState,
@@ -42,7 +45,9 @@ const loggingMiddleware = (store) => (next) => (action) => {
     // 액션확인
     // console.log(action);
 
-    console.debug('\u001b[34m[REDUX]: dispatch ==> \u001b[0m', action.type);
+    if (publicRuntimeConfig.env !== 'production') {
+        console.debug('\u001b[34m[REDUX]: dispatch ==> \u001b[0m', action.type);
+    }
 
     next(action);
 };
@@ -54,10 +59,10 @@ const setTokenMiddleware = (store: Store<IRootState, IBlogAction>) => (
         const state = store.getState();
         const { token } = state.user;
 
-        console.debug(
-            '\u001b[34m[REDUX]: Set token middleware ==> \u001b[0m',
-            action.type,
-        );
+        // console.debug(
+        //     '\u001b[34m[REDUX]: Set token middleware ==> \u001b[0m',
+        //     action.type,
+        // );
 
         axios.defaults = {
             ...axios.defaults,

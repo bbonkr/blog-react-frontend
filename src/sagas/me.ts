@@ -23,10 +23,10 @@ import {
 import { IBlogAction } from '../typings/IBlogAction';
 
 function loadMyPostsApi(query) {
-    const { pageToken, limit, keyword } = query;
+    const { page, limit, keyword } = query;
 
     return http().get(
-        `/me/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
+        `/me/posts?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
@@ -34,10 +34,10 @@ function loadMyPostsApi(query) {
 
 function* loadMyPosts(action: IBlogAction) {
     try {
-        const { pageToken, limit, keyword } = action.data;
+        const { page, limit, keyword } = action.data;
 
         const result = yield call(loadMyPostsApi, {
-            pageToken: pageToken || '',
+            page: page || '1',
             limit: limit || 10,
             keyword: keyword,
         });
@@ -45,24 +45,23 @@ function* loadMyPosts(action: IBlogAction) {
         const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
         const { success, data, message } = resultData;
 
-        if (success) {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_MY_POSTS_DONE,
-                data: data,
-            });
-        } else {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_MY_POSTS_FAIL,
-                error: new Error(message),
-                message: message,
-            });
+        if (!success) {
+            throw new Error(message);
         }
+
+        yield put<IBlogAction>({
+            type: actionTypes.LOAD_MY_POSTS_DONE,
+            data: {
+                ...data,
+                page: page || 1,
+            },
+        });
     } catch (e) {
         // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_MY_POSTS_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: e.message,
         });
     }
 }
@@ -96,7 +95,7 @@ function* writePost(action) {
         yield put<IBlogAction>({
             type: actionTypes.WRITE_POST_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: e.message,
         });
     }
 }
@@ -527,19 +526,24 @@ function* watchDeleteCategory() {
 }
 
 function loadLikedPostsApi(query) {
-    const { pageToken, limit, keyword, page } = query;
+    const { limit, keyword, page } = query;
 
     return http().get(
-        `/me/liked?pageToken=${pageToken}&page=${page ||
-            '1'}&limit=${limit}&keyword=${encodeURIComponent(keyword)}`,
+        `/me/liked?&page=${page}&limit=${limit}&keyword=${encodeURIComponent(
+            keyword,
+        )}`,
     );
 }
 
 function* loadLikedPosts(action) {
     try {
-        const { pageToken, limit, keyword, page } = action.data;
+        const { limit, keyword, page } = action.data;
 
-        const result = yield call(loadLikedPostsApi, action.data);
+        const result = yield call(loadLikedPostsApi, {
+            page: page || 1,
+            limit: limit || 10,
+            keyword: keyword || '',
+        });
 
         const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
         const { success, data, message } = resultData;

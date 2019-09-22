@@ -6,7 +6,6 @@ import { applyUpdatedPostLikers } from './helpers/updatePostLikers';
 
 export const initialState: ISearchPostsState = {
     searchPosts: [],
-    searchPostsPageToken: '',
     searchPostsLoading: false,
     searchPostsErrorReason: '',
     searchPostsHasMore: false,

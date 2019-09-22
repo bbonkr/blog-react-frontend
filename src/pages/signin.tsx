@@ -17,7 +17,7 @@ import {
 import DefaultLayout from '../components/DefaultLayout';
 import { actionTypes } from '../reducers/actionTypes';
 import { SignInFormValidator } from '../helpers/SignInFormValidator';
-import { IRootState, IUserState } from '../typings/reduxStates';
+import { IRootState, IUserState, ISettingState } from '../typings/reduxStates';
 import {
     LOCAL_STORAGE_KEY_JWT,
     LOCAL_STORAGE_KEY_SAVED_AT,
@@ -38,6 +38,9 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
         IRootState,
         IUserState
     >((s) => s.user);
+    const { currentUrl } = useSelector<IRootState, ISettingState>(
+        (s) => s.settings,
+    );
 
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -47,7 +50,7 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
 
     useEffect(() => {
         if (me && me.id) {
-            console.log('returnUrl', returnUrl);
+            // console.log('returnUrl', returnUrl);
             let storage: Storage;
             if (remember) {
                 storage = window.localStorage;
@@ -64,14 +67,14 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                 );
             }
 
-            Router.push(!!returnUrl ? returnUrl : '/');
+            Router.push(returnUrl || currentUrl || '/');
         } else {
             setEmail('');
             setEmailError('');
             setPassword('');
             setPasswordError('');
         }
-    }, [me, token]);
+    }, [me, token, currentUrl]);
 
     useEffect(() => {
         setEmail('');

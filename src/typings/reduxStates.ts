@@ -12,6 +12,7 @@ export interface IRootState {
     category: ICategoryState;
     settings?: ISettingState;
     me: IMeState;
+    myPosts: IMyPostsState;
     posts: IPostsState;
     tagPosts: ITagPostsState;
     userCategoryPosts: IUserCategoryPostsState;
@@ -22,11 +23,17 @@ export interface IRootState {
 
 export interface IMeState {
     myPost: IPostModel;
-    postsLimit: number;
-    hasMorePost: boolean;
+    loadingMyPost: boolean;
+
+    // myPosts
+    // myPosts: IPostModel[];
+    // loadingMyPosts: boolean;
+    // postsLimit: number;
+    // hasMorePost: boolean;
     // searchKeyword?: string;
-    nextPageToken?: string;
-    postsCount: number;
+    // postsCount: number;
+    // postsCurrentPage?: number;
+    // loadMyPostsErrorReason?: string;
 
     // category
     categories: ICategoryModel[];
@@ -34,21 +41,17 @@ export interface IMeState {
     loadCategoriesErrorReason?: string;
     hasMoreCategories: boolean;
     // categorySearchKeyword?: string;
-    categoryNextPageToken?: string;
+    // categoryNextPageToken?: string;
     categoryLimit: number;
     categoriesCount: number;
     categoriesCurrentPage: number;
 
     // tag
     tags: ITagModel[];
-    myPosts: IPostModel[];
-
-    loadingMyPost: boolean;
     loadingTags: boolean;
-    loadingMyPosts: boolean;
 
     loadTagsErrorReason?: string;
-    loadMyPostsErrorReason?: string;
+
     loadMyPostErrorReason?: string;
     writingPost: boolean;
     writePostErrorReason?: string;
@@ -75,7 +78,7 @@ export interface IMeState {
     likedPostsErrorReason?: string;
     likedPostsLimit: number;
     likedPostsHasMore: boolean;
-    likedPostsPageToken?: string;
+    // likedPostsPageToken?: string;
     likedPostsTotal: number;
     likedPostPage?: number;
 
@@ -217,7 +220,7 @@ export interface IPostsState {
     hasMorePost: boolean;
     loadPostErrorReason?: string;
     postsLimit: number;
-    nextPageToken: string;
+    // nextPageToken: string;
     currentPage?: number;
     searchKeyword: string;
 }
@@ -225,7 +228,7 @@ export interface IPostsState {
 export interface ITagPostsState {
     /** tag posts */
     tagPosts: IPostModel[];
-    tagPostsPageToken: string;
+    // tagPostsPageToken: string;
     tagPostsLoading: boolean;
     tagPostsErrorReason?: string;
     tagPostsHasMore: boolean;
@@ -239,7 +242,7 @@ export interface ITagPostsState {
 
 export interface IUserCategoryPostsState {
     userCategoryPosts: IPostModel[];
-    userCategoryPostsPageToken?: string;
+    // userCategoryPostsPageToken?: string;
     userCategoryPostsLoading: boolean;
     userCategoryPostsErrorReason?: string;
     userCategoryPostsHasMore: boolean;
@@ -254,7 +257,7 @@ export interface IUserCategoryPostsState {
 export interface ISearchPostsState {
     /** search posts */
     searchPosts: IPostModel[];
-    searchPostsPageToken?: string;
+    // searchPostsPageToken?: string;
     searchPostsLoading: boolean;
     searchPostsErrorReason?: string;
     searchPostsHasMore: boolean;
@@ -284,4 +287,16 @@ export interface ISinglePostState {
     loadingPost: boolean;
     // isSinglePost: boolean;
     // currentCategory?: string;
+}
+
+export interface IMyPostsState {
+    // myPosts
+    myPosts: IPostModel[];
+    loadingMyPosts: boolean;
+    postsLimit: number;
+    hasMorePost: boolean;
+    searchKeyword?: string;
+    postsCount: number;
+    postsCurrentPage?: number;
+    loadMyPostsErrorReason?: string;
 }

@@ -9,6 +9,7 @@ import userCategoryPosts from './userCategoryPosts.reducer';
 import searchPosts from './searchPosts.reducer';
 import usersPosts from './usersPosts.reducer';
 import singlePost from './singlePost.reducer';
+import myPosts from './myPosts.reducer';
 import me from './me';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IRootState } from '../typings/reduxStates';
@@ -21,6 +22,7 @@ const map: ReducersMapObject = {
     category,
     settings,
     me,
+    myPosts,
     posts,
     tagPosts,
     userCategoryPosts,

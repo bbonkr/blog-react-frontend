@@ -18,7 +18,7 @@ import { IRootState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { NextPageContext } from 'next';
 
-export interface IBlogAppProp {
+export interface IBlogAppProp extends IPageProps {
     Component: Element;
     store: Store;
     pageProps?: IPageProps;
@@ -30,7 +30,8 @@ export interface IBlogAppProp {
 class BlogApp extends App<IBlogAppProp> {
     public static async getInitialProps(
         context: AppContext & NextJSAppContext,
-    ): Promise<AppInitialProps & IPageProps> {
+    ): Promise<AppInitialProps> {
+        // console.debug('[APP] _app getInitialProps');
         // const { ctx, Component } = context;
 
         const ctx: NextPageContext & NextJSContext<IRootState, IBlogAction> =
@@ -78,6 +79,11 @@ class BlogApp extends App<IBlogAppProp> {
         }
 
         pageProps.returnUrl = url;
+        pageProps.me = me;
+        pageProps.token = token;
+
+        // console.debug('[APP] _app getInitailProps pageProps: ', pageProps);
+        // console.debug('[APP] _app getInitailProps url: ', url);
 
         return { pageProps };
     }
@@ -155,7 +161,7 @@ class BlogApp extends App<IBlogAppProp> {
             ],
         };
 
-        console.info('[APP] _app render');
+        // console.info('[APP] _app render');
 
         return (
             <Fragment>

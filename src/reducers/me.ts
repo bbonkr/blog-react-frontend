@@ -8,20 +8,13 @@ import { MeHanlder } from './hanlders/me.handler';
 import { IMeState } from '../typings/reduxStates';
 
 export const initialState: IMeState = {
-    myPosts: [],
-    postsLimit: 10,
-    hasMorePost: false,
-    // searchKeyword: '',
-    nextPageToken: '',
-    postsCount: 0,
-
     // category
     categories: [],
     loadingCategories: false,
     loadCategoriesErrorReason: '',
     hasMoreCategories: false,
     // categorySearchKeyword: '',
-    categoryNextPageToken: '',
+    // categoryNextPageToken: '',
     categoryLimit: 10,
     categoriesCount: 0,
     categoriesCurrentPage: 1,
@@ -32,10 +25,8 @@ export const initialState: IMeState = {
     loadingMyPost: false,
 
     loadingTags: false,
-    loadingMyPosts: false,
 
     loadTagsErrorReason: '',
-    loadMyPostsErrorReason: '',
     loadMyPostErrorReason: '',
     writingPost: false,
     writePostErrorReason: '',
@@ -62,7 +53,7 @@ export const initialState: IMeState = {
     likedPostsErrorReason: '',
     likedPostsLimit: 3,
     likedPostsHasMore: false,
-    likedPostsPageToken: '',
+    // likedPostsPageToken: '',
     likedPostsTotal: 0,
 
     // stat - general
@@ -81,42 +72,6 @@ const reducer = (state: IMeState = initialState, action: IBlogAction) =>
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
         const handler = new MeHanlder({ draft, action });
         switch (action.type) {
-            case actionTypes.LOAD_MY_POSTS_CALL:
-                // draft.myPosts = action.data.pageToken ? draft.myPosts : [];
-                // draft.hasMorePost = action.data.pageToken
-                //     ? draft.hasMorePost
-                //     : true;
-                // draft.loadingMyPosts = true;
-                // draft.loadMyPostsErrorReason = '';
-                handler.loadMyPostCall();
-                break;
-            case actionTypes.LOAD_MY_POSTS_DONE:
-                // draft.loadingMyPosts = false;
-
-                // const resultData: IListResult<
-                //     IPostModel
-                // > = action.data as IListResult<IPostModel>;
-
-                // resultData.records.forEach((v) => {
-                //     const postIndex = draft.myPosts.findIndex(
-                //         (x) => x.id === v.id,
-                //     );
-                //     if (postIndex < 0) {
-                //         draft.myPosts.push(v);
-                //         draft.nextPageToken = `${v.id}`;
-                //     }
-                // });
-                // draft.hasMorePost = action.data.length === draft.postsLimit;
-                // draft.loadingMyPosts = false;
-                // // draft.searchKeyword = action.keyword;
-                // draft.postsCount = resultData.total;
-                handler.loadMyPostsDone(action);
-                break;
-            case actionTypes.LOAD_MY_POSTS_FAIL:
-                draft.loadingMyPosts = false;
-                draft.loadMyPostsErrorReason = action.message;
-                break;
-
             case actionTypes.LOAD_MY_POST_CALL:
                 draft.loadingMyPost = true;
                 draft.loadMyPostErrorReason = '';
@@ -239,21 +194,6 @@ const reducer = (state: IMeState = initialState, action: IBlogAction) =>
                 draft.myPost = null;
                 break;
             case actionTypes.WRITE_NEW_POST_FAIL:
-                break;
-
-            case actionTypes.DELETE_POST_CALL:
-                draft.loadingMyPosts = true;
-                break;
-            case actionTypes.DELETE_POST_DONE:
-                const index = draft.myPosts.findIndex(
-                    (x) => x.id === action.data.id,
-                );
-                draft.myPosts.splice(index, 1);
-                draft.loadingMyPosts = false;
-                break;
-            case actionTypes.DELETE_POST_FAIL:
-                // console.log(action.reason);
-                draft.loadingMyPosts = false;
                 break;
 
             case actionTypes.LOAD_MY_MEDIA_FILES_CALL:

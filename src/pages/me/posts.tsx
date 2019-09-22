@@ -8,7 +8,7 @@ import moment from 'moment';
 import { formatNumber } from '../../helpers/stringHelper';
 import Router from 'next/router';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IRootState, IMeState } from '../../typings/reduxStates';
+import { IRootState, IMeState, IMyPostsState } from '../../typings/reduxStates';
 
 const Posts: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -17,8 +17,8 @@ const Posts: FunctionComponent = () => {
         postsCount,
         loadingMyPosts,
         postsLimit,
-        nextPageToken,
-    } = useSelector<IRootState, IMeState>((state) => state.me);
+        postsCurrentPage,
+    } = useSelector<IRootState, IMyPostsState>((state) => state.myPosts);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -28,29 +28,28 @@ const Posts: FunctionComponent = () => {
             dispatch({
                 type: actionTypes.LOAD_MY_POSTS_CALL,
                 data: {
-                    pageToken: nextPageToken,
+                    // pageToken: nextPageToken,
+                    page: current,
                     limit: size || postsLimit || 10,
                     keyword: '',
                 },
             });
         },
-        [dispatch, nextPageToken, postsLimit],
+        [postsLimit],
     );
 
-    const onShowSizeChangePagination = useCallback(
-        (current, size) => {
-            setCurrentPage(current);
-            dispatch({
-                type: actionTypes.LOAD_MY_POSTS_CALL,
-                data: {
-                    pageToken: nextPageToken,
-                    limit: size,
-                    keyword: '',
-                },
-            });
-        },
-        [dispatch, nextPageToken],
-    );
+    const onShowSizeChangePagination = useCallback((current, size) => {
+        setCurrentPage(current);
+        dispatch({
+            type: actionTypes.LOAD_MY_POSTS_CALL,
+            data: {
+                // pageToken: nextPageToken,
+                page: current,
+                limit: size || postsLimit || 10,
+                keyword: '',
+            },
+        });
+    }, []);
 
     const onClickNewPost = useCallback(() => {
         Router.push('/me/write');
@@ -77,7 +76,7 @@ const Posts: FunctionComponent = () => {
                 onCancel: null,
             });
         },
-        [dispatch],
+        [],
     );
 
     const columns = [
@@ -214,7 +213,7 @@ Posts.getInitialProps = async (context) => {
     context.store.dispatch({
         type: actionTypes.LOAD_MY_POSTS_CALL,
         data: {
-            pageToken: null,
+            page: null,
             limit: postsLimit || 10,
             keyword: '',
         },

@@ -36,7 +36,6 @@ const MyCategory: FunctionComponent = () => {
         categoriesCount,
         categoriesCurrentPage,
         categoryLimit,
-        categoryNextPageToken,
     } = useSelector<IRootState, IMeState>((s) => s.me);
 
     const [currentPage, setCurrentPage] = useState(0);

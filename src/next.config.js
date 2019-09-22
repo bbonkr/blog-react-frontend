@@ -34,6 +34,7 @@ module.exports = withBundleAnalyzer(
             publicRuntimeConfig: {
                 // Will be available on both server and client
                 apiBaseUrl: process.env.API_BASEURL, // Pass through env variables
+                env: process.env.NODE_ENV,
             },
             webpack(config) {
                 // console.log('config', config);

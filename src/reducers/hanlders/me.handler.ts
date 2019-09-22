@@ -21,39 +21,6 @@ export class MeHanlder {
         this.action = value.action;
     }
 
-    public loadMyPostCall(): void {
-        this.draft.myPosts = this.action.data.pageToken
-            ? this.draft.myPosts
-            : [];
-        this.draft.hasMorePost = this.action.data.pageToken
-            ? this.draft.hasMorePost
-            : true;
-        this.draft.loadingMyPosts = true;
-        this.draft.loadMyPostsErrorReason = '';
-    }
-
-    public loadMyPostsDone(action: IBlogAction): void {
-        this.draft.loadingMyPosts = false;
-
-        const resultData: IListResult<IPostModel> = action.data as IListResult<
-            IPostModel
-        >;
-
-        resultData.records.forEach((v) => {
-            const postIndex = this.draft.myPosts.findIndex(
-                (x) => x.id === v.id,
-            );
-            if (postIndex < 0) {
-                this.draft.myPosts.push(v);
-                this.draft.nextPageToken = `${v.id}`;
-            }
-        });
-        this.draft.hasMorePost = action.data.length === this.draft.postsLimit;
-        this.draft.loadingMyPosts = false;
-        // draft.searchKeyword = action.keyword;
-        this.draft.postsCount = resultData.total;
-    }
-
     // LOAD_MY_CATEGORIES_CALL
     public loadMyCategoriesCall(): void {
         const { page, limit, keyword } = this.action.data;
@@ -110,7 +77,7 @@ export class MeHanlder {
             );
             if (!post) {
                 this.draft.likedPosts.push(x);
-                this.draft.likedPostsPageToken = `${x.userId}|${x.id}`;
+                // this.draft.likedPostsPageToken = `${x.userId}|${x.id}`;
             }
         });
         this.draft.likedPostsTotal = total;
