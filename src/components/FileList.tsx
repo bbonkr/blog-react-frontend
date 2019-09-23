@@ -21,10 +21,11 @@ import { withSize, SizeMeProps } from 'react-sizeme';
 import ImageViewer from './ImageViewer';
 import CroppedImage from './CroppedImage';
 import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, IMeState } from '../typings/reduxStates';
+import { IRootState, IMeState, IMediaFilesState } from '../typings/reduxStates';
 import { appOptions } from '../config/appOptions';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IImageModel } from '../typings/dto';
+import { ButtonFullWidth } from '../styledComponents/Buttons';
 
 const Paragraph = Typography.Paragraph;
 const Dragger = Upload.Dragger;
@@ -36,14 +37,16 @@ export interface IFileListProps extends SizeMeProps {
 const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     const dispatch = useDispatch();
 
+    const {} = useSelector<IRootState, IMeState>((s) => s.me);
+
     const {
         mediaFiles,
-        loadingMediaFiles,
-        hasMoreMediaFiles,
+        mediaFilesLoading,
+        mediaFilesHasMore,
         mediaFilesCurrentPage,
         mediaFilesLimit,
-        uploading,
-    } = useSelector<IRootState, IMeState>((s) => s.me);
+        mediaFilesUploading: uploading,
+    } = useSelector<IRootState, IMediaFilesState>((s) => s.mediaFiles);
 
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [imageViewerFiles, setImageViewerFiles] = useState([]);
@@ -118,7 +121,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     );
 
     const onClickLoadMore = useCallback(() => {
-        if (hasMoreMediaFiles) {
+        if (mediaFilesHasMore) {
             dispatch({
                 type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
                 data: {
@@ -128,7 +131,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                 },
             });
         }
-    }, [dispatch, hasMoreMediaFiles, mediaFilesLimit, mediaFilesCurrentPage]);
+    }, [dispatch, mediaFilesHasMore, mediaFilesLimit, mediaFilesCurrentPage]);
 
     const onClickImage = useCallback(
         (image) => () => {
@@ -187,7 +190,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     };
 
     return (
-        <Spin spinning={loadingMediaFiles || uploading}>
+        <Spin spinning={mediaFilesLoading || uploading}>
             <Dragger
                 disabled={uploading}
                 supportServerRender={true}
@@ -255,13 +258,12 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                 })}
             </StackGrid>
             <Divider />
-            <Button
-                loading={loadingMediaFiles || uploading}
-                style={{ width: '100%' }}
+            <ButtonFullWidth
+                loading={mediaFilesLoading || uploading}
                 onClick={onClickLoadMore}
-                disabled={!hasMoreMediaFiles}>
+                disabled={!mediaFilesHasMore}>
                 Load more
-            </Button>
+            </ButtonFullWidth>
 
             <ImageViewer
                 files={imageViewerFiles}

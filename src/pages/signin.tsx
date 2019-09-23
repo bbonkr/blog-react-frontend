@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { Form, Input, Checkbox, Button, Icon, Row, Col } from 'antd';
 import Router from 'next/router';
-import PropTypes from 'prop-types';
 import {
     ERROR_COLOR,
     ContentWrapper,
@@ -22,13 +21,17 @@ import {
     LOCAL_STORAGE_KEY_JWT,
     LOCAL_STORAGE_KEY_SAVED_AT,
 } from '../typings/constant';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IPageProps } from '../typings/IPageProps';
 
 const validator = new SignInFormValidator();
 
-const INPUT_EMAIL_PLACEHOLDER = 'Your email Address';
+const INPUT_EMAIL_PLACEHOLDER = 'Username or email address';
 const INPUT_PASSWORD_PLACEHOLDER = 'Your password';
 
-export interface ISignInProps {
+export interface ISignInProps extends IPageProps {
     returnUrl?: string;
 }
 
@@ -83,19 +86,25 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
         setPasswordError('');
     }, []);
 
-    const onEmailChange = useCallback((e) => {
-        const value = e.target.value;
-        setEmail(value);
-        const { message } = validator.checkUsername({ username: value });
-        setEmailError(message);
-    }, []);
+    const onEmailChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>): void => {
+            const value = e.target.value;
+            setEmail(value);
+            const { message } = validator.checkUsername({ username: value });
+            setEmailError(message);
+        },
+        [],
+    );
 
-    const onPasswordChange = useCallback((e) => {
-        const value = e.target.value;
-        setPassword(value);
-        const { message } = validator.checkPassword({ password: value });
-        setPasswordError(message);
-    }, []);
+    const onPasswordChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>): void => {
+            const value = e.target.value;
+            setPassword(value);
+            const { message } = validator.checkPassword({ password: value });
+            setPasswordError(message);
+        },
+        [],
+    );
 
     const onRememberChange = useCallback((e) => {
         setRemember(e.target.checked);
@@ -106,8 +115,9 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
     }, [emailError, passwordError]);
 
     const onSubmit = useCallback(
-        (e) => {
+        (e: React.FormEvent<HTMLFormElement>): void => {
             e.preventDefault();
+
             if (!isSubmitButtonDisabled()) {
                 setEmailError('');
                 setPasswordError('');
@@ -124,8 +134,8 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                             email: email,
                             password: password,
                             remember: remember,
+                            returnUrl: returnUrl,
                         },
-                        returnUrl: returnUrl,
                     });
                 }
             }
@@ -157,9 +167,14 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                             </ErrorMessageWrapper>
                         )}
                         <Form onSubmit={onSubmit}>
-                            <Form.Item>
+                            <Form.Item
+                                hasFeedback={true}
+                                help={emailError}
+                                validateStatus={
+                                    !emailError ? 'success' : 'error'
+                                }>
                                 <Input
-                                    type='email'
+                                    type='text'
                                     style={{ width: '100%' }}
                                     value={email}
                                     onChange={onEmailChange}
@@ -173,7 +188,7 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                                         />
                                     }
                                 />
-                                {emailError && (
+                                {/* {emailError && (
                                     <span>
                                         <Icon
                                             type='alert'
@@ -183,10 +198,16 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                                             {emailError}
                                         </span>
                                     </span>
-                                )}
+                                )} */}
                             </Form.Item>
-                            <Form.Item>
+                            <Form.Item
+                                hasFeedback={true}
+                                help={passwordError}
+                                validateStatus={
+                                    !passwordError ? 'success' : 'error'
+                                }>
                                 <Input.Password
+                                    type='password'
                                     style={{ width: '100%' }}
                                     value={password}
                                     onChange={onPasswordChange}
@@ -200,7 +221,7 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                                         />
                                     }
                                 />
-                                {passwordError && (
+                                {/* {passwordError && (
                                     <span>
                                         <Icon
                                             type='alert'
@@ -210,7 +231,7 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                                             {passwordError}
                                         </span>
                                     </span>
-                                )}
+                                )} */}
                             </Form.Item>
                             <Form.Item>
                                 <Checkbox
@@ -243,13 +264,15 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
     );
 };
 
-SignIn.getInitialProps = async (context) => {
-    let url = context.query.returnUrl;
+SignIn.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<ISignInProps> => {
+    let url = context.query.returnUrl as string;
 
     const state = context.store.getState();
-    const { returnUrl } = state.settings;
+    const { currentUrl } = state.settings;
     if (!url) {
-        url = !!returnUrl ? returnUrl : '/';
+        url = !!currentUrl ? currentUrl : '/';
     }
 
     context.store.dispatch({
@@ -260,10 +283,6 @@ SignIn.getInitialProps = async (context) => {
         doNotSetCurrentUrl: true,
         returnUrl: url,
     };
-};
-
-SignIn.propTypes = {
-    returnUrl: PropTypes.string,
 };
 
 export default SignIn;

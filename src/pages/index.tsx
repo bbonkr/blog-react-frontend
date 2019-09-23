@@ -11,13 +11,13 @@ import { IRootState, IPostsState } from '../typings/reduxStates';
 import { Spin } from 'antd';
 import { appOptions } from '../config/appOptions';
 import Helmet from 'react-helmet';
+import { IPageProps } from '../typings/IPageProps';
 
 const Home: FunctionComponent = () => {
     const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
         posts,
-        // nextPageToken,
         currentPage,
         postsLimit,
         loadingPosts,
@@ -25,13 +25,9 @@ const Home: FunctionComponent = () => {
     } = useSelector<IRootState, IPostsState>((s) => s.posts);
 
     const onClickLoadMorePosts = useCallback(() => {
-        const nextPageToken =
-            posts && posts.length > 0 && posts[posts.length - 1].id;
-
         dispatch({
             type: actionTypes.LOAD_POSTS_CALL,
             data: {
-                // pageToken: nextPageToken,
                 page: (currentPage || 0) + 1,
                 limit: postsLimit,
                 keyword: '',
@@ -58,13 +54,9 @@ const Home: FunctionComponent = () => {
     );
 };
 
-// Home.defaultProps = {};
-
-// Home.propTypes = {};
-
 Home.getInitialProps = async (
     context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-) => {
+): Promise<IPageProps> => {
     const state = context.store.getState();
 
     const { postsLimit, posts } = state.posts;
@@ -73,7 +65,6 @@ Home.getInitialProps = async (
         context.store.dispatch<IBlogAction>({
             type: actionTypes.LOAD_POSTS_CALL,
             data: {
-                pageToken: null,
                 page: null,
                 limit: postsLimit,
                 keyword: '',

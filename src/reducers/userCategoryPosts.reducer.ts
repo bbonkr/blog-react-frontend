@@ -16,7 +16,7 @@ export const initialState: IUserCategoryPostsState = {
     postsLimit: 10, // TODO 상수로 변경
 };
 
-const reducer = (
+export const userCategoryPosts = (
     state: IUserCategoryPostsState = initialState,
     action: IBlogAction,
 ) =>
@@ -39,5 +39,3 @@ const reducer = (
                 break;
         }
     });
-
-export default reducer;

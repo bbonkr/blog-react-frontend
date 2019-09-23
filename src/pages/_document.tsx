@@ -1,23 +1,57 @@
 import React from 'react';
-import Document, { Main, NextScript } from 'next/document';
+import Document, {
+    Main,
+    NextScript,
+    DocumentContext,
+    DocumentInitialProps,
+} from 'next/document';
 import Helmet, { HelmetData } from 'react-helmet';
 import { ServerStyleSheet } from 'styled-components';
 import { IDictionary } from '../typings/IDictionary';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IRootState } from '../typings/reduxStates';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IPageProps } from '../typings/IPageProps';
 
-export interface IBlogDocumentProps extends IDictionary<any> {
+export interface IBlogDocumentProps extends IPageProps, DocumentInitialProps {
     helmet: HelmetData;
-    styleTags: Array<React.Component<any, any, any>>;
+    // styleTags: React.ReactElement<{}>[];
 }
 
 class BlogDocument extends Document<IBlogDocumentProps> {
-    public static async getInitialProps(ctx) {
+    public static async getInitialProps(
+        ctx: DocumentContext & NextJSContext<IRootState, IBlogAction>,
+    ): Promise<IBlogDocumentProps> {
         const styleSheet = new ServerStyleSheet();
-        const page = ctx.renderPage((App) => (props) =>
-            styleSheet.collectStyles(<App {...props} />),
-        );
-        const styleTags = styleSheet.getStyleElement();
+        const originalRenderPage = ctx.renderPage;
+        // const page = ctx.renderPage((App) => (props) =>
+        //     styleSheet.collectStyles(<App {...props} />),
+        // );
+
+        ctx.renderPage = () =>
+            originalRenderPage({
+                enhanceApp: (App) => (props) =>
+                    styleSheet.collectStyles(<App {...props} />),
+            });
+
+        const initialProps = await Document.getInitialProps(ctx);
+
+        const styleTags: React.ReactElement<{}>[] = styleSheet.getStyleElement();
         try {
-            return { ...page, helmet: Helmet.renderStatic(), styleTags };
+            return {
+                // ...page,
+                ...initialProps,
+                helmet: Helmet.renderStatic(),
+                // styleTags,
+                styles: (
+                    <>
+                        {initialProps.styles}
+                        {styleSheet.getStyleElement()}
+                    </>
+                ),
+                // renderPageResult: page,
+            };
         } finally {
             styleSheet.seal();
         }
@@ -50,6 +84,12 @@ class BlogDocument extends Document<IBlogDocumentProps> {
     }
 
     public render() {
+        console.debug('[APP] _document props.styles: ', this.props.styles);
+        console.debug(
+            '[APP] _document props.helmet.styles: ',
+            this.props.helmet.style,
+        );
+
         const { htmlAttributes, bodyAttributes, ...helmet } = this.props.helmet;
 
         const prefixDir = '/_next/';
@@ -62,13 +102,17 @@ class BlogDocument extends Document<IBlogDocumentProps> {
         /* IE 지원하려면 true */
         const ieSupport = false;
 
-        console.info('[APP] _document render');
+        // console.info('[APP] _document render');
         // {...htmlAttrs} {...bodyAttrs}
         return (
             <html {...htmlAttributes}>
                 <head>
-                    {Object.values(helmet).map((el) => el.toComponent())}
-
+                    {Object.values(helmet).map((el) => {
+                        console.debug('[APP] _document ==> helmet', el);
+                        return el.toComponent();
+                    })}
+                    {this.props.styles}
+                    {this.props.styleTags && this.props.styleTags.map((v) => v)}
                     {cssFiles.map((css) => {
                         console.log('=========> css file: ', css);
                         return (
@@ -80,8 +124,6 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                             />
                         );
                     })}
-                    {this.props.styleTags && this.props.styleTags.map((v) => v)}
-                    {/* {this.props.styles} */}
                 </head>
                 <body {...bodyAttributes}>
                     <Main />

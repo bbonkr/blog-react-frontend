@@ -9,15 +9,18 @@ import { formatNumber } from '../../helpers/stringHelper';
 import Router from 'next/router';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IRootState, IMeState, IMyPostsState } from '../../typings/reduxStates';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
 const Posts: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         myPosts,
-        postsCount,
-        loadingMyPosts,
-        postsLimit,
-        postsCurrentPage,
+        myPostsCount: postsCount,
+        myPostsLoading: loadingMyPosts,
+        myPostsLimit: postsLimit,
     } = useSelector<IRootState, IMyPostsState>((state) => state.myPosts);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,7 +31,6 @@ const Posts: FunctionComponent = () => {
             dispatch({
                 type: actionTypes.LOAD_MY_POSTS_CALL,
                 data: {
-                    // pageToken: nextPageToken,
                     page: current,
                     limit: size || postsLimit || 10,
                     keyword: '',
@@ -43,7 +45,6 @@ const Posts: FunctionComponent = () => {
         dispatch({
             type: actionTypes.LOAD_MY_POSTS_CALL,
             data: {
-                // pageToken: nextPageToken,
                 page: current,
                 limit: size || postsLimit || 10,
                 keyword: '',
@@ -204,9 +205,11 @@ const Posts: FunctionComponent = () => {
     );
 };
 
-Posts.getInitialProps = async (context) => {
+Posts.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IPageProps> => {
     const state = context.store.getState();
-    const { postsLimit, myPosts } = state.me;
+    const { myPostsLimit, myPosts } = state.myPosts;
     const lastPost =
         myPosts && myPosts.length > 0 && myPosts[myPosts.length - 1];
 
@@ -214,7 +217,7 @@ Posts.getInitialProps = async (context) => {
         type: actionTypes.LOAD_MY_POSTS_CALL,
         data: {
             page: null,
-            limit: postsLimit || 10,
+            limit: myPostsLimit || 10,
             keyword: '',
         },
     });

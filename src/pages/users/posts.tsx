@@ -3,21 +3,23 @@
  */
 import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IUserModel } from '../../typings/dto';
 import { IRootState, IUsersPostsState } from '../../typings/reduxStates';
 import { PageHeader, Divider, Spin } from 'antd';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import UserAvatar from '../../components/UserAvatar';
 import { appOptions } from '../../config/appOptions';
 import Helmet from 'react-helmet';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
-export interface IUsersPostsProps {
-    user: IUserModel;
+export interface IUsersPostsProps extends IPageProps {
+    user: string;
 }
 
 const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
@@ -46,7 +48,8 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
     return (
         <>
             <Helmet
-                title={`${currentUser.displayName}'s posts | ${siteName}`}
+                title={`${currentUser &&
+                    currentUser.displayName}'s posts | ${siteName}`}
             />
             <DefaultLayout>
                 <ContentWrapper>
@@ -77,19 +80,14 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
     );
 };
 
-// UsersPosts.propTypes = {
-//     user: PropTypes.string.isRequired,
-// };
-
-UsersPosts.getInitialProps = async (context) => {
+UsersPosts.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IUsersPostsProps> => {
     const state = context.store.getState();
-    const { user } = context.query;
-    const {
-        postsLimit,
-        usersPosts,
-        currentUser,
-        currentUsername,
-    } = state.usersPosts;
+
+    const user: string = context.query.user as string;
+
+    const { postsLimit, usersPosts, currentUsername } = state.usersPosts;
 
     if (
         context.isServer ||

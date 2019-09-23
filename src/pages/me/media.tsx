@@ -7,15 +7,20 @@ import styled from 'styled-components';
 import FileList from '../../components/FileList';
 import { withAuth } from '../../utils/auth';
 import { actionTypes } from '../../reducers/actionTypes';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IRootState } from '../../typings/reduxStates';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
-const DropZoneDiv = styled.div`
-    border: '2px dashed gray';
-    height: '15rem';
-    width: '100%';
-    padding: '2rem';
-    text-align: 'center';
-    vertical-align: 'middle';
-`;
+// const DropZoneDiv = styled.div`
+//     border: '2px dashed gray';
+//     height: '15rem';
+//     width: '100%';
+//     padding: '2rem';
+//     text-align: 'center';
+//     vertical-align: 'middle';
+// `;
 
 const Media: FunctionComponent = () => {
     return (
@@ -28,9 +33,11 @@ const Media: FunctionComponent = () => {
     );
 };
 
-Media.getInitialProps = async (context) => {
+Media.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IPageProps> => {
     const state = context.store.getState();
-    const { mediaFilesLimit } = state.me;
+    const { mediaFilesLimit } = state.mediaFiles;
     context.store.dispatch({
         type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
         data: {

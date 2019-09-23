@@ -12,8 +12,12 @@ import { ChangePasswordValidator } from '../helpers/ChangePasswordValidator';
 import Router from 'next/router';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, IUserState } from '../typings/reduxStates';
+import { IPageProps } from '../typings/IPageProps';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../typings/IBlogAction';
 
-export interface IResetPasswordProps {
+export interface IResetPasswordProps extends IPageProps {
     email: string;
     code: string;
 }
@@ -164,8 +168,11 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({
     );
 };
 
-ResetPassword.getInitialProps = async (context) => {
-    const { email, code } = context.query;
+ResetPassword.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IResetPasswordProps> => {
+    const email = context.query.email as string;
+    const code = context.query.code as string;
 
     return {
         email,

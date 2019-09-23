@@ -7,8 +7,12 @@ import { ContentWrapper } from '../styledComponents/Wrapper';
 import Router from 'next/router';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, IUserState } from '../typings/reduxStates';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IPageProps } from '../typings/IPageProps';
 
-export interface IVerifyEmailProps {
+export interface IVerifyEmailProps extends IPageProps {
     email: string;
     code: string;
 }
@@ -86,13 +90,11 @@ const VerifyEmail: FunctionComponent<IVerifyEmailProps> = ({ email, code }) => {
     );
 };
 
-// VerifyEmail.propTypes = {
-//     email: PropTypes.string.isRequired,
-//     code: PropTypes.string.isRequired,
-// };
-
-VerifyEmail.getInitialProps = async (context) => {
-    const { email, code } = context.query;
+VerifyEmail.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IVerifyEmailProps> => {
+    const email: string = context.query.email as string;
+    const code: string = context.query.email as string;
 
     return { email, code };
 };

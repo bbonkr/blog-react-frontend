@@ -14,7 +14,12 @@ import FullSizeModal from '../styledComponents/FullSizeModal';
 import FileList from './FileList';
 import { WriteFormValaidator } from '../helpers/WriteFormValaidator';
 import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, IMeState } from '../typings/reduxStates';
+import {
+    IRootState,
+    IMeState,
+    IMyCategoriesState,
+    IMyPostsState,
+} from '../typings/reduxStates';
 import TextArea from 'antd/lib/input/TextArea';
 import { ContentTextArea } from '../styledComponents/ContentTextArea';
 import { MarkdownPreview } from '../styledComponents/MarkdownPreview';
@@ -65,13 +70,16 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
     );
     // const { myPost } = useSelector(s => s.me);
 
-    const {
-        categories,
-        tags,
-        loadingCategories,
-        loadingTags,
-        myPost,
-    } = useSelector<IRootState, IMeState>((s) => s.me);
+    const { tags, loadingTags } = useSelector<IRootState, IMeState>(
+        (s) => s.me,
+    );
+
+    const { myPost } = useSelector<IRootState, IMyPostsState>((s) => s.myPosts);
+
+    const { categories, categoriesLoading } = useSelector<
+        IRootState,
+        IMyCategoriesState
+    >((s) => s.myCategories);
 
     const [title, setTitle] = useState('');
     const [slug, setSlug] = useState('');
@@ -416,7 +424,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                         mode='multiple'
                         onChange={onChangeCategories}
                         style={{ width: '100%' }}
-                        loading={loadingCategories}
+                        loading={categoriesLoading}
                         value={selectedCategoryValues}>
                         {categories.map((c) => {
                             return (

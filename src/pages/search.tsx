@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Divider, Spin } from 'antd';
 import ListExcerpt from '../components/ListExcerpt';
@@ -8,10 +8,18 @@ import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, ISearchPostsState } from '../typings/reduxStates';
 import Helmet from 'react-helmet';
 import { appOptions } from '../config/appOptions';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IPageProps } from '../typings/IPageProps';
 
 const KEYWORD_INPUT_PLACEHOLDER = 'Searching keyword';
 
-const Search = ({ keyword }) => {
+export interface ISearchPageProps extends IPageProps {
+    keyword?: string;
+}
+
+const Search: FunctionComponent<ISearchPageProps> = ({ keyword }) => {
     const siteName = appOptions.title;
     const dispatch = useDispatch();
     const [keywordText, setKeywordText] = useState(keyword);
@@ -88,8 +96,12 @@ const Search = ({ keyword }) => {
     );
 };
 
-Search.getInitialProps = async (context) => {
-    const keyword = decodeURIComponent(context.query.keyword);
+Search.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<ISearchPageProps> => {
+    const keyword: string = decodeURIComponent(
+        (context.query.keyword as string) || '',
+    );
 
     if (keyword) {
         const state = context.store.getState();

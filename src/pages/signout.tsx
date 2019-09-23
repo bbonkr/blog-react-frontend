@@ -10,6 +10,10 @@ import {
     LOCAL_STORAGE_KEY_JWT,
     LOCAL_STORAGE_KEY_SAVED_AT,
 } from '../typings/constant';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IPageProps } from '../typings/IPageProps';
 
 const SignOut: FunctionComponent = () => {
     const { me, signOutLoading, signOutReturnUrl } = useSelector<
@@ -56,7 +60,9 @@ const SignOut: FunctionComponent = () => {
     );
 };
 
-SignOut.getInitialProps = async (context) => {
+SignOut.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IPageProps> => {
     context.store.dispatch({
         type: actionTypes.SIGN_OUT_CALL,
     });

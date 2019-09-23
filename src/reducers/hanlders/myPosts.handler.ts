@@ -20,15 +20,15 @@ export class MyPostsHanlder {
         this.draft.myPosts = this.action.data.pageToken
             ? this.draft.myPosts
             : [];
-        this.draft.hasMorePost = this.action.data.pageToken
-            ? this.draft.hasMorePost
+        this.draft.myPostsHasMore = this.action.data.pageToken
+            ? this.draft.myPostsHasMore
             : true;
-        this.draft.loadingMyPosts = true;
-        this.draft.loadMyPostsErrorReason = '';
+        this.draft.myPostsLoading = true;
+        this.draft.myPostsErrorReason = '';
     }
 
     public loadMyPostsDone(action: IBlogAction): void {
-        this.draft.loadingMyPosts = false;
+        this.draft.myPostsLoading = false;
 
         const resultData: IListResult<IPostModel> = action.data as IListResult<
             IPostModel
@@ -42,9 +42,10 @@ export class MyPostsHanlder {
                 this.draft.myPosts.push(v);
             }
         });
-        this.draft.hasMorePost = action.data.length === this.draft.postsLimit;
-        this.draft.loadingMyPosts = false;
-        this.draft.postsCount = resultData.total;
-        this.draft.postsCurrentPage = resultData.page;
+        this.draft.myPostsHasMore =
+            action.data.length === this.draft.myPostsLimit;
+        this.draft.myPostsLoading = false;
+        this.draft.myPostsCount = resultData.total;
+        this.draft.myPostsCurrentPage = resultData.page;
     }
 }

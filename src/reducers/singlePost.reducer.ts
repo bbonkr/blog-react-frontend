@@ -14,7 +14,10 @@ export const initialState: ISinglePostState = {
     // currentCategory: '',
 };
 
-const reducer = (state: ISinglePostState = initialState, action: IBlogAction) =>
+export const singlePost = (
+    state: ISinglePostState = initialState,
+    action: IBlogAction,
+) =>
     produce(state, (draft) => {
         const handler = new SinglePostHandler({ draft, action });
         switch (action.type) {
@@ -42,5 +45,3 @@ const reducer = (state: ISinglePostState = initialState, action: IBlogAction) =>
                 break;
         }
     });
-
-export default reducer;

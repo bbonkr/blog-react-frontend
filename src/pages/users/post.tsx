@@ -9,19 +9,22 @@ import { ContentWrapper } from '../../styledComponents/Wrapper';
 import SinglePost from '../../components/SinglePost';
 import { Skeleton, Spin } from 'antd';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IUserModel } from '../../typings/dto';
 import {
     IRootState,
     ISettingState,
     ISinglePostState,
 } from '../../typings/reduxStates';
 import { appOptions } from '../../config/appOptions';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
 // import '../../styles/prism.css';
 // import '../../styles/singlepost.css';
 
-export interface IUsersPostProps {
-    user: IUserModel;
+export interface IUsersPostProps extends IPageProps {
+    user: string;
     slug: string;
 }
 
@@ -78,8 +81,11 @@ const UsersPost: FunctionComponent = () => {
     );
 };
 
-UsersPost.getInitialProps = async (context) => {
-    const { user, slug } = context.query;
+UsersPost.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IUsersPostProps> => {
+    const user: string = context.query.user as string;
+    const slug: string = context.query.slug as string;
     // console.log('Post.getInitialize() ==> user: ', user);
     // console.log('Post.getInitialize() ==> slug: ', slug);
     const decodedUser = user;

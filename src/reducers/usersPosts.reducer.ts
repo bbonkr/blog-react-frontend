@@ -16,7 +16,10 @@ export const initialState: IUsersPostsState = {
     postsLimit: 10, // TODO 상수로 변경
 };
 
-const reducer = (state: IUsersPostsState = initialState, action: IBlogAction) =>
+export const usersPosts = (
+    state: IUsersPostsState = initialState,
+    action: IBlogAction,
+) =>
     produce(state, (draft) => {
         const handler = new UsersPostsHandler({ draft, action });
         switch (action.type) {
@@ -38,5 +41,3 @@ const reducer = (state: IUsersPostsState = initialState, action: IBlogAction) =>
                 break;
         }
     });
-
-export default reducer;

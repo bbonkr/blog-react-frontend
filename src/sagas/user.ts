@@ -57,7 +57,7 @@ function signInApi(data) {
 
 function* signIn(action) {
     try {
-        const { email, password } = action.data;
+        const { email, password, returnUrl } = action.data;
         const result: AxiosResponse<IJsonResult<ISigninResult>> = yield call(
             signInApi,
             {
@@ -66,13 +66,15 @@ function* signIn(action) {
             },
         );
 
+        console.debug(result.data);
+
         const { success, data, message } = result.data;
         if (success) {
             yield put<IBlogAction>({
                 type: actionTypes.SIGN_IN_DONE,
                 data: {
                     ...data,
-                    returnUrl: action.returnUrl,
+                    returnUrl: returnUrl,
                 },
             });
         } else {
@@ -83,11 +85,11 @@ function* signIn(action) {
             });
         }
     } catch (e) {
-        // console.error(e);
+        console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.SIGN_IN_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: (e.response && e.response.data) || e.message,
         });
     }
 }

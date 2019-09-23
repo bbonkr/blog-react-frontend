@@ -9,8 +9,12 @@ import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, ITagPostsState } from '../typings/reduxStates';
 import Helmet from 'react-helmet';
 import { appOptions } from '../config/appOptions';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IPageProps } from '../typings/IPageProps';
 
-export interface ITagProps {
+export interface ITagProps extends IPageProps {
     slug: string;
 }
 
@@ -60,13 +64,12 @@ const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
     );
 };
 
-// Tag.propTypes = {
-//     slug: PropTypes.string.isRequired,
-// };
-
-Tag.getInitialProps = async (context) => {
+Tag.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<ITagProps> => {
+    const slug = decodeURIComponent((context.query.slug as string) || '');
     const state = context.store.getState();
-    const slug = decodeURIComponent(context.query.slug);
+    // const slug = decodeURIComponent(context.query.slug);
     const {
         postsLimit,
         tagPosts,

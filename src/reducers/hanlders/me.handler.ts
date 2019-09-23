@@ -21,46 +21,6 @@ export class MeHanlder {
         this.action = value.action;
     }
 
-    // LOAD_MY_CATEGORIES_CALL
-    public loadMyCategoriesCall(): void {
-        const { page, limit, keyword } = this.action.data;
-        this.draft.loadingCategories = true;
-        this.draft.categories = page ? this.draft.categories : [];
-        this.draft.hasMoreCategories = page
-            ? this.draft.hasMoreCategories
-            : true;
-        this.draft.loadCategoriesErrorReason = '';
-    }
-
-    // LOAD_MY_CATEGORIES_DONE
-    public loadMyCategoriesDone(action: IBlogAction): void {
-        this.draft.loadingCategories = false;
-        // draft.categories = action.data;
-        const actionData = action.data as IListResult<ICategoryModel>;
-        const { records, total } = actionData;
-
-        records.forEach((v) => {
-            const postIndex = this.draft.categories.findIndex(
-                (x) => x.id === v.id,
-            );
-            if (postIndex < 0) {
-                this.draft.categories.push(v);
-                // this.draft.categoryNextPageToken = `${v.id}`;
-            }
-        });
-        this.draft.categoriesCount = total;
-        this.draft.hasMoreCategories =
-            records.length === this.draft.categoryLimit;
-        // draft.categorySearchKeyword = action.keyword;
-        // draft.categoriesCount = total;
-    }
-
-    // LOAD_MY_CATEGORIES_FAIL
-    public loadMyCategoriesFail(): void {
-        this.draft.loadingCategories = false;
-        this.draft.loadCategoriesErrorReason = this.action.message;
-    }
-
     public loadMyTagsDone(action: IBlogAction): void {
         const actionData = action.data as IListResult<ITagModel>;
         const { records, total } = actionData;
@@ -88,37 +48,37 @@ export class MeHanlder {
         this.draft.likedPostPage = page;
     }
 
-    public editMyCategoryDone(action: IBlogAction): void {
-        const actionData = action.data as ICategoryModel;
+    // public editMyCategoryDone(action: IBlogAction): void {
+    //     const actionData = action.data as ICategoryModel;
 
-        const foundCategoryIndex = this.draft.categories.findIndex(
-            (v) => v.id === actionData.id,
-        );
-        if (foundCategoryIndex < 0) {
-            this.draft.categories.push(actionData);
-            this.draft.categoriesCount = this.draft.categoriesCount + 1;
-        } else {
-            this.draft.categories[foundCategoryIndex] = actionData;
-        }
+    //     const foundCategoryIndex = this.draft.categories.findIndex(
+    //         (v) => v.id === actionData.id,
+    //     );
+    //     if (foundCategoryIndex < 0) {
+    //         this.draft.categories.push(actionData);
+    //         this.draft.categoriesCount = this.draft.categoriesCount + 1;
+    //     } else {
+    //         this.draft.categories[foundCategoryIndex] = actionData;
+    //     }
 
-        this.draft.categories
-            .filter(
-                (v) =>
-                    v.id !== actionData.id && v.ordinal >= actionData.ordinal,
-            )
-            .forEach((v) => {
-                v.ordinal = v.ordinal + 1;
-            });
+    //     this.draft.categories
+    //         .filter(
+    //             (v) =>
+    //                 v.id !== actionData.id && v.ordinal >= actionData.ordinal,
+    //         )
+    //         .forEach((v) => {
+    //             v.ordinal = v.ordinal + 1;
+    //         });
 
-        this.draft.categories = this.draft.categories
-            .sort((a, b) => {
-                return a.ordinal > b.ordinal ? 1 : -1;
-            })
-            .map((v, i) => {
-                v.ordinal = i + 1;
-                return v;
-            });
+    //     this.draft.categories = this.draft.categories
+    //         .sort((a, b) => {
+    //             return a.ordinal > b.ordinal ? 1 : -1;
+    //         })
+    //         .map((v, i) => {
+    //             v.ordinal = i + 1;
+    //             return v;
+    //         });
 
-        this.draft.loadingCategories = false;
-    }
+    //     this.draft.categoriesLoading = false;
+    // }
 }

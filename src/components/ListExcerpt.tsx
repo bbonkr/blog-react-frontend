@@ -18,10 +18,7 @@ import StackGrid from 'react-stack-grid';
 import { withSize, SizeMeProps } from 'react-sizeme';
 import { IPostModel } from '../typings/dto';
 import { appOptions } from '../config/appOptions';
-
-const FullWidthButton = styled(Button)`
-    width: 100%;
-`;
+import { ButtonFullWidth } from '../styledComponents/Buttons';
 
 export interface IListExceptProps extends SizeMeProps {
     posts: IPostModel[];
@@ -207,9 +204,9 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
             </Spin>
             <Divider />
             {hasMore && (
-                <FullWidthButton loading={loading} onClick={onClickLoadMore}>
+                <ButtonFullWidth loading={loading} onClick={onClickLoadMore}>
                     Load more
-                </FullWidthButton>
+                </ButtonFullWidth>
             )}
         </article>
     );
