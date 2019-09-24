@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
-import { PageHeader, Divider, Spin } from 'antd';
+import { PageHeader, Divider, Spin, Skeleton } from 'antd';
 import UserAvatar from '../../components/UserAvatar';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import { actionTypes } from '../../reducers/actionTypes';
@@ -52,6 +52,16 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
             },
         });
     }, [category, dispatch, postsLimit, user, currentPage]);
+
+    if (!userCategoryPostsUser || !userCategoryPostsCategory) {
+        return (
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Skeleton active={true} loading={true} />
+                </ContentWrapper>
+            </DefaultLayout>
+        );
+    }
 
     return (
         <>

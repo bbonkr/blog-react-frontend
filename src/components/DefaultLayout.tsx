@@ -5,14 +5,28 @@ import React, {
     FunctionComponent,
 } from 'react';
 import Link from 'next/link';
-import { Menu, Input, Button, Modal, Layout } from 'antd';
+import {
+    Menu,
+    Input,
+    Button,
+    Modal,
+    Layout,
+    Icon,
+    Typography,
+    Divider,
+    Affix,
+    Progress,
+    Spin,
+} from 'antd';
 import { useSelector } from 'react-redux';
 import Router from 'next/router';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import UserAvatar from './UserAvatar';
 import { IRootState, IUserState, ISettingState } from '../typings/reduxStates';
+import { withSize, SizeMeProps } from 'react-sizeme';
+import { appOptions } from '../config/appOptions';
 
-export interface IDefaultLayoutProps {
+export interface IDefaultLayoutProps extends SizeMeProps {
     children: React.ReactNode;
 }
 
@@ -23,9 +37,10 @@ export interface IDefaultLayoutProps {
  */
 const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     children,
+    size,
 }) => {
     // const dispatch = useDispatch();
-
+    const { width } = size;
     const { me } = useSelector<IRootState, IUserState>((s) => s.user);
     const { currentUrl } = useSelector<IRootState, ISettingState>(
         (state) => state.settings,
@@ -34,6 +49,43 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     const [searchModalVisible, setSearchModalVisible] = useState(false);
     const [searchKeywordText, setSearchKeywordText] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isSmall, setIsSmall] = useState(false);
+
+    const [drawerCollapsed, setDrawerCollapsed] = useState(true);
+
+    useEffect(() => {
+        const documentElementWidth =
+            document.documentElement.clientWidth || width;
+        setIsSmall(documentElementWidth <= 576);
+    }, []);
+
+    useEffect(() => {
+        const documentElementWidth =
+            document.documentElement.clientWidth || width;
+        setIsSmall(documentElementWidth <= 576);
+
+        // const { width } = size;
+        // if (width) {
+        //     if (width > 576) {
+        //         setIsSmall(false);
+        //     }
+        //     if (width > 576) {
+        //         columnWidth = '50%';
+        //     }
+
+        //     if (width > 768) {
+        //         columnWidth = '33.33%';
+        //     }
+
+        //     if (width > 992) {
+        //         columnWidth = '25.0%';
+        //     }
+
+        //     if (width > 1200) {
+        //         columnWidth = '20%';
+        //     }
+        // }
+    }, [width]);
 
     useEffect(() => {
         setIsLoggedIn(!!me);
@@ -78,6 +130,131 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     // );
 
     // console.info('[APP] DefaultLayout render');
+    const menu: React.ReactNode = (
+        <Menu theme='light' mode='inline' defaultSelectedKeys={['home']}>
+            <Menu.Item key='home'>
+                <Link href='/'>
+                    <a>{appOptions.title}</a>
+                </Link>
+            </Menu.Item>
+            <div style={{ padding: '0.3rem 0.6rem' }}>
+                <Input.Search
+                    value={searchKeywordText}
+                    onChange={onChangeSearchKeywordText}
+                    onSearch={onSearch}
+                />
+            </div>
+            <Menu.Item key='recently'>
+                <Link href='/'>
+                    <a>Recently posts</a>
+                </Link>
+            </Menu.Item>
+            <Menu.Item key='profile'>
+                <Link href='/me'>
+                    <a>Profile</a>
+                </Link>
+            </Menu.Item>
+            {/* <Menu.Item key='search'>
+                <Button
+                    icon='search'
+                    style={{ verticalAlign: 'middle' }}
+                    onClick={onClickShowSearchModal}>
+                    Search
+                </Button>
+            </Menu.Item> */}
+            {!isLoggedIn && (
+                <Menu.Item key='signin'>
+                    <Link
+                        href={{
+                            pathname: '/signin',
+                            query: {
+                                returnUrl: currentUrl,
+                            },
+                        }}>
+                        <a>Sign in</a>
+                    </Link>
+                </Menu.Item>
+            )}
+            {!isLoggedIn && (
+                <Menu.Item key='signup'>
+                    <Link href='/signup'>
+                        <a>Sign up</a>
+                    </Link>
+                </Menu.Item>
+            )}
+            {isLoggedIn && (
+                <SubMenu key='user' title={<UserAvatar user={me} />}>
+                    <Menu.Item key='user-me'>
+                        <Link href='/me'>
+                            <a>Profile</a>
+                        </Link>
+                    </Menu.Item>
+                    {/* <Menu.Item onClick={onClickSignOut}>
+                                    Sign out
+                                </Menu.Item> */}
+                    <Menu.Item>
+                        <Link href='/signout'>
+                            <a>Sign out</a>
+                        </Link>
+                    </Menu.Item>
+                </SubMenu>
+            )}
+        </Menu>
+    );
+
+    // if (!width) {
+    //     return (
+    //         <div style={{ position: 'fixed', top: '50%', left: '50%' }}>
+    //             <Spin spinning={true} />
+    //         </div>
+    //     );
+    // }
+
+    if (true) {
+        return (
+            <Layout>
+                <Layout.Sider
+                    width={200}
+                    hidden={isSmall}
+                    style={{
+                        overflow: 'auth',
+                        height: '100vh',
+                        position: 'fixed',
+                        left: 0,
+                    }}>
+                    {menu}
+                </Layout.Sider>
+                <Layout
+                    style={{
+                        marginLeft: isSmall ? 0 : 200,
+                        height: '100vh',
+                    }}>
+                    <Layout.Header
+                        hidden={!isSmall}
+                        style={{
+                            paddingLeft: '1rem',
+                            width: '100%',
+                        }}>
+                        <Typography.Title
+                            level={1}
+                            style={{ color: '#efefef' }}>
+                            <Icon
+                                className='trigger'
+                                type={
+                                    drawerCollapsed
+                                        ? 'menu-unfold'
+                                        : 'menu-fold'
+                                }
+                            />
+                            <Divider type='vertical' />
+                            {appOptions.title}
+                        </Typography.Title>
+                    </Layout.Header>
+                    <Layout.Content>{children}</Layout.Content>
+                </Layout>
+            </Layout>
+        );
+    }
 
     return (
         <div style={{ minHeight: '100%' }}>
@@ -180,4 +357,4 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     );
 };
 
-export default DefaultLayout;
+export default withSize({ noPlaceholder: true })(DefaultLayout);

@@ -66,9 +66,9 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                 columnWidth = '25.0%';
             }
 
-            if (width > 1200) {
-                columnWidth = '20%';
-            }
+            // if (width > 1200) {
+            //     columnWidth = '20%';
+            // }
         }
 
         setCardWidth(columnWidth);

@@ -1,6 +1,7 @@
 const express = require('express');
 const next = require('next');
 const morgan = require('morgan');
+const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const dotenv = require('dotenv');
@@ -21,10 +22,14 @@ const protocol = process.env.PROTOCOL || 'http';
 
 app.prepare().then(() => {
     const server = express();
-
+    if (prod) {
+        server.use(helmet());
+    }
     // logging https://github.com/expressjs/morgan
-    server.use(morgan('dev'));
+    server.use(morgan(prod ? 'combined' : 'dev'));
+
     server.use('/', express.static(path.join(__dirname, 'static')));
+
     server.get('/category/:slug', (req, res) => {
         return app.render(req, res, '/category', { slug: req.params.slug });
     });

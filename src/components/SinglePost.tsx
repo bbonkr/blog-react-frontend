@@ -13,6 +13,7 @@ import { appOptions } from '../config/appOptions';
 
 import '../styles/prism.css';
 import '../styles/singlepost.css';
+import Loading from './Loading';
 
 export interface ISinglePostProps {
     post: IPostModel;

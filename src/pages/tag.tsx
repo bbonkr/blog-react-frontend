@@ -1,7 +1,7 @@
 import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Divider, PageHeader, Spin } from 'antd';
+import { Divider, PageHeader, Spin, Skeleton } from 'antd';
 import ListExcerpt from '../components/ListExcerpt';
 import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
@@ -41,6 +41,17 @@ const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
             },
         });
     }, [dispatch, currentPage, postsLimit, slug]);
+
+    if (!currentTag) {
+        return (
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Skeleton active={true} loading={true} />
+                </ContentWrapper>
+            </DefaultLayout>
+        );
+    }
+
     return (
         <>
             <Helmet title={`${currentTag && currentTag.name} | ${siteName}`} />

@@ -9,6 +9,7 @@ import { IBlogAction } from '../typings/IBlogAction';
 import { IUserModel } from '../typings/dto';
 import { IPageProps } from '../typings/IPageProps';
 import { useSelector } from 'react-redux';
+import Loading from '../components/Loading';
 
 export interface IWithAuthProps extends IPageProps {
     me: IUserModel;
@@ -89,8 +90,7 @@ export const withAuth = (WrappedComponent) => {
         public render() {
             // console.debug('[APP] withAuth render');
             if (this.state.loading) {
-                // TODO Add loading page
-                return <Spin spinning={true}>Loading...</Spin>;
+                return <Loading />;
             }
             return <WrappedComponent {...this.props} />;
         }

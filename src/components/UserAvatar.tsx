@@ -2,8 +2,9 @@ import React, { FunctionComponent, memo, useEffect, useState } from 'react';
 import { Avatar } from 'antd';
 import { IUserModel } from '../typings/dto';
 import { appOptions } from '../config/appOptions';
+import { IPageProps } from '../typings/IPageProps';
 
-export interface IUserAvatarProps {
+export interface IUserAvatarProps extends IPageProps {
     user: IUserModel;
 }
 

@@ -8,7 +8,7 @@ import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IRootState, IUsersPostsState } from '../../typings/reduxStates';
-import { PageHeader, Divider, Spin } from 'antd';
+import { PageHeader, Divider, Spin, Skeleton } from 'antd';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import UserAvatar from '../../components/UserAvatar';
 import { appOptions } from '../../config/appOptions';
@@ -44,7 +44,17 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
                 keyword: '',
             },
         });
-    }, [dispatch, postsLimit, user, usersPosts]);
+    }, [dispatch, postsLimit, user, currentPage]);
+
+    if (!currentUser) {
+        return (
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Skeleton active={true} loading={true} />
+                </ContentWrapper>
+            </DefaultLayout>
+        );
+    }
     return (
         <>
             <Helmet
