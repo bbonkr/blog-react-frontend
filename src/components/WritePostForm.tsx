@@ -24,6 +24,7 @@ import TextArea from 'antd/lib/input/TextArea';
 import { ContentTextArea } from '../styledComponents/ContentTextArea';
 import { MarkdownPreview } from '../styledComponents/MarkdownPreview';
 import { ShowNotification } from './ShowNotification';
+import { slugify } from '../helpers/slugify';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 const SELECT_FILE_TARGET_MARKDOWN = 'markdown';
@@ -156,7 +157,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                 newValue.trim().length > 0 &&
                 (!slug || slug.trim().length === 0)
             ) {
-                setSlug(newValue.replace(/\s+/g, '-').toLowerCase());
+                setSlug(slugify(newValue));
             }
         },
         [slug],
@@ -164,7 +165,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
 
     const onChangeSlug = useCallback((e) => {
         const text = e.target.value;
-        setSlug(text);
+        setSlug(slugify(text));
     }, []);
 
     const onChangeMarkdown = useCallback(

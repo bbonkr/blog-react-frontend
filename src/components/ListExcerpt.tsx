@@ -121,114 +121,116 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
         }
     }, [loadMoreHandler]);
 
-    const renderPostsWithCard = (posts: IPostModel[]) => {
-        return posts.map((post) => {
-            const { title, excerpt, createdAt } = post;
-            let coverSrc = post.coverImage;
-            if (coverSrc && coverSrc.startsWith('/')) {
-                coverSrc = `${appOptions.apiBaseUrl}${coverSrc}`;
-            }
-            return (
-                <Col
-                    key={post.id}
-                    span={24}
-                    xs={24}
-                    sm={24}
-                    md={12}
-                    lg={8}
-                    xl={6}
-                    xxl={4}>
-                    <Card
-                        cover={
-                            false &&
-                            post.coverImage && (
-                                <CroppedFigure>
-                                    <img src={coverSrc} alt={post.title} />
-                                </CroppedFigure>
-                            )
-                        }
-                        actions={[
-                            <IconText
-                                type='eye'
-                                text={`${
-                                    post.accessLogs &&
-                                    post.accessLogs.length > 0
-                                        ? post.accessLogs.length
-                                        : 0
-                                }`}
-                            />,
-                            <IconLike post={post} />,
-                        ]}
-                        extra={
-                            null
-                            // <IconText
-                            //     type='clock-circle'
-                            //     text={moment(createdAt).format(
-                            //         'YYYY-MM-DD HH:mm:ss',
-                            //     )}
-                            // />
-                        }>
-                        <Card.Meta
-                            avatar={
-                                <LinkUsersPosts user={post.user}>
-                                    <UserAvatar user={post.user} />
-                                </LinkUsersPosts>
-                            }
-                            title={
-                                <LinkSinglePost post={post}>
-                                    <Typography.Title level={3} ellipsis={true}>
-                                        {title}
-                                    </Typography.Title>
-                                </LinkSinglePost>
-                            }
-                            description={
-                                post.categories &&
-                                post.categories.map((category) => {
-                                    return (
-                                        <LinkCategory
-                                            key={category.slug}
-                                            user={post.user}
-                                            category={category}
-                                        />
-                                    );
-                                })
-                            }
-                        />
-                        <div>
-                            <Divider orientation='right'>
-                                <span>
-                                    <Icon type='clock-circle' />{' '}
-                                    {moment(
-                                        new Date(post.createdAt),
-                                        'YYYY-MM-DD HH:mm:ss',
-                                    ).fromNow()}
-                                </span>
-                            </Divider>
+    // const renderPostsWithCard = (posts: IPostModel[]) => {
+    //     return posts.map((post) => {
+    //         const { title, excerpt, createdAt } = post;
+    //         let coverSrc = post.coverImage;
+    //         if (coverSrc && coverSrc.startsWith('/')) {
+    //             coverSrc = `${appOptions.apiBaseUrl}${coverSrc}`;
+    //         }
+    //         return (
+    //             <Col
+    //                 key={post.id}
+    //                 span={24}
+    //                 xs={24}
+    //                 sm={24}
+    //                 md={12}
+    //                 lg={8}
+    //                 xl={6}
+    //                 xxl={4}>
+    //                 <Card
+    //                     cover={
+    //                         false &&
+    //                         post.coverImage && (
+    //                             <CroppedFigure>
+    //                                 <img src={coverSrc} alt={post.title} />
+    //                             </CroppedFigure>
+    //                         )
+    //                     }
+    //                     actions={[
+    //                         <IconText
+    //                             type='eye'
+    //                             text={`${
+    //                                 post.accessLogs &&
+    //                                 post.accessLogs.length > 0
+    //                                     ? post.accessLogs.length
+    //                                     : 0
+    //                             }`}
+    //                         />,
+    //                         <IconLike post={post} />,
+    //                     ]}
+    //                     extra={
+    //                         null
+    //                         // <IconText
+    //                         //     type='clock-circle'
+    //                         //     text={moment(createdAt).format(
+    //                         //         'YYYY-MM-DD HH:mm:ss',
+    //                         //     )}
+    //                         // />
+    //                     }>
+    //                     <Card.Meta
+    //                         avatar={
+    //                             <LinkUsersPosts user={post.user}>
+    //                                 <UserAvatar user={post.user} />
+    //                             </LinkUsersPosts>
+    //                         }
+    //                         title={
+    //                             <LinkSinglePost post={post}>
+    //                                 <Typography.Title level={3} ellipsis={true}>
+    //                                     {title}
+    //                                 </Typography.Title>
+    //                             </LinkSinglePost>
+    //                         }
+    //                         description={
+    //                             post.categories &&
+    //                             post.categories.map((category) => {
+    //                                 return (
+    //                                     <LinkCategory
+    //                                         key={category.slug}
+    //                                         user={post.user}
+    //                                         category={category}
+    //                                     />
+    //                                 );
+    //                             })
+    //                         }
+    //                     />
+    //                     <div>
+    //                         <Divider orientation='right'>
+    //                             <span>
+    //                                 <Icon type='clock-circle' />{' '}
+    //                                 {moment(
+    //                                     new Date(post.createdAt),
+    //                                     'YYYY-MM-DD HH:mm:ss',
+    //                                 ).fromNow()}
+    //                             </span>
+    //                         </Divider>
 
-                            <Typography.Paragraph
-                                ellipsis={{ rows: 6, expandable: false }}>
-                                {excerpt}
-                            </Typography.Paragraph>
+    //                         <Typography.Paragraph
+    //                             ellipsis={{ rows: 6, expandable: false }}>
+    //                             {excerpt}
+    //                         </Typography.Paragraph>
 
-                            {post.tags && post.tags.length > 0 && (
-                                <Divider dashed={true} />
-                            )}
-                            <div>
-                                {post.tags &&
-                                    post.tags.map((v) => {
-                                        return <LinkTag tag={v} key={v.slug} />;
-                                    })}
-                            </div>
-                        </div>
-                    </Card>
-                </Col>
-            );
-        });
-    };
+    //                         {post.tags && post.tags.length > 0 && (
+    //                             <Divider dashed={true} />
+    //                         )}
+    //                         <div>
+    //                             {post.tags &&
+    //                                 post.tags.map((v) => {
+    //                                     return <LinkTag tag={v} key={v.slug} />;
+    //                                 })}
+    //                         </div>
+    //                     </div>
+    //                 </Card>
+    //             </Col>
+    //         );
+    //     });
+    // };
 
     const renderPostsWithList = (posts: IPostModel[]) => {
         return (
             <List
+                style={{ backgroundColor: '#FFFFFF' }}
+                bordered={true}
                 itemLayout='vertical'
                 size='large'
                 dataSource={posts}
@@ -292,8 +294,12 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                                     })
                                 }
                             />
-                            {post.excerpt}
-                            <Divider />
+
+                            <Typography.Paragraph
+                                ellipsis={{ rows: 4, expandable: false }}>
+                                {post.excerpt}
+                            </Typography.Paragraph>
+                            {/* <Divider /> */}
                             <div>
                                 {post.tags &&
                                     post.tags.map((v) => {

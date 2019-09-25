@@ -83,7 +83,7 @@ const Posts: FunctionComponent = () => {
     const columns = [
         {
             key: 'title',
-            title: 'title',
+            title: 'Title',
             dataIndex: 'title',
             render: (text, record, index) => {
                 return (
