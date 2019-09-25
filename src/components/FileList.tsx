@@ -238,6 +238,8 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                 monitorImagesLoaded={true}>
                 {mediaFiles.map((item) => {
                     const filename = `${item.fileName}${item.fileExtension}`;
+                    const imagrSrc: string = '';
+                    const imageAlt: string = '';
                     return (
                         <div key={+item.id}>
                             <Card
@@ -245,6 +247,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                                     item.contentType.indexOf('image') >= 0 && (
                                         <CroppedImage
                                             image={item}
+                                            altText={imageAlt}
                                             onClickHandler={onClickImage}
                                         />
                                     )

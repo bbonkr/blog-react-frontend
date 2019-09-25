@@ -5,7 +5,17 @@ import React, {
     useCallback,
     useMemo,
 } from 'react';
-import { Button, Divider, Card, Typography, Icon, Spin } from 'antd';
+import {
+    Button,
+    Divider,
+    Card,
+    Typography,
+    Icon,
+    Spin,
+    Row,
+    Col,
+    List,
+} from 'antd';
 import StackGrid from 'react-stack-grid';
 import moment from 'moment';
 import IconText from './IconText';
@@ -19,11 +29,29 @@ import { IPostModel } from '../typings/dto';
 import { appOptions } from '../config/appOptions';
 import { ButtonFullWidth } from '../styledComponents/Buttons';
 import { IPageProps } from '../typings/IPageProps';
+import styled from 'styled-components';
+
+const CroppedFigure = styled.figure`
+    max-width: 10rem;
+    max-height: 10rem;
+    overflow: hidden;
+    margin: 0;
+    &:focus {
+        outline: -webkit-focus-ring-color none 0;
+    }
+    & img {
+        display: block;
+        width: 200.777%;
+        height: 200.777%;
+        margin: 0 -38.885%;
+    }
+`;
 
 export interface IListExceptProps extends IPageProps {
     posts: IPostModel[];
     loading: boolean;
     hasMore: boolean;
+    postsCount?: number;
     loadMoreHandler: () => void;
 }
 
@@ -32,6 +60,7 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
     loading,
     hasMore,
     loadMoreHandler,
+    postsCount,
 }) => {
     // const { me } = useSelector<IRootState, IUserState>(s => s.user);
     const [documentElementWidth, setDocumentElementWidth] = useState(0);
@@ -56,6 +85,10 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
         }
 
         return columnWidth;
+    }, [documentElementWidth]);
+
+    const hideCoverImage = useMemo(() => {
+        return stackGridColumnWidth === '100%';
     }, [documentElementWidth]);
 
     useEffect(() => {
@@ -87,7 +120,8 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
             loadMoreHandler();
         }
     }, [loadMoreHandler]);
-    const renderPosts = (posts: IPostModel[]) => {
+
+    const renderPostsWithCard = (posts: IPostModel[]) => {
         return posts.map((post) => {
             const { title, excerpt, createdAt } = post;
             let coverSrc = post.coverImage;
@@ -95,11 +129,22 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                 coverSrc = `${appOptions.apiBaseUrl}${coverSrc}`;
             }
             return (
-                <div key={post.id}>
+                <Col
+                    key={post.id}
+                    span={24}
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={8}
+                    xl={6}
+                    xxl={4}>
                     <Card
                         cover={
+                            false &&
                             post.coverImage && (
-                                <img src={coverSrc} alt={post.title} />
+                                <CroppedFigure>
+                                    <img src={coverSrc} alt={post.title} />
+                                </CroppedFigure>
                             )
                         }
                         actions={[
@@ -160,7 +205,10 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                                 </span>
                             </Divider>
 
-                            <div>{excerpt}</div>
+                            <Typography.Paragraph
+                                ellipsis={{ rows: 6, expandable: false }}>
+                                {excerpt}
+                            </Typography.Paragraph>
 
                             {post.tags && post.tags.length > 0 && (
                                 <Divider dashed={true} />
@@ -173,21 +221,105 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                             </div>
                         </div>
                     </Card>
-                </div>
+                </Col>
             );
         });
     };
+
+    const renderPostsWithList = (posts: IPostModel[]) => {
+        return (
+            <List
+                itemLayout='vertical'
+                size='large'
+                dataSource={posts}
+                renderItem={(post: IPostModel) => {
+                    const { title, excerpt, createdAt } = post;
+                    let coverSrc = post.coverImage;
+                    if (coverSrc && coverSrc.startsWith('/')) {
+                        coverSrc = `${appOptions.apiBaseUrl}${coverSrc}`;
+                    }
+                    return (
+                        <List.Item
+                            key={post.slug}
+                            actions={[
+                                <IconText
+                                    type='eye'
+                                    text={`${
+                                        post.accessLogs &&
+                                        post.accessLogs.length > 0
+                                            ? post.accessLogs.length
+                                            : 0
+                                    }`}
+                                />,
+                                <IconLike post={post} />,
+                            ]}
+                            extra={
+                                !hideCoverImage &&
+                                post.coverImage && (
+                                    <CroppedFigure>
+                                        <img src={coverSrc} alt={post.title} />
+                                    </CroppedFigure>
+                                )
+                            }>
+                            <List.Item.Meta
+                                avatar={
+                                    <LinkUsersPosts user={post.user}>
+                                        <UserAvatar user={post.user} />
+                                    </LinkUsersPosts>
+                                }
+                                title={
+                                    <LinkSinglePost post={post}>
+                                        <Typography.Title
+                                            level={3}
+                                            ellipsis={{
+                                                rows: 2,
+                                                expandable: false,
+                                            }}>
+                                            {title}
+                                        </Typography.Title>
+                                    </LinkSinglePost>
+                                }
+                                description={
+                                    post.categories &&
+                                    post.categories.map((category) => {
+                                        return (
+                                            <LinkCategory
+                                                key={category.slug}
+                                                user={post.user}
+                                                category={category}
+                                            />
+                                        );
+                                    })
+                                }
+                            />
+                            {post.excerpt}
+                            <Divider />
+                            <div>
+                                {post.tags &&
+                                    post.tags.map((v) => {
+                                        return <LinkTag tag={v} key={v.slug} />;
+                                    })}
+                            </div>
+                        </List.Item>
+                    );
+                }}
+            />
+        );
+    };
+
     return (
         <article>
             <Spin spinning={loading}>
-                <StackGrid
+                {/* <StackGrid
                     columnWidth={stackGridColumnWidth}
                     gutterWidth={16}
                     gutterHeight={16}
                     enableSSR={true}
                     monitorImagesLoaded={true}>
                     {renderPosts(posts)}
-                </StackGrid>
+                </StackGrid> */}
+                {/* <Row gutter={8}>{renderPostsWithCard(posts)}</Row> */}
+                {renderPostsWithList(posts)}
             </Spin>
             <Divider />
             {hasMore && (
