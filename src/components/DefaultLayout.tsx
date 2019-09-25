@@ -23,10 +23,10 @@ import Router from 'next/router';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import UserAvatar from './UserAvatar';
 import { IRootState, IUserState, ISettingState } from '../typings/reduxStates';
-import { withSize, SizeMeProps } from 'react-sizeme';
 import { appOptions } from '../config/appOptions';
+import { IPageProps } from '../typings/IPageProps';
 
-export interface IDefaultLayoutProps extends SizeMeProps {
+export interface IDefaultLayoutProps extends IPageProps {
     children: React.ReactNode;
 }
 
@@ -37,10 +37,10 @@ export interface IDefaultLayoutProps extends SizeMeProps {
  */
 const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     children,
-    size,
+    // size,
 }) => {
     // const dispatch = useDispatch();
-    const { width } = size;
+    // const { width } = size;
     const { me } = useSelector<IRootState, IUserState>((s) => s.user);
     const { currentUrl } = useSelector<IRootState, ISettingState>(
         (state) => state.settings,
@@ -50,42 +50,32 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     const [searchKeywordText, setSearchKeywordText] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isSmall, setIsSmall] = useState(false);
+    const [documentElementWidth, setDocumentElementWidth] = useState(0);
 
     const [drawerCollapsed, setDrawerCollapsed] = useState(true);
 
     useEffect(() => {
-        const documentElementWidth =
-            document.documentElement.clientWidth || width;
+        setDocumentElementWidth(document.documentElement.clientWidth);
         setIsSmall(documentElementWidth <= 576);
+
+        const onResize = () => {
+            setDocumentElementWidth(
+                window.document.documentElement.clientWidth,
+            );
+        };
+
+        window.addEventListener('resize', onResize);
+
+        return () => {
+            window.removeEventListener('resize', onResize);
+        };
     }, []);
 
     useEffect(() => {
-        const documentElementWidth =
-            document.documentElement.clientWidth || width;
-        setIsSmall(documentElementWidth <= 576);
-
-        // const { width } = size;
-        // if (width) {
-        //     if (width > 576) {
-        //         setIsSmall(false);
-        //     }
-        //     if (width > 576) {
-        //         columnWidth = '50%';
-        //     }
-
-        //     if (width > 768) {
-        //         columnWidth = '33.33%';
-        //     }
-
-        //     if (width > 992) {
-        //         columnWidth = '25.0%';
-        //     }
-
-        //     if (width > 1200) {
-        //         columnWidth = '20%';
-        //     }
-        // }
-    }, [width]);
+        if (documentElementWidth) {
+            setIsSmall(documentElementWidth <= 576);
+        }
+    }, [documentElementWidth]);
 
     useEffect(() => {
         setIsLoggedIn(!!me);
@@ -357,4 +347,4 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     );
 };
 
-export default withSize({ noPlaceholder: true })(DefaultLayout);
+export default DefaultLayout;

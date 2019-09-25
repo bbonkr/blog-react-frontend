@@ -1,6 +1,6 @@
 import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import PropTypes from 'prop-types';
+import Head from 'next/head';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
@@ -10,7 +10,7 @@ import LinkUsersPosts from '../../components/LinkUsersPosts';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IRootState, IUserCategoryPostsState } from '../../typings/reduxStates';
 import { appOptions } from '../../config/appOptions';
-import Helmet from 'react-helmet';
+// import Helmet from 'react-helmet';
 
 export interface IUserCategoryPostsProps {
     user: string;
@@ -62,14 +62,15 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
             </DefaultLayout>
         );
     }
-
+    const title: string = `${userCategoryPostsUser &&
+        userCategoryPostsUser.displayName}'s ${userCategoryPostsCategory &&
+        userCategoryPostsCategory.name} posts | ${siteName}`;
     return (
         <>
-            <Helmet
-                title={`${userCategoryPostsUser &&
-                    userCategoryPostsUser.displayName}'s ${userCategoryPostsCategory &&
-                    userCategoryPostsCategory.name} posts | ${siteName}`}
-            />
+            <Head>
+                <title>{title}</title>
+                <meta name='og:title' content={title} />
+            </Head>
             <DefaultLayout>
                 <ContentWrapper>
                     <Spin spinning={userCategoryPostsLoading}>

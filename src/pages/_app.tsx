@@ -12,11 +12,12 @@ import { normalizeReturnUrl } from '../helpers/stringHelper';
 import { appOptions } from '../config/appOptions';
 import { IPageProps } from '../typings/IPageProps';
 import { actionTypes } from '../reducers/actionTypes';
-
-import '../styles/styles.scss';
 import { IRootState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { NextPageContext } from 'next';
+
+import 'antd/dist/antd.css';
+import '../styles/styles.scss';
 
 export interface IBlogAppProp extends IPageProps {
     Component: Element;
@@ -126,6 +127,7 @@ class BlogApp extends App<IBlogAppProp> {
                     href: '/bbon-icon.png',
                     sizes: '512x512',
                 },
+                // users-posts users
                 {
                     rel: 'me',
                     href: 'https://www.facebook.com/bbonkr',
@@ -135,23 +137,23 @@ class BlogApp extends App<IBlogAppProp> {
                     type: 'text/plain',
                     href: '/humans.txt',
                 },
-                {
-                    rel: 'stylesheet',
-                    href:
-                        'https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.css',
-                },
-                {
-                    rel: 'stylesheet',
-                    href:
-                        'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css',
-                    type: 'text/css',
-                },
-                {
-                    rel: 'stylesheet',
-                    href:
-                        'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css',
-                    type: 'text/css',
-                },
+                // {
+                //     rel: 'stylesheet',
+                //     href:
+                //         'https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.css',
+                // },
+                // {
+                //     rel: 'stylesheet',
+                //     href:
+                //         'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css',
+                //     type: 'text/css',
+                // },
+                // {
+                //     rel: 'stylesheet',
+                //     href:
+                //         'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css',
+                //     type: 'text/css',
+                // },
             ],
             script: [
                 {
@@ -166,7 +168,7 @@ class BlogApp extends App<IBlogAppProp> {
         return (
             <Fragment>
                 <Provider store={store}>
-                    <Helmet htmlAttributes={helmetProps} />
+                    {/* <Helmet htmlAttributes={helmetProps} /> */}
                     <AppLayout>
                         <Component {...pageProps} returnUrl={returnUrl} />
                     </AppLayout>

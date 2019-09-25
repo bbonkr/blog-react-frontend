@@ -10,10 +10,10 @@ import IconLike from './IconLike';
 import { IPostModel } from '../typings/dto';
 import Prism from 'prismjs';
 import { appOptions } from '../config/appOptions';
+import Loading from './Loading';
 
 import '../styles/prism.css';
 import '../styles/singlepost.css';
-import Loading from './Loading';
 
 export interface ISinglePostProps {
     post: IPostModel;

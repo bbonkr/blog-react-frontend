@@ -5,8 +5,6 @@ import React, {
     useCallback,
 } from 'react';
 import { BackTop, Affix, Progress } from 'antd';
-// import PropTypes from 'prop-types';
-import 'antd/dist/antd.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState, IUserState } from '../typings/reduxStates';
 import { actionTypes } from '../reducers/actionTypes';
@@ -14,6 +12,10 @@ import {
     LOCAL_STORAGE_KEY_JWT,
     LOCAL_STORAGE_KEY_SAVED_AT,
 } from '../typings/constant';
+
+import Head from 'next/head';
+import { appOptions } from '../config/appOptions';
+import { withSize } from 'react-sizeme';
 
 export interface IAppLayoutProps {
     children: React.ReactNode;
@@ -116,34 +118,73 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
     // console.info('[APP] AppLayout render');
     // console.debug('[APP] verticalScrollPercent: ', verticalScrollPercent);
     return (
-        <div
-            style={{
-                minHeight: '100vh',
-            }}
-            onScroll={onContentDivScroll}>
+        <>
+            <Head>
+                <title>{appOptions.title}</title>
+                <meta charSet='UTF-8' />
+                <meta
+                    name='viewport'
+                    content='width=device-width,minimum-scale=1,initial-scale=1'
+                />
+                <meta httpEquiv='X-UA-Compatible' content='IE-edge' />
+                <meta
+                    name='description'
+                    content={appOptions.description || appOptions.title}
+                />
+                <meta name='og:title' content={appOptions.title} />
+                <meta name='og:site_name' content={appOptions.title} />
+                <meta
+                    name='og:description'
+                    content={appOptions.description || appOptions.title}
+                />
+                <meta name='og:type' content='website' />
+                {appOptions.fbAdmin && (
+                    <meta name='fb:admins' content={appOptions.fbAdmin} />
+                )}
+                <link
+                    href='/favicon.ico'
+                    rel='shortcut icon'
+                    type='image/x-icon'
+                />
+                <link
+                    href='/bbon-icon.png'
+                    rel='apple-touch-icon'
+                    sizes='512x512'
+                />
+            </Head>
             <div
                 style={{
-                    padding: 0,
-                    margin: 0,
-                    top: 0,
-                    width: '100%',
-                    height: '2px',
-                    position: 'fixed',
-                    zIndex: 100,
-                    backgroundColor: '#6d6d6d',
-                    visibility: visibleScrollPercent ? 'visible' : 'hidden',
-                    display: visibleScrollPercent ? 'block' : 'none',
-                }}>
+                    minHeight: '100vh',
+                }}
+                onScroll={onContentDivScroll}>
                 <div
                     style={{
-                        backgroundColor: '#ef6233',
-                        width: `${verticalScrollPercent}%`,
+                        padding: 0,
+                        margin: 0,
+                        top: 0,
+                        width: '100%',
                         height: '2px',
-                    }}></div>
+                        position: 'fixed',
+                        zIndex: 100,
+                        backgroundColor: '#6d6d6d',
+                        visibility: visibleScrollPercent ? 'visible' : 'hidden',
+                        display: visibleScrollPercent ? 'block' : 'none',
+                    }}>
+                    <div
+                        style={{
+                            backgroundColor: '#ef6233',
+                            width: `${verticalScrollPercent}%`,
+                            height: '2px',
+                        }}></div>
+                </div>
+                <div>{children}</div>
             </div>
-            <div>{children}</div>
-        </div>
+        </>
     );
 };
 
-export default AppLayout;
+export default withSize({
+    noPlaceholder: true,
+    refreshRate: 32,
+    refreshMode: 'throttle',
+})(AppLayout);

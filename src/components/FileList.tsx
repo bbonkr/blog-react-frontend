@@ -3,6 +3,7 @@ import React, {
     useState,
     useEffect,
     FunctionComponent,
+    useMemo,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -17,7 +18,6 @@ import {
 } from 'antd';
 import moment from 'moment';
 import StackGrid from 'react-stack-grid';
-import { withSize, SizeMeProps } from 'react-sizeme';
 import ImageViewer from './ImageViewer';
 import CroppedImage from './CroppedImage';
 import { actionTypes } from '../reducers/actionTypes';
@@ -26,11 +26,12 @@ import { appOptions } from '../config/appOptions';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IImageModel } from '../typings/dto';
 import { ButtonFullWidth } from '../styledComponents/Buttons';
+import { IPageProps } from '../typings/IPageProps';
 
 const Paragraph = Typography.Paragraph;
 const Dragger = Upload.Dragger;
 
-export interface IFileListProps extends SizeMeProps {
+export interface IFileListProps extends IPageProps {
     onSelect?: (item: any) => void;
 }
 
@@ -53,8 +54,49 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     const closeImageviewer = useCallback(() => {
         setImageViewerVisible(false);
     }, []);
+    const [documentElementWidth, setDocumentElementWidth] = useState(0);
 
-    const [cardWidth, setCardWidth] = useState('100%');
+    useEffect(() => {
+        setDocumentElementWidth(document.documentElement.clientWidth);
+
+        const onResize = () => {
+            setDocumentElementWidth(
+                window.document.documentElement.clientWidth,
+            );
+        };
+
+        window.addEventListener('resize', onResize);
+
+        return () => {
+            window.removeEventListener('resize', onResize);
+        };
+    }, []);
+
+    const stackGridColumnWidth = useMemo(() => {
+        let columnWidth = '100%';
+
+        // if (documentElementWidth > 576) {
+        //     columnWidth = '50%';
+        // }
+
+        if (documentElementWidth > 768) {
+            columnWidth = '50%'; //'33.33%';
+        }
+
+        if (documentElementWidth > 992) {
+            columnWidth = '33.33%'; // '25.0%';
+        }
+
+        if (documentElementWidth > 1200) {
+            columnWidth = '25.0%'; //'20%';
+        }
+
+        return columnWidth;
+    }, [documentElementWidth]);
+
+    useEffect(() => {
+        setDocumentElementWidth(document.documentElement.clientWidth);
+    }, []);
 
     useEffect(() => {
         dispatch({
@@ -66,30 +108,6 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
             },
         });
     }, [dispatch, mediaFilesLimit]);
-
-    useEffect(() => {
-        const { width } = size;
-
-        let columnWidth = '100%';
-
-        if (width > 576) {
-            columnWidth = '50%';
-        }
-
-        if (width > 768) {
-            columnWidth = '33.33%';
-        }
-
-        if (width > 992) {
-            columnWidth = '25.0%';
-        }
-
-        if (width > 1200) {
-            columnWidth = '20%';
-        }
-
-        setCardWidth(columnWidth);
-    }, [size]);
 
     const uploadBuffer = [];
 
@@ -213,7 +231,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
             <Divider />
 
             <StackGrid
-                columnWidth={cardWidth}
+                columnWidth={stackGridColumnWidth}
                 gutterWidth={16}
                 gutterHeight={16}
                 enableSSR={true}
@@ -274,4 +292,4 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     );
 };
 
-export default withSize({ noPlaceholder: true })(FileList);
+export default FileList;

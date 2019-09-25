@@ -58,7 +58,7 @@ module.exports = withBundleAnalyzer(
                 //     loader: ['style-loader', 'css-loader', 'sass-loader'],
                 // });
                 // console.log(config);
-                HACK_removeMinimizeOptionFromCssLoaders(config);
+                // HACK_removeMinimizeOptionFromCssLoaders(config);
 
                 return {
                     ...config,

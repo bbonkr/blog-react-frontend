@@ -1,7 +1,7 @@
 /**
  * users/:user/posts
  */
-import React, { useCallback, FunctionComponent } from 'react';
+import React, { useCallback, FunctionComponent, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
@@ -12,11 +12,11 @@ import { PageHeader, Divider, Spin, Skeleton } from 'antd';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import UserAvatar from '../../components/UserAvatar';
 import { appOptions } from '../../config/appOptions';
-import Helmet from 'react-helmet';
 import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../../typings/IBlogAction';
 import { IPageProps } from '../../typings/IPageProps';
+import Head from 'next/head';
 
 export interface IUsersPostsProps extends IPageProps {
     user: string;
@@ -55,12 +55,17 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
             </DefaultLayout>
         );
     }
+    const title: string = useMemo(() => {
+        return `${currentUser && currentUser.displayName}'s posts | ${
+            appOptions.title
+        }`;
+    }, [currentUser]);
     return (
         <>
-            <Helmet
-                title={`${currentUser &&
-                    currentUser.displayName}'s posts | ${siteName}`}
-            />
+            <Head>
+                <title>{title}</title>
+            </Head>
+
             <DefaultLayout>
                 <ContentWrapper>
                     <Spin spinning={loadingUsersPosts}>

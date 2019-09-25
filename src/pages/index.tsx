@@ -1,4 +1,4 @@
-import React, { useCallback, FunctionComponent } from 'react';
+import React, { useCallback, FunctionComponent, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ListExcerpt from '../components/ListExcerpt';
 import { ContentWrapper } from '../styledComponents/Wrapper';
@@ -10,11 +10,28 @@ import { IBlogAction } from '../typings/IBlogAction';
 import { IRootState, IPostsState } from '../typings/reduxStates';
 import { Spin } from 'antd';
 import { appOptions } from '../config/appOptions';
-import Helmet from 'react-helmet';
 import { IPageProps } from '../typings/IPageProps';
+import { IPostModel } from '../typings/dto';
+import Head from 'next/head';
+import { Store } from 'redux';
 
-const Home: FunctionComponent = () => {
-    const siteName = appOptions.title;
+export interface IHomePageProps extends IPageProps {
+    // posts: IPostModel[];
+    // currentPage?: number;
+    // postsLimit: number;
+    // loadingPosts: boolean;
+    // hasMorePost: boolean;
+}
+
+const Home: FunctionComponent<IHomePageProps> = (
+    {
+        // posts,
+        // currentPage,
+        // postsLimit,
+        // loadingPosts,
+        // hasMorePost,
+    },
+) => {
     const dispatch = useDispatch();
     const {
         posts,
@@ -35,9 +52,14 @@ const Home: FunctionComponent = () => {
         });
     }, [dispatch, currentPage, postsLimit]);
 
+    const title: string = useMemo(() => {
+        return appOptions.title;
+    }, []);
     return (
         <>
-            <Helmet title={`${siteName}`} />
+            <Head>
+                <title>{title}</title>
+            </Head>
             <DefaultLayout>
                 <ContentWrapper>
                     <Spin spinning={loadingPosts}>
@@ -56,13 +78,20 @@ const Home: FunctionComponent = () => {
 
 Home.getInitialProps = async (
     context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IPageProps> => {
-    const state = context.store.getState();
+): Promise<IHomePageProps> => {
+    const store: Store<IRootState, IBlogAction> = context.store;
+    const state = store.getState();
 
-    const { postsLimit, posts } = state.posts;
+    const {
+        posts,
+        currentPage,
+        postsLimit,
+        loadingPosts,
+        hasMorePost,
+    } = state.posts;
 
     if (context.isServer || !posts || posts.length === 0) {
-        context.store.dispatch<IBlogAction>({
+        store.dispatch<IBlogAction>({
             type: actionTypes.LOAD_POSTS_CALL,
             data: {
                 page: null,
@@ -71,7 +100,13 @@ Home.getInitialProps = async (
             },
         });
     }
-    return {};
+    return {
+        // posts,
+        // currentPage,
+        // postsLimit,
+        // loadingPosts,
+        // hasMorePost,
+    };
 };
 
 export default Home;
