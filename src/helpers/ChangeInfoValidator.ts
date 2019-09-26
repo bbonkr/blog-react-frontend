@@ -1,6 +1,6 @@
 import { FormValidationResult } from './FormValidationResult';
 import { FormValidator } from './FormValidator';
-import { IChangeInfoFormValues } from './IChangeInfoFormValues';
+import { IChangeInfoFormValues } from '../typings/IValidatorInputValues';
 export class ChangeInfoValidator extends FormValidator {
     public validate(formData: IChangeInfoFormValues) {
         const result: FormValidationResult = new FormValidationResult([

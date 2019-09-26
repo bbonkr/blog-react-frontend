@@ -12,8 +12,8 @@ import Prism from 'prismjs';
 import { appOptions } from '../config/appOptions';
 import Loading from './Loading';
 
-import '../styles/prism.css';
-import '../styles/singlepost.css';
+// import '../styles/prism.css';
+// import '../styles/singlepost.css';
 
 export interface ISinglePostProps {
     post: IPostModel;
@@ -21,7 +21,7 @@ export interface ISinglePostProps {
 
 const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
     useEffect(() => {
-        Prism.highlightAll();
+        Prism.highlightAll(true, (element: Element): void => {});
     }, []);
 
     let coverImage = post.coverImage;

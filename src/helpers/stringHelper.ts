@@ -25,12 +25,23 @@ export const normalizeReturnUrl = (
     return url;
 };
 
-export const makeSlug = (text) => {
+/**
+ * /src/helpers/slugify 사용
+ * 슬러그로 사용할 수 있는 문자열로 변환합니다.
+ * slug: strings into URL-friendly
+ * @param text
+ */
+export const makeSlug = (text: string): string => {
     if (!text) {
         return null;
     }
 
-    return text.replace(/\s+/g, '-').toLowerCase();
+    const slug: string = text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
+
+    return slug;
 };
 
 export const formatNumber = (num) => {

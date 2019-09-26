@@ -34,6 +34,13 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
         currentPage,
         postsLimit,
     } = useSelector<IRootState, IUsersPostsState>((s) => s.usersPosts);
+
+    const title: string = useMemo(() => {
+        return `${currentUser && currentUser.displayName}'s posts | ${
+            appOptions.title
+        }`;
+    }, [currentUser]);
+
     const onClickLoadMore = useCallback(() => {
         dispatch({
             type: actionTypes.LOAD_USERS_POSTS_CALL,
@@ -55,11 +62,7 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
             </DefaultLayout>
         );
     }
-    const title: string = useMemo(() => {
-        return `${currentUser && currentUser.displayName}'s posts | ${
-            appOptions.title
-        }`;
-    }, [currentUser]);
+
     return (
         <>
             <Head>

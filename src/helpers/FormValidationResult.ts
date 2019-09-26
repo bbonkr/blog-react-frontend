@@ -1,5 +1,6 @@
-import { IValidationResult } from './IValidationResult';
-import { IFormValidationResult } from './IFormValidationResult';
+import { IValidationResult } from '../typings/IValidationResult';
+import { IFormValidationResult } from '../typings/IValidatorInputValues';
+
 export class FormValidationResult implements IFormValidationResult {
     public valid: boolean;
     public messages: string[];
