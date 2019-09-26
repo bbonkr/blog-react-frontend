@@ -21,8 +21,8 @@ import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../../typings/IBlogAction';
 import { IPageProps } from '../../typings/IPageProps';
 
-import '../../styles/prism.css';
-import '../../styles/singlepost.css';
+// import '../../styles/prism.css';
+// import '../../styles/singlepost.css';
 
 export interface IUsersPostProps extends IPageProps {
     user: string;

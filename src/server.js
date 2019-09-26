@@ -70,6 +70,16 @@ app.prepare().then(() => {
         });
     });
 
+    // server.get('/me/write', (req, res) => {
+    //     return app.render(req, res, '/me/write');
+    // });
+
+    // server.get('/me/write/:id', (req, res) => {
+    //     return app.render(req, res, '/me/write', {
+    //         id: req.params.id,
+    //     });
+    // });
+
     server.get('*', (req, res) => requestHandler(req, res));
 
     server.listen(port, (err) => {

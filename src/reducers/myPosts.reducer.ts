@@ -112,7 +112,7 @@ export const myPosts = (
                         pathname: '/me/write',
                         query: { id: action.data.id },
                     },
-                    `/me/write/${action.data.id}`,
+                    // `/me/write/${action.data.id}`,
                 );
                 break;
             case actionTypes.EDIT_POST_FAIL:

@@ -9,11 +9,16 @@ import LinkUsersPosts from './LinkUsersPosts';
 import IconLike from './IconLike';
 import { IPostModel } from '../typings/dto';
 import Prism from 'prismjs';
+// import {} from 'prism/plugins'
 import { appOptions } from '../config/appOptions';
 import Loading from './Loading';
+// import prismjsShowLanguage from 'prismjs/plugins/show-language/prism-show-language';
+// import prismjsLineNumbers from 'prismjs/plugins/line-numbers/prism-line-numbers';
 
 // import '../styles/prism.css';
-// import '../styles/singlepost.css';
+import 'prismjs/themes/prism-okaidia.css';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+import '../styles/singlepost.css';
 
 export interface ISinglePostProps {
     post: IPostModel;
@@ -21,7 +26,33 @@ export interface ISinglePostProps {
 
 const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
     useEffect(() => {
-        Prism.highlightAll(true, (element: Element): void => {});
+        Prism.highlightAll();
+        // prismjsShowLanguage();
+        // prismjsLineNumbers();
+        // const prismShowLanguage =
+
+        // const prismLineNumbers =
+
+        // import('prismjs/plugins/line-numbers/prism-line-numbers').then((x) => {
+        //     // Object.assign(Prism.plugins, {
+        //     //     ...Prism.plugins,
+        //     //     'prism-line-numbers': x,
+        //     // });
+        //     Prism.plugins['line-numbers'] = x;
+        // });
+
+        // import('prismjs/plugins/show-language/prism-show-language').then(
+        //     (x) => {
+        //         // Object.assign(Prism.plugins, {
+        //         //     ...Prism.plugins,
+        //         //     'prism-show-language': x,
+        //         // });
+        //         Prism.plugins['show-language'] = x;
+        //     },
+        // );
+
+        // prismShowLanguage();
+        // prismLineNumbers();
     }, []);
 
     let coverImage = post.coverImage;

@@ -38,6 +38,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
 
             return {
                 ...initialProps,
+
                 styles: (
                     <>
                         {initialProps.styles}
@@ -73,12 +74,13 @@ class BlogDocument extends Document<IBlogDocumentProps> {
 
         // console.info('[APP] _document render');
         // {...htmlAttrs} {...bodyAttrs}
+        console.debug('[APP] styles: ', this.props.styles);
         return (
             <html lang='ko'>
                 <Head>
-                    {/* {this.props.styles} */}
+                    {this.props.styles}
                     {/* {this.props.styleTags && this.props.styleTags.map((v) => v)} */}
-                    {this.props.styleTags}
+                    {/* {this.props.styleTags} */}
                     {/* {cssFiles.map((css) => {
                         console.log('=========> css file: ', css);
                         return (

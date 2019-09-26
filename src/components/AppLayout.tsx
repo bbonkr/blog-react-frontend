@@ -183,8 +183,9 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
     );
 };
 
-export default withSize({
-    noPlaceholder: true,
-    refreshRate: 32,
-    refreshMode: 'throttle',
-})(AppLayout);
+export default AppLayout;
+// export default withSize({
+//     noPlaceholder: true,
+//     refreshRate: 32,
+//     refreshMode: 'throttle',
+// })(AppLayout);

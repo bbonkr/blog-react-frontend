@@ -152,6 +152,20 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
             const { message } = Validator.checkTitle({ title: newValue });
             setTitleErrorMessage(message);
 
+            // if (
+            //     !!newValue &&
+            //     newValue.trim().length > 0 &&
+            //     (!slug || slug.trim().length === 0)
+            // ) {
+            //     setSlug(slugify(newValue));
+            // }
+        },
+        [slug],
+    );
+
+    const onBlurTitle = useCallback(
+        (e: React.FocusEvent<HTMLInputElement>) => {
+            const newValue = e.target.value;
             if (
                 !!newValue &&
                 newValue.trim().length > 0 &&
@@ -305,7 +319,8 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
             const { valid, messages } = Validator.validate(formData);
             if (valid) {
                 if (!slug || slug.trim().length === 0) {
-                    setSlug(title.replace(/\s+/g, '-').toLowerCase());
+                    // setSlug(title.replace(/\s+/g, '-').toLowerCase());
+                    setSlug(slugify(title));
                 }
 
                 if (id) {
@@ -347,7 +362,11 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                     hasFeedback={true}
                     help={titleErrorMessage}
                     validateStatus={!!titleErrorMessage ? 'error' : ''}>
-                    <Input value={title} onChange={onChangeTitle} />
+                    <Input
+                        value={title}
+                        onChange={onChangeTitle}
+                        onBlur={onBlurTitle}
+                    />
                 </Form.Item>
                 <Form.Item label='Slug'>
                     <Input value={slug} onChange={onChangeSlug} />
