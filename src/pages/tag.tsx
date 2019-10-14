@@ -13,6 +13,7 @@ import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IPageProps } from '../typings/IPageProps';
+import Router from 'next/router';
 
 export interface ITagProps extends IPageProps {
     slug: string;

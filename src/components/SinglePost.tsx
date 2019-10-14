@@ -1,5 +1,5 @@
 import React, { useEffect, FunctionComponent } from 'react';
-import { Card, Divider, Avatar, Typography, Icon } from 'antd';
+import { Card, Divider, Avatar, Typography, Icon, PageHeader } from 'antd';
 import LinkCategory from './LinkCategory';
 import LinkTag from './LinkTag';
 import LinkSinglePost from './LinkSinglePost';
@@ -12,13 +12,14 @@ import Prism from 'prismjs';
 // import {} from 'prism/plugins'
 import { appOptions } from '../config/appOptions';
 import Loading from './Loading';
+import Paragraph from 'antd/lib/skeleton/Paragraph';
 // import prismjsShowLanguage from 'prismjs/plugins/show-language/prism-show-language';
 // import prismjsLineNumbers from 'prismjs/plugins/line-numbers/prism-line-numbers';
 
 // import '../styles/prism.css';
-import 'prismjs/themes/prism-okaidia.css';
-import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
-import '../styles/singlepost.css';
+// import 'prismjs/themes/prism-okaidia.css';
+// import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+// import '../styles/singlepost.css';
 
 export interface ISinglePostProps {
     post: IPostModel;
@@ -74,75 +75,71 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
         });
 
     return (
-        <>
-            <article>
-                <Card
-                    cover={
-                        post.coverImage && (
-                            <img src={`${coverImage}`} alt={`${post.title}`} />
-                        )
-                    }>
-                    <Card.Meta
-                        avatar={
-                            <LinkUsersPosts user={post.user}>
-                                <UserAvatar user={post.user} />
-                            </LinkUsersPosts>
-                        }
-                        title={
-                            <div>
-                                <div style={{ float: 'left' }}>
-                                    <LinkSinglePost post={post}>
-                                        <Typography.Title
-                                            level={3}
-                                            ellipsis={true}>
-                                            {post.title}
-                                        </Typography.Title>
-                                    </LinkSinglePost>
-                                </div>
-                                <div style={{ float: 'right' }}>
-                                    <IconLike post={post} />
-                                </div>
+        <article>
+            <Card
+                cover={
+                    post.coverImage && (
+                        <img src={`${coverImage}`} alt={`${post.title}`} />
+                    )
+                }>
+                <Card.Meta
+                    avatar={
+                        <LinkUsersPosts user={post.user}>
+                            <UserAvatar user={post.user} />
+                        </LinkUsersPosts>
+                    }
+                    title={
+                        <div>
+                            <div style={{ float: 'left' }}>
+                                <LinkSinglePost post={post}>
+                                    <Typography.Title level={3} ellipsis={true}>
+                                        {post.title}
+                                    </Typography.Title>
+                                </LinkSinglePost>
                             </div>
-                        }
-                        description={
-                            post.categories &&
-                            post.categories.map((category) => {
-                                return (
-                                    <LinkCategory
-                                        key={category.slug}
-                                        user={post.user}
-                                        category={category}
-                                    />
-                                );
-                            })
-                        }
-                    />
-                    <Divider orientation='right'>
-                        <span>
-                            <Icon type='clock-circle' />{' '}
-                            {moment(
-                                new Date(post.createdAt),
-                                'YYYY-MM-DD HH:mm:ss',
-                            ).fromNow()}
-                        </span>
-                    </Divider>
+                            <div style={{ float: 'right' }}>
+                                <IconLike post={post} />
+                            </div>
+                        </div>
+                    }
+                    description={
+                        post.categories &&
+                        post.categories.map((category) => {
+                            return (
+                                <LinkCategory
+                                    key={category.slug}
+                                    user={post.user}
+                                    category={category}
+                                />
+                            );
+                        })
+                    }
+                />
+                <Divider orientation='right'>
+                    <span>
+                        <Icon type='clock-circle' />{' '}
+                        {moment(
+                            new Date(post.createdAt),
+                            'YYYY-MM-DD HH:mm:ss',
+                        ).fromNow()}
+                    </span>
+                </Divider>
 
-                    <div
-                        className={`article-post`}
-                        dangerouslySetInnerHTML={{
-                            __html: html, //post.html,
-                        }}
-                    />
+                <div
+                    className={`article-post`}
+                    dangerouslySetInnerHTML={{
+                        __html: html,
+                    }}
+                />
 
-                    <Divider dashed={true} />
+                <Divider dashed={true} />
 
-                    {post.tags &&
-                        post.tags.map((v) => {
-                            return <LinkTag key={v.slug} tag={v} />;
-                        })}
-                </Card>
-            </article>
-        </>
+                {post.tags &&
+                    post.tags.map((v) => {
+                        return <LinkTag key={v.slug} tag={v} />;
+                    })}
+            </Card>
+        </article>
     );
 };
 

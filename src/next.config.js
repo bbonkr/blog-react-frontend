@@ -33,7 +33,9 @@ module.exports = withBundleAnalyzer(
             distDir: '.next',
             publicRuntimeConfig: {
                 // Will be available on both server and client
-                apiBaseUrl: process.env.API_BASEURL, // Pass through env variables
+                // Pass through env variables
+                // apiBaseUrl: 'http://localhost:5000',
+                apiBaseUrl: process.env.API_BASEURL,
                 env: process.env.NODE_ENV,
             },
             webpack(config) {

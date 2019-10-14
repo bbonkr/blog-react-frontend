@@ -17,6 +17,7 @@ import {
     Affix,
     Progress,
     Spin,
+    Drawer,
 } from 'antd';
 import { useSelector } from 'react-redux';
 import Router from 'next/router';
@@ -109,6 +110,14 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
         }
     }, []);
 
+    const onClickBarIcon = useCallback(
+        (e) => {
+            const collapsed = drawerCollapsed;
+            setDrawerCollapsed(!collapsed);
+        },
+        [drawerCollapsed],
+    );
+
     // const onClickSignOut = useCallback(
     //     e => {
     //         dispatch({
@@ -173,7 +182,9 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
                 </Menu.Item>
             )}
             {isLoggedIn && (
-                <SubMenu key='user' title={<UserAvatar user={me} />}>
+                <SubMenu
+                    key='user'
+                    title={<UserAvatar user={me} showDisplayName={true} />}>
                     <Menu.Item key='user-me'>
                         <Link href='/me'>
                             <a>Profile</a>
@@ -192,16 +203,16 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
         </Menu>
     );
 
-    // if (!width) {
-    //     return (
-    //         <div style={{ position: 'fixed', top: '50%', left: '50%' }}>
-    //             <Spin spinning={true} />
-    //         </div>
-    //     );
-    // }
-
-    if (true) {
+    if (!documentElementWidth) {
         return (
+            <div style={{ position: 'fixed', top: '50%', left: '50%' }}>
+                <Spin spinning={true} />
+            </div>
+        );
+    }
+
+    return (
+        <>
             <Layout>
                 <Layout.Sider
                     width={200}
@@ -235,6 +246,7 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
                                         ? 'menu-unfold'
                                         : 'menu-fold'
                                 }
+                                onClick={onClickBarIcon}
                             />
                             <Divider type='vertical' />
                             {appOptions.title}
@@ -243,107 +255,16 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
                     <Layout.Content>{children}</Layout.Content>
                 </Layout>
             </Layout>
-        );
-    }
-
-    return (
-        <div style={{ minHeight: '100%' }}>
-            <Layout style={{ minHeight: '100%' }}>
-                <Layout.Header
-                    style={{ position: 'fixed', zIndex: 500, width: '100%' }}>
-                    <div className='logo' />
-                    <Menu
-                        theme='dark'
-                        mode='horizontal'
-                        defaultSelectedKeys={['home']}
-                        style={{ lineHeight: '64px' }}>
-                        <Menu.Item key='home'>
-                            <Link href='/'>
-                                <a>NodeBlog</a>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item key='profile'>
-                            <Link href='/me'>
-                                <a>Profile</a>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item key='search'>
-                            <Button
-                                icon='search'
-                                style={{ verticalAlign: 'middle' }}
-                                onClick={onClickShowSearchModal}>
-                                Search
-                            </Button>
-                        </Menu.Item>
-                        {!isLoggedIn && (
-                            <Menu.Item
-                                key='signin'
-                                style={{ textAlign: 'right' }}>
-                                <Link
-                                    href={{
-                                        pathname: '/signin',
-                                        query: {
-                                            returnUrl: currentUrl,
-                                        },
-                                    }}>
-                                    <a>Sign in</a>
-                                </Link>
-                            </Menu.Item>
-                        )}
-                        {!isLoggedIn && (
-                            <Menu.Item
-                                key='signup'
-                                style={{ textAlign: 'right' }}>
-                                <Link href='/signup'>
-                                    <a>Sign up</a>
-                                </Link>
-                            </Menu.Item>
-                        )}
-                        {isLoggedIn && (
-                            <SubMenu
-                                key='user'
-                                title={<UserAvatar user={me} />}>
-                                <Menu.Item key='user-me'>
-                                    <Link href='/me'>
-                                        <a>Profile</a>
-                                    </Link>
-                                </Menu.Item>
-                                {/* <Menu.Item onClick={onClickSignOut}>
-                                    Sign out
-                                </Menu.Item> */}
-                                <Menu.Item>
-                                    <Link href='/signout'>
-                                        <a>Sign out</a>
-                                    </Link>
-                                </Menu.Item>
-                            </SubMenu>
-                        )}
-                    </Menu>
-                </Layout.Header>
-                <Layout.Content
-                    style={{
-                        marginTop: '64px',
-                        minHeight: '100vh',
-                    }}>
-                    <article>{children}</article>
-                </Layout.Content>
-                <Layout.Footer />
-            </Layout>
-
-            <Modal
-                title='Search'
-                style={{ top: '30px' }}
-                visible={searchModalVisible}
-                onCancel={onSearchModalCancel}
-                footer={null}>
-                <Input.Search
-                    enterButton
-                    value={searchKeywordText}
-                    onChange={onChangeSearchKeywordText}
-                    onSearch={onSearch}
-                />
-            </Modal>
-        </div>
+            <Drawer
+                visible={!drawerCollapsed}
+                closable={false}
+                placement='left'
+                getContainer={false}
+                bodyStyle={{ padding: 0, margin: 0 }}
+                onClose={(e) => setDrawerCollapsed(true)}>
+                {menu}
+            </Drawer>
+        </>
     );
 };
 
