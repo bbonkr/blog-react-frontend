@@ -5,11 +5,14 @@ import category from './category';
 import settings from './settings';
 import posts from './posts.reducer';
 import tagPosts from './tagPosts.reducer';
-import userCategoryPosts from './userCategoryPosts.reducer';
-import searchPosts from './searchPosts.reducer';
-import usersPosts from './usersPosts.reducer';
-import singlePost from './singlePost.reducer';
-import me from './me';
+import { userCategoryPosts } from './userCategoryPosts.reducer';
+import { searchPosts } from './searchPosts.reducer';
+import { usersPosts } from './usersPosts.reducer';
+import { singlePost } from './singlePost.reducer';
+import { myPosts } from './myPosts.reducer';
+import { myCategories } from './myCategories.reducer';
+import { mediaFiles } from './mediaFiles.reducer';
+import { me } from './me';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IRootState } from '../typings/reduxStates';
 
@@ -21,6 +24,9 @@ const map: ReducersMapObject = {
     category,
     settings,
     me,
+    myPosts,
+    myCategories,
+    mediaFiles,
     posts,
     tagPosts,
     userCategoryPosts,

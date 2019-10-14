@@ -1,4 +1,6 @@
 const webpack = require('webpack');
+const dotenv = require('dotenv');
+
 // const withTypescript = require('@zeit/next-typescript');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: process.env.ANALYZE === 'true',
@@ -7,6 +9,8 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const withCSS = require('@zeit/next-css');
 const withSass = require('@zeit/next-sass');
 // const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+dotenv.config();
 
 function HACK_removeMinimizeOptionFromCssLoaders(config) {
     console.warn(
@@ -27,6 +31,13 @@ module.exports = withBundleAnalyzer(
     withCSS(
         withSass({
             distDir: '.next',
+            publicRuntimeConfig: {
+                // Will be available on both server and client
+                // Pass through env variables
+                // apiBaseUrl: 'http://localhost:5000',
+                apiBaseUrl: process.env.API_BASEURL,
+                env: process.env.NODE_ENV,
+            },
             webpack(config) {
                 // console.log('config', config);
                 const prod = process.env.NODE_ENV === 'production';
@@ -49,7 +60,7 @@ module.exports = withBundleAnalyzer(
                 //     loader: ['style-loader', 'css-loader', 'sass-loader'],
                 // });
                 // console.log(config);
-                HACK_removeMinimizeOptionFromCssLoaders(config);
+                // HACK_removeMinimizeOptionFromCssLoaders(config);
 
                 return {
                     ...config,

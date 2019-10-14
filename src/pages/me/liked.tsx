@@ -8,6 +8,11 @@ import { withAuth } from '../../utils/auth';
 import Router from 'next/router';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IRootState, IMeState } from '../../typings/reduxStates';
+import { IPageProps } from '../../typings/IPageProps';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { ButtonFullWidth } from '../../styledComponents/Buttons';
 
 const Liked: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -16,7 +21,7 @@ const Liked: FunctionComponent = () => {
         likedPostsLoading,
         likedPostsHasMore,
         likedPostsLimit,
-        likedPostsPageToken,
+        likedPostPage,
     } = useSelector<IRootState, IMeState>((s) => s.me);
 
     const onClickLoadMore = useCallback(() => {
@@ -24,13 +29,13 @@ const Liked: FunctionComponent = () => {
             dispatch({
                 type: actionTypes.LOAD_LIKED_POSTS_CALL,
                 data: {
-                    pageToken: likedPostsPageToken,
+                    page: (likedPostPage || 0) + 1,
                     limit: likedPostsLimit,
                     keyword: '',
                 },
             });
         }
-    }, [dispatch, likedPostsHasMore, likedPostsLimit, likedPostsPageToken]);
+    }, [dispatch, likedPostsHasMore, likedPostsLimit, likedPostPage]);
 
     const onClickOpnePost = useCallback(
         (post) => () => {
@@ -83,26 +88,28 @@ const Liked: FunctionComponent = () => {
                         );
                     })}
                 </Timeline>
-                <Button
+                <ButtonFullWidth
                     type='primary'
                     loading={likedPostsLoading}
                     onClick={onClickLoadMore}
                     disabled={!likedPostsHasMore}>
                     Load more
-                </Button>
+                </ButtonFullWidth>
             </ContentWrapper>
         </MeLayout>
     );
 };
 
-Liked.getInitialProps = async (context) => {
+Liked.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IPageProps> => {
     const state = context.store.getState();
     const { likedPostsLimit } = state.me;
 
     context.store.dispatch({
         type: actionTypes.LOAD_LIKED_POSTS_CALL,
         data: {
-            pageToken: null,
+            page: null,
             limit: likedPostsLimit,
             keyword: '',
         },

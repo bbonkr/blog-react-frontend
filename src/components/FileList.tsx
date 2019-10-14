@@ -3,6 +3,7 @@ import React, {
     useState,
     useEffect,
     FunctionComponent,
+    useMemo,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -14,44 +15,89 @@ import {
     Modal,
     Divider,
     Spin,
+    List,
 } from 'antd';
 import moment from 'moment';
 import StackGrid from 'react-stack-grid';
-import { withSize, SizeMeProps } from 'react-sizeme';
 import ImageViewer from './ImageViewer';
 import CroppedImage from './CroppedImage';
 import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, IMeState } from '../typings/reduxStates';
+import { IRootState, IMeState, IMediaFilesState } from '../typings/reduxStates';
 import { appOptions } from '../config/appOptions';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IImageModel } from '../typings/dto';
+import { ButtonFullWidth } from '../styledComponents/Buttons';
+import { IPageProps } from '../typings/IPageProps';
 
 const Paragraph = Typography.Paragraph;
 const Dragger = Upload.Dragger;
 
-export interface IFileListProps extends SizeMeProps {
+export interface IFileListProps extends IPageProps {
     onSelect?: (item: any) => void;
 }
 
-const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
+const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
     const dispatch = useDispatch();
+
+    const {} = useSelector<IRootState, IMeState>((s) => s.me);
 
     const {
         mediaFiles,
-        loadingMediaFiles,
-        hasMoreMediaFiles,
+        mediaFilesLoading,
+        mediaFilesHasMore,
         mediaFilesCurrentPage,
         mediaFilesLimit,
-        uploading,
-    } = useSelector<IRootState, IMeState>((s) => s.me);
+        mediaFilesUploading: uploading,
+    } = useSelector<IRootState, IMediaFilesState>((s) => s.mediaFiles);
 
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [imageViewerFiles, setImageViewerFiles] = useState([]);
     const closeImageviewer = useCallback(() => {
         setImageViewerVisible(false);
     }, []);
+    const [documentElementWidth, setDocumentElementWidth] = useState(0);
 
-    const [cardWidth, setCardWidth] = useState('100%');
+    useEffect(() => {
+        setDocumentElementWidth(document.documentElement.clientWidth);
+
+        const onResize = () => {
+            setDocumentElementWidth(
+                window.document.documentElement.clientWidth,
+            );
+        };
+
+        window.addEventListener('resize', onResize);
+
+        return () => {
+            window.removeEventListener('resize', onResize);
+        };
+    }, []);
+
+    const stackGridColumnWidth = useMemo(() => {
+        let columnWidth = '100%';
+
+        // if (documentElementWidth > 576) {
+        //     columnWidth = '50%';
+        // }
+
+        if (documentElementWidth > 768) {
+            columnWidth = '50%'; //'33.33%';
+        }
+
+        if (documentElementWidth > 992) {
+            columnWidth = '33.33%'; // '25.0%';
+        }
+
+        if (documentElementWidth > 1200) {
+            columnWidth = '25.0%'; //'20%';
+        }
+
+        return columnWidth;
+    }, [documentElementWidth]);
+
+    useEffect(() => {
+        setDocumentElementWidth(document.documentElement.clientWidth);
+    }, []);
 
     useEffect(() => {
         dispatch({
@@ -63,30 +109,6 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
             },
         });
     }, [dispatch, mediaFilesLimit]);
-
-    useEffect(() => {
-        const { width } = size;
-
-        let columnWidth = '100%';
-
-        if (width > 576) {
-            columnWidth = '50%';
-        }
-
-        if (width > 768) {
-            columnWidth = '33.33%';
-        }
-
-        if (width > 992) {
-            columnWidth = '25.0%';
-        }
-
-        if (width > 1200) {
-            columnWidth = '20%';
-        }
-
-        setCardWidth(columnWidth);
-    }, [size]);
 
     const uploadBuffer = [];
 
@@ -118,7 +140,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     );
 
     const onClickLoadMore = useCallback(() => {
-        if (hasMoreMediaFiles) {
+        if (mediaFilesHasMore) {
             dispatch({
                 type: actionTypes.LOAD_MY_MEDIA_FILES_CALL,
                 data: {
@@ -128,7 +150,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                 },
             });
         }
-    }, [dispatch, hasMoreMediaFiles, mediaFilesLimit, mediaFilesCurrentPage]);
+    }, [dispatch, mediaFilesHasMore, mediaFilesLimit, mediaFilesCurrentPage]);
 
     const onClickImage = useCallback(
         (image) => () => {
@@ -186,40 +208,80 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
         return actions;
     };
 
-    return (
-        <Spin spinning={loadingMediaFiles || uploading}>
-            <Dragger
-                disabled={uploading}
-                supportServerRender={true}
-                name='files'
-                multiple={true}
-                showUploadList={false}
-                beforeUpload={onBeforeUploadFiles}>
-                <p className='ant-upload-drag-icon'>
-                    <Icon type='inbox' />
-                </p>
-                <p className='ant-upload-text'>
-                    Click or drag file to this area to upload
-                </p>
-                <p className='ant-upload-hint'>
-                    Support for a single or bulk upload. Strictly prohibit from
-                    uploading company data or other band files
-                </p>
-            </Dragger>
+    // const renderStackGrid = () => {
+    //     return (
+    //         <StackGrid
+    //             columnWidth={stackGridColumnWidth}
+    //             gutterWidth={16}
+    //             gutterHeight={16}
+    //             enableSSR={true}
+    //             monitorImagesLoaded={true}>
+    //             {mediaFiles.map((item) => {
+    //                 const filename = `${item.fileName}${item.fileExtension}`;
+    //                 const imagrSrc: string = '';
+    //                 const imageAlt: string = '';
+    //                 return (
+    //                     <div key={+item.id}>
+    //                         <Card
+    //                             cover={
+    //                                 item.contentType.indexOf('image') >= 0 && (
+    //                                     <CroppedImage
+    //                                         image={item}
+    //                                         altText={imageAlt}
+    //                                         onClickHandler={onClickImage}
+    //                                     />
+    //                                 )
+    //                             }
+    //                             actions={getCardActions(item)}>
+    //                             <Card.Meta
+    //                                 title={filename}
+    //                                 description={
+    //                                     <span>
+    //                                         <Icon type='clock-circle' />{' '}
+    //                                         {moment(
+    //                                             new Date(item.createdAt),
+    //                                             'YYYY-MM-DD HH:mm:ss',
+    //                                         ).fromNow()}
+    //                                     </span>
+    //                                 }
+    //                             />
+    //                             <div style={{ textOverflow: 'ellipsis' }}>
+    //                                 <Paragraph
+    //                                     copyable={{
+    //                                         text: item.src,
+    //                                     }}>
+    //                                     {`${item.fileName}${item.fileExtension}`}
+    //                                 </Paragraph>
+    //                             </div>
+    //                         </Card>
+    //                     </div>
+    //                 );
+    //             })}
+    //         </StackGrid>
+    //     );
+    // };
 
-            <Divider />
-
-            <StackGrid
-                columnWidth={cardWidth}
-                gutterWidth={16}
-                gutterHeight={16}
-                enableSSR={true}
-                monitorImagesLoaded={true}>
-                {mediaFiles.map((item) => {
+    const renderGridList = () => {
+        return (
+            <List
+                bordered={false}
+                grid={{
+                    gutter: 8,
+                    xs: 1,
+                    sm: 1,
+                    md: 2,
+                    lg: 3,
+                    xl: 6,
+                    xxl: 8,
+                }}
+                dataSource={mediaFiles}
+                renderItem={(item: IImageModel) => {
                     const filename = `${item.fileName}${item.fileExtension}`;
+
                     return (
-                        <div key={+item.id}>
+                        <List.Item>
                             <Card
+                                key={item.src}
                                 cover={
                                     item.contentType.indexOf('image') >= 0 && (
                                         <CroppedImage
@@ -250,18 +312,44 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
                                     </Paragraph>
                                 </div>
                             </Card>
-                        </div>
+                        </List.Item>
                     );
-                })}
-            </StackGrid>
+                }}
+            />
+        );
+    };
+
+    return (
+        <Spin spinning={mediaFilesLoading || uploading}>
+            <Dragger
+                disabled={uploading}
+                supportServerRender={true}
+                name='files'
+                multiple={true}
+                showUploadList={false}
+                beforeUpload={onBeforeUploadFiles}>
+                <p className='ant-upload-drag-icon'>
+                    <Icon type='inbox' />
+                </p>
+                <p className='ant-upload-text'>
+                    Click or drag file to this area to upload
+                </p>
+                <p className='ant-upload-hint'>
+                    Support for a single or bulk upload. Strictly prohibit from
+                    uploading company data or other band files
+                </p>
+            </Dragger>
+
             <Divider />
-            <Button
-                loading={loadingMediaFiles || uploading}
-                style={{ width: '100%' }}
+
+            {renderGridList()}
+            <Divider />
+            <ButtonFullWidth
+                loading={mediaFilesLoading || uploading}
                 onClick={onClickLoadMore}
-                disabled={!hasMoreMediaFiles}>
+                disabled={!mediaFilesHasMore}>
                 Load more
-            </Button>
+            </ButtonFullWidth>
 
             <ImageViewer
                 files={imageViewerFiles}
@@ -272,4 +360,4 @@ const FileList: FunctionComponent<IFileListProps> = ({ size, onSelect }) => {
     );
 };
 
-export default withSize({ noPlaceholder: true })(FileList);
+export default FileList;

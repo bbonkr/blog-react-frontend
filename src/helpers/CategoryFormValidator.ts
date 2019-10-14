@@ -1,12 +1,15 @@
-import { IValidationResult } from './IValidationResult';
-import { IFormValidationResult } from './IFormValidationResult';
+import { IValidationResult } from '../typings/IValidationResult';
+
 import { ValidationResult } from './ValidationResult';
 import { FormValidationResult } from './FormValidationResult';
 import { FormValidatorBase } from './FormValidatorBase';
-import { ICategoryNameFormValue } from './ICategoryNameFormValue';
-import { ICategorySlugFormValue } from './ICategorySlugFormValue';
-import { ICategoryOrdinalFormValue } from './ICategoryOrdinalFormValue';
-import { ICategoryFormValue } from './ICategoryFormValue';
+import {
+    IFormValidationResult,
+    ICategoryNameFormValue,
+    ICategorySlugFormValue,
+    ICategoryOrdinalFormValue,
+    ICategoryFormValue,
+} from '../typings/IValidatorInputValues';
 export class CategoryFormValidator extends FormValidatorBase {
     public checkName(formData: ICategoryNameFormValue): IValidationResult {
         const { name } = formData;

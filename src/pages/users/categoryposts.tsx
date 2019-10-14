@@ -1,14 +1,16 @@
 import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import PropTypes from 'prop-types';
+import Head from 'next/head';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
-import { PageHeader, Divider, Spin } from 'antd';
+import { PageHeader, Divider, Spin, Skeleton } from 'antd';
 import UserAvatar from '../../components/UserAvatar';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IRootState, IUserCategoryPostsState } from '../../typings/reduxStates';
+import { appOptions } from '../../config/appOptions';
+// import Helmet from 'react-helmet';
 
 export interface IUserCategoryPostsProps {
     user: string;
@@ -19,6 +21,7 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
     user,
     category,
 }) => {
+    const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
         userCategoryPosts,
@@ -50,34 +53,55 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
         });
     }, [category, dispatch, postsLimit, user, currentPage]);
 
+    if (!userCategoryPostsUser || !userCategoryPostsCategory) {
+        return (
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Skeleton active={true} loading={true} />
+                </ContentWrapper>
+            </DefaultLayout>
+        );
+    }
+    const title: string = `${userCategoryPostsUser &&
+        userCategoryPostsUser.displayName}'s ${userCategoryPostsCategory &&
+        userCategoryPostsCategory.name} posts | ${siteName}`;
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Spin spinning={userCategoryPostsLoading}>
-                    <PageHeader
-                        title={
-                            <div>
-                                <span>CATEGORY: </span>
-                                <LinkUsersPosts user={userCategoryPostsUser}>
-                                    <UserAvatar user={userCategoryPostsUser} />
-                                </LinkUsersPosts>
-                                <span>
-                                    {!!userCategoryPostsCategory &&
-                                        userCategoryPostsCategory.name}
-                                </span>
-                            </div>
-                        }
-                    />
-                    <Divider />
-                    <ListExcerpt
-                        posts={userCategoryPosts}
-                        hasMore={userCategoryPostsHasMore}
-                        loading={userCategoryPostsLoading}
-                        loadMoreHandler={onClickLoadMore}
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Head>
+                <title>{title}</title>
+                <meta name='og:title' content={title} />
+            </Head>
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Spin spinning={userCategoryPostsLoading}>
+                        <PageHeader
+                            title={
+                                <div>
+                                    <span>CATEGORY: </span>
+                                    <LinkUsersPosts
+                                        user={userCategoryPostsUser}>
+                                        <UserAvatar
+                                            user={userCategoryPostsUser}
+                                        />
+                                    </LinkUsersPosts>
+                                    <span>
+                                        {!!userCategoryPostsCategory &&
+                                            userCategoryPostsCategory.name}
+                                    </span>
+                                </div>
+                            }
+                        />
+                        <Divider />
+                        <ListExcerpt
+                            posts={userCategoryPosts}
+                            hasMore={userCategoryPostsHasMore}
+                            loading={userCategoryPostsLoading}
+                            loadMoreHandler={onClickLoadMore}
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

@@ -1,14 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, FunctionComponent, useEffect } from 'react';
 import Router from 'next/router';
 import { Spin } from 'antd';
 import { normalizeReturnUrl } from '../helpers/stringHelper';
 import { NextJSContext } from 'next-redux-wrapper';
 import { NextPageContext } from 'next';
-import { IRootState } from '../typings/reduxStates';
+import { IRootState, IUserState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IUserModel } from '../typings/dto';
+import { IPageProps } from '../typings/IPageProps';
+import { useSelector } from 'react-redux';
+import Loading from '../components/Loading';
 
-export interface IWithAuthProps {
+export interface IWithAuthProps extends IPageProps {
     me: IUserModel;
     returnUrl?: string;
 }
@@ -17,23 +20,35 @@ export interface IWithAuthState {
     loading: boolean;
 }
 
+const getDisplayName = (Component) =>
+    Component.displayName || Component.name || 'Component';
+
 export const withAuth = (WrappedComponent) => {
-    return class extends Component<IWithAuthProps, IWithAuthState> {
+    class AuthComponent extends Component<IWithAuthProps, IWithAuthState> {
+        public static displayName = `withAuthSync(${getDisplayName(
+            WrappedComponent,
+        )})`;
+
         public static async getInitialProps(
             ctx: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-        ) {
-            const url = ctx.isServer
-                ? ctx.req.url
-                : !!ctx.asPath
-                ? ctx.asPath
-                : normalizeReturnUrl(ctx.pathname, ctx.query);
+        ): Promise<IWithAuthProps> {
+            // console.debug('[APP] withAuth getInitialProps');
 
-            // console.log('withAuth ==> url: ', url);
+            const state: IRootState = ctx.store.getState();
 
-            const state = ctx.store.getState();
-            // const { store } = ctx;
             const { me } = state.user;
-            let pageProps = {};
+            // const { currentUrl } = state.settings;
+
+            // console.debug(
+            //     '[APP] withAuth getInitialProps ==>           me: ',
+            //     me,
+            // );
+            // console.debug(
+            //     '[APP] withAuth getInitialProps ==>   currentUrl: ',
+            //     currentUrl,
+            // );
+
+            let pageProps: IPageProps = {};
 
             if (WrappedComponent.getInitialProps) {
                 pageProps = (await WrappedComponent.getInitialProps(ctx)) || {};
@@ -41,8 +56,8 @@ export const withAuth = (WrappedComponent) => {
 
             return {
                 ...pageProps,
-                me,
-                returnUrl: url,
+                me: me,
+                // returnUrl: currentUrl,
             };
         }
 
@@ -53,23 +68,33 @@ export const withAuth = (WrappedComponent) => {
         }
 
         public componentDidMount() {
+            // console.debug('[APP] withAuth componentDidMount');
+            // console.debug('[APP] withAuth properties: ', this.props);
+            // console.debug(
+            //     '[APP] withAuth properties ==> returnUrl: ',
+            //     this.props.returnUrl,
+            // );
+
             if (!this.props.me) {
-                const returnUrl = encodeURIComponent(
-                    !!this.props.returnUrl ? this.props.returnUrl : '/',
-                );
+                // const returnUrl = encodeURIComponent(
+                //     this.props.returnUrl || '/',
+                // );
 
-                Router.push(`/signin?returnUrl=${returnUrl}`);
+                // Router.push(`/signin?returnUrl=${returnUrl}`);
+                Router.push(`/signin`);
+            } else {
+                this.setState({ loading: false });
             }
-
-            this.setState({ loading: false });
         }
 
         public render() {
+            // console.debug('[APP] withAuth render');
             if (this.state.loading) {
-                // TODO Add loading page
-                return <Spin spinning={true}>Loading...</Spin>;
+                return <Loading />;
             }
             return <WrappedComponent {...this.props} />;
         }
-    };
+    }
+
+    return AuthComponent;
 };

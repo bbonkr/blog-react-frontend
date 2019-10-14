@@ -1,11 +1,14 @@
-import { IValidationResult } from './IValidationResult';
+import { IValidationResult } from '../typings/IValidationResult';
 import { ValidationResult } from './ValidationResult';
 import { FormValidationResult } from './FormValidationResult';
 import { FormValidatorBase } from './FormValidatorBase';
-import { ITitleFormValue } from './ITitleFormValue';
-import { IMarkdownFormValue } from './IMarkdownFormValue';
-import { ICategoriesFormValue } from './ICategoriesFormValue';
-import { IWriteformValue } from './IWriteformValue';
+import {
+    ITitleFormValue,
+    IMarkdownFormValue,
+    ICategoriesFormValue,
+    IWriteformValue,
+} from '../typings/IValidatorInputValues';
+
 export class WriteFormValaidator extends FormValidatorBase {
     public checkTitle(formData: ITitleFormValue): IValidationResult {
         const { title } = formData;
@@ -24,7 +27,9 @@ export class WriteFormValaidator extends FormValidatorBase {
     public checkCategory(formData: ICategoriesFormValue): IValidationResult {
         const { categories } = formData;
         if (!categories || categories.length === 0) {
-            return ValidationResult.fail('Please select a category at least one.');
+            return ValidationResult.fail(
+                'Please select a category at least one.',
+            );
         }
         return ValidationResult.success;
     }

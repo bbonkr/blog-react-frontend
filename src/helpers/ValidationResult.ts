@@ -1,4 +1,5 @@
-import { IValidationResult } from './IValidationResult';
+import { IValidationResult } from '../typings/IValidationResult';
+
 export class ValidationResult implements IValidationResult {
     /**
      * 성공

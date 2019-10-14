@@ -13,6 +13,10 @@ import { SignUpFormValidator } from '../../helpers/SignUpFormValidator';
 import Router from 'next/router';
 import { actionTypes } from '../../reducers/actionTypes';
 import { IRootState, IUserState } from '../../typings/reduxStates';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
 const Validator = new SignUpFormValidator();
 
@@ -111,7 +115,9 @@ const Unregister: FunctionComponent = () => {
     );
 };
 
-Unregister.getInitialProps = async (context) => {
+Unregister.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IPageProps> => {
     return {};
 };
 

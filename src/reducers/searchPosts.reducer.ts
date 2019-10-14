@@ -6,7 +6,6 @@ import { applyUpdatedPostLikers } from './helpers/updatePostLikers';
 
 export const initialState: ISearchPostsState = {
     searchPosts: [],
-    searchPostsPageToken: '',
     searchPostsLoading: false,
     searchPostsErrorReason: '',
     searchPostsHasMore: false,
@@ -15,7 +14,7 @@ export const initialState: ISearchPostsState = {
     searchPostsCurrentPage: 1,
 };
 
-const reducer = (
+export const searchPosts = (
     state: ISearchPostsState = initialState,
     action: IBlogAction,
 ) =>
@@ -58,5 +57,3 @@ const reducer = (
                 break;
         }
     });
-
-export default reducer;

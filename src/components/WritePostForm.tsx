@@ -14,11 +14,17 @@ import FullSizeModal from '../styledComponents/FullSizeModal';
 import FileList from './FileList';
 import { WriteFormValaidator } from '../helpers/WriteFormValaidator';
 import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, IMeState } from '../typings/reduxStates';
+import {
+    IRootState,
+    IMeState,
+    IMyCategoriesState,
+    IMyPostsState,
+} from '../typings/reduxStates';
 import TextArea from 'antd/lib/input/TextArea';
 import { ContentTextArea } from '../styledComponents/ContentTextArea';
 import { MarkdownPreview } from '../styledComponents/MarkdownPreview';
 import { ShowNotification } from './ShowNotification';
+import { slugify } from '../helpers/slugify';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 const SELECT_FILE_TARGET_MARKDOWN = 'markdown';
@@ -65,13 +71,16 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
     );
     // const { myPost } = useSelector(s => s.me);
 
-    const {
-        categories,
-        tags,
-        loadingCategories,
-        loadingTags,
-        myPost,
-    } = useSelector<IRootState, IMeState>((s) => s.me);
+    const { tags, loadingTags } = useSelector<IRootState, IMeState>(
+        (s) => s.me,
+    );
+
+    const { myPost } = useSelector<IRootState, IMyPostsState>((s) => s.myPosts);
+
+    const { categories, categoriesLoading } = useSelector<
+        IRootState,
+        IMyCategoriesState
+    >((s) => s.myCategories);
 
     const [title, setTitle] = useState('');
     const [slug, setSlug] = useState('');
@@ -143,12 +152,26 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
             const { message } = Validator.checkTitle({ title: newValue });
             setTitleErrorMessage(message);
 
+            // if (
+            //     !!newValue &&
+            //     newValue.trim().length > 0 &&
+            //     (!slug || slug.trim().length === 0)
+            // ) {
+            //     setSlug(slugify(newValue));
+            // }
+        },
+        [slug],
+    );
+
+    const onBlurTitle = useCallback(
+        (e: React.FocusEvent<HTMLInputElement>) => {
+            const newValue = e.target.value;
             if (
                 !!newValue &&
                 newValue.trim().length > 0 &&
                 (!slug || slug.trim().length === 0)
             ) {
-                setSlug(newValue.replace(/\s+/g, '-').toLowerCase());
+                setSlug(slugify(newValue));
             }
         },
         [slug],
@@ -156,7 +179,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
 
     const onChangeSlug = useCallback((e) => {
         const text = e.target.value;
-        setSlug(text);
+        setSlug(slugify(text));
     }, []);
 
     const onChangeMarkdown = useCallback(
@@ -296,7 +319,8 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
             const { valid, messages } = Validator.validate(formData);
             if (valid) {
                 if (!slug || slug.trim().length === 0) {
-                    setSlug(title.replace(/\s+/g, '-').toLowerCase());
+                    // setSlug(title.replace(/\s+/g, '-').toLowerCase());
+                    setSlug(slugify(title));
                 }
 
                 if (id) {
@@ -338,7 +362,11 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                     hasFeedback={true}
                     help={titleErrorMessage}
                     validateStatus={!!titleErrorMessage ? 'error' : ''}>
-                    <Input value={title} onChange={onChangeTitle} />
+                    <Input
+                        value={title}
+                        onChange={onChangeTitle}
+                        onBlur={onBlurTitle}
+                    />
                 </Form.Item>
                 <Form.Item label='Slug'>
                     <Input value={slug} onChange={onChangeSlug} />
@@ -416,7 +444,7 @@ const WritePostForm: FunctionComponent<IWritePostFormProps> = ({ id }) => {
                         mode='multiple'
                         onChange={onChangeCategories}
                         style={{ width: '100%' }}
-                        loading={loadingCategories}
+                        loading={categoriesLoading}
                         value={selectedCategoryValues}>
                         {categories.map((c) => {
                             return (

@@ -21,10 +21,15 @@ import { withAuth } from '../../utils/auth';
 import { formatNumber, makeSlug } from '../../helpers/stringHelper';
 import { actionTypes } from '../../reducers/actionTypes';
 import { CategoryFormValidator } from '../../helpers/CategoryFormValidator';
-import { IRootState, IMeState } from '../../typings/reduxStates';
+import {
+    IRootState,
+    IMeState,
+    IMyCategoriesState,
+} from '../../typings/reduxStates';
 import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
 const validator = new CategoryFormValidator();
 
@@ -32,12 +37,11 @@ const MyCategory: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         categories,
-        loadingCategories,
+        categoriesLoading,
         categoriesCount,
         categoriesCurrentPage,
-        categoryLimit,
-        categoryNextPageToken,
-    } = useSelector<IRootState, IMeState>((s) => s.me);
+        categoriesLimit,
+    } = useSelector<IRootState, IMyCategoriesState>((s) => s.myCategories);
 
     const [currentPage, setCurrentPage] = useState(0);
     const [editFormVisible, setEditFormVisible] = useState(false);
@@ -77,12 +81,12 @@ const MyCategory: FunctionComponent = () => {
                 type: actionTypes.LOAD_MY_CATEGORIES_CALL,
                 data: {
                     page: current,
-                    limit: size || categoryLimit || 10,
+                    limit: size || categoriesLimit || 10,
                     keyword: '',
                 },
             });
         },
-        [categoryLimit, dispatch],
+        [categoriesLimit, dispatch],
     );
 
     const onShowSizeChangePagination = useCallback(
@@ -210,7 +214,7 @@ const MyCategory: FunctionComponent = () => {
                     rowKey={(record) => record.slug}
                     dataSource={categories}
                     columns={columns}
-                    loading={loadingCategories}
+                    loading={categoriesLoading}
                     pagination={{
                         total: categoriesCount,
                         current: currentPage,
@@ -304,9 +308,9 @@ const MyCategory: FunctionComponent = () => {
 
 MyCategory.getInitialProps = async (
     context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-) => {
+): Promise<IPageProps> => {
     const state = context.store.getState();
-    const { categories, categoryLimit } = state.me;
+    const { categories, categoriesLimit: categoryLimit } = state.myCategories;
 
     if (context.isServer || !categories || categories.length === 0) {
         context.store.dispatch({

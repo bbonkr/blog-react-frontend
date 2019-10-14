@@ -29,6 +29,7 @@ import { IRootState, IUserState, IMeState } from '../../typings/reduxStates';
 import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
 const Me: FunctionComponent = () => {
     const { me } = useSelector<IRootState, IUserState>((state) => state.user);
@@ -57,6 +58,7 @@ const Me: FunctionComponent = () => {
                                     title='Latest writing'
                                     value={
                                         (statGeneral &&
+                                            statGeneral.latestPost &&
                                             moment(
                                                 new Date(
                                                     statGeneral.latestPost,
@@ -125,7 +127,7 @@ const Me: FunctionComponent = () => {
 
 Me.getInitialProps = async (
     context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-) => {
+): Promise<IPageProps> => {
     const state = context.store.getState();
 
     const { me } = state.user;

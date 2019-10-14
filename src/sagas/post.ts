@@ -16,9 +16,9 @@ import { IJsonResult, IListResult, IPostModel } from '../typings/dto';
 import { AxiosResponse } from 'axios';
 
 function loadPostsApi(query: IDictionary<any>) {
-    const { page, pageToken, limit, keyword } = query;
+    const { page, limit, keyword } = query;
     return http().get(
-        `/posts?page=${page}pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
+        `/posts?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
@@ -26,10 +26,9 @@ function loadPostsApi(query: IDictionary<any>) {
 
 function* loadPosts(action) {
     try {
-        const { page, pageToken, limit, keyword } = action.data;
+        const { page, limit, keyword } = action.data;
         const result = yield call(loadPostsApi, {
             page: page,
-            pageToken: pageToken,
             limit: limit || 10,
             keyword: keyword,
         });
@@ -58,7 +57,7 @@ function* loadPosts(action) {
         yield put<IBlogAction>({
             type: actionTypes.LOAD_POSTS_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: (e.response && e.response.data) || e.message,
         });
     }
 }
@@ -78,24 +77,22 @@ function* loadSinglePost(action) {
         const resultData = result.data as IJsonResult<IPostModel>;
 
         const { success, data, message } = resultData;
-        if (success) {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_SINGLE_POST_DONE,
-                data: data,
-            });
-        } else {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_SINGLE_POST_FAIL,
-                error: new Error(message),
-                message: message,
-            });
+        if (!success) {
+            throw new Error(message);
         }
+
+        yield put<IBlogAction>({
+            type: actionTypes.LOAD_SINGLE_POST_DONE,
+            data: {
+                post: data,
+            },
+        });
     } catch (e) {
         // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_SINGLE_POST_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: (e.response && e.response.data) || e.message,
         });
     }
 }
@@ -153,11 +150,13 @@ function* watchLoadSinglePost() {
 //     yield takeLatest(actionTypes.LOAD_CATEGORY_POSTS_CALL, loadCategoryPosts);
 // }
 
-function loadTagPostsApi(tag, pageToken = '', limit = 10, keyword = '') {
+function loadTagPostsApi(query) {
+    const { tag, page, limit, keyword } = query;
+
     return http().get(
         `/tags/${encodeURIComponent(
             tag,
-        )}/posts?pageToken=${pageToken}&limit=${limit}&keyword=${encodeURIComponent(
+        )}/posts?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
             keyword,
         )}`,
     );
@@ -165,32 +164,29 @@ function loadTagPostsApi(tag, pageToken = '', limit = 10, keyword = '') {
 
 function* loadTagPosts(action) {
     try {
-        const { tag, pageToken, limit, keyword } = action.data;
-        const result = yield call(
+        const { tag, page, limit, keyword } = action.data;
+        const result: AxiosResponse<IListResult<IPostModel>> = yield call(
             loadTagPostsApi,
-            tag,
-            pageToken,
-            limit,
-            keyword,
+            {
+                page: page || 1,
+                tag: tag,
+                limit: limit || 10,
+                keyword: keyword,
+            },
         );
 
-        const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
-        const { success, data, message } = resultData;
-        if (success) {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_TAG_POSTS_DONE,
-                data: {
-                    ...data,
-                    currentTag: tag,
-                },
-            });
-        } else {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_TAG_POSTS_FAIL,
-                error: new Error(message),
-                message: message,
-            });
+        const { success, data, message } = result.data;
+        if (!success) {
+            throw new Error(message);
         }
+
+        yield put<IBlogAction>({
+            type: actionTypes.LOAD_TAG_POSTS_DONE,
+            data: {
+                ...data,
+                page: page || 1,
+            },
+        });
     } catch (e) {
         // console.error(e);
         yield put<IBlogAction>({
@@ -216,39 +212,36 @@ function loadUsersPostsApi(query) {
 function* loadUsersPosts(action) {
     try {
         const { user, page, limit, keyword } = action.data;
-        const result = yield call(loadUsersPostsApi, {
+        const result: AxiosResponse<
+            IJsonResult<IListResult<IPostModel>>
+        > = yield call(loadUsersPostsApi, {
             user: user,
-            page: page,
+            page: page || 1,
             limit: limit || 10,
             keyword: keyword,
         });
 
-        const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
-        const { success, data, message } = resultData;
-        if (success) {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_USERS_POSTS_DONE,
-                data: {
-                    ...data, // { records, total, user }
-                    page: page,
-                    limit: limit,
-                    keyword: keyword,
-                    username: user,
-                },
-            });
-        } else {
-            yield put<IBlogAction>({
-                type: actionTypes.LOAD_USERS_POSTS_FAIL,
-                error: new Error(message),
-                message: message,
-            });
+        const { success, data, message } = result.data;
+        if (!success) {
+            throw new Error(message);
         }
+
+        yield put<IBlogAction>({
+            type: actionTypes.LOAD_USERS_POSTS_DONE,
+            data: {
+                ...data, // { records, total, user }
+                page: page || 1,
+                limit: limit || 10,
+                keyword: keyword,
+                username: user,
+            },
+        });
     } catch (e) {
         // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_USERS_POSTS_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: (e.response && e.response.data) || e.message,
         });
     }
 }
@@ -258,7 +251,7 @@ function* watchLoadUsersPosts() {
 }
 
 function loadUserCategoryPostsApi(query) {
-    const { user, category, page = 1, limit, keyword } = query;
+    const { user, category, page, limit, keyword } = query;
 
     return http().get(
         `/users/${user}/categories/${category}/posts?page=${page}&limit=${limit}&keyword=${keyword}`,
@@ -268,7 +261,13 @@ function loadUserCategoryPostsApi(query) {
 function* loadUserCategoryPosts(action) {
     try {
         const { user, category, page, limit, keyword } = action.data;
-        const result = yield call(loadUserCategoryPostsApi, action.data);
+        const result = yield call(loadUserCategoryPostsApi, {
+            user: user,
+            category: category,
+            page: page || 1,
+            limit: limit || 10,
+            keyword: keyword,
+        });
         const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
         const { success, data, message } = resultData;
         if (success) {
@@ -293,7 +292,7 @@ function* loadUserCategoryPosts(action) {
         yield put<IBlogAction>({
             type: actionTypes.LOAD_USER_CATEGORY_POSTS_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: (e.response && e.response.data) || e.message,
         });
     }
 }
@@ -341,7 +340,7 @@ function* loadSearchPosts(action) {
         yield put<IBlogAction>({
             type: actionTypes.LOAD_SEARCH_POSTS_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: (e.response && e.response.data) || e.message,
         });
     }
 }
@@ -415,7 +414,7 @@ function* addUserLikePost(action) {
         yield put<IBlogAction>({
             type: actionTypes.ADD_LIKE_POST_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: (e.response && e.response.data) || e.message,
         });
     }
 }
@@ -490,7 +489,7 @@ function* removeUserLikePost(action) {
         yield put<IBlogAction>({
             type: actionTypes.REMOVE_LIKE_POST_FAIL,
             error: e,
-            message: e.response && e.response.data,
+            message: (e.response && e.response.data) || e.message,
         });
     }
 }

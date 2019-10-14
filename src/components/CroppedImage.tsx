@@ -27,6 +27,7 @@ const CroppedImage: FunctionComponent<ICroppedImageProps> = ({
     if (src.startsWith('/')) {
         src = `${appOptions.apiBaseUrl}${src}`;
     }
+
     return (
         <>
             <figure

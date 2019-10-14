@@ -1,18 +1,26 @@
 import React, { useCallback, FunctionComponent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Divider, PageHeader, Spin } from 'antd';
+import { Divider, PageHeader, Spin, Skeleton } from 'antd';
 import ListExcerpt from '../components/ListExcerpt';
 import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, ITagPostsState } from '../typings/reduxStates';
+import Helmet from 'react-helmet';
+import { appOptions } from '../config/appOptions';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IPageProps } from '../typings/IPageProps';
+import Router from 'next/router';
 
-export interface ITagProps {
+export interface ITagProps extends IPageProps {
     slug: string;
 }
 
 const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
+    const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
         tagPosts,
@@ -34,33 +42,46 @@ const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
             },
         });
     }, [dispatch, currentPage, postsLimit, slug]);
+
+    if (!currentTag) {
+        return (
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Skeleton active={true} loading={true} />
+                </ContentWrapper>
+            </DefaultLayout>
+        );
+    }
+
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Spin spinning={tagPostsLoading}>
-                    <PageHeader
-                        title={`TAG: ${!!currentTag && currentTag.name}`}
-                    />
-                    <Divider />
-                    <ListExcerpt
-                        posts={tagPosts}
-                        hasMore={tagPostsHasMore}
-                        loading={tagPostsLoading}
-                        loadMoreHandler={loadMoreHandler}
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Helmet title={`${currentTag && currentTag.name} | ${siteName}`} />
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Spin spinning={tagPostsLoading}>
+                        <PageHeader
+                            title={`TAG: ${!!currentTag && currentTag.name}`}
+                        />
+                        <Divider />
+                        <ListExcerpt
+                            posts={tagPosts}
+                            hasMore={tagPostsHasMore}
+                            loading={tagPostsLoading}
+                            loadMoreHandler={loadMoreHandler}
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 
-// Tag.propTypes = {
-//     slug: PropTypes.string.isRequired,
-// };
-
-Tag.getInitialProps = async (context) => {
+Tag.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<ITagProps> => {
+    const slug = decodeURIComponent((context.query.slug as string) || '');
     const state = context.store.getState();
-    const slug = decodeURIComponent(context.query.slug);
+    // const slug = decodeURIComponent(context.query.slug);
     const {
         postsLimit,
         tagPosts,

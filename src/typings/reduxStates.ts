@@ -12,6 +12,9 @@ export interface IRootState {
     category: ICategoryState;
     settings?: ISettingState;
     me: IMeState;
+    myPosts: IMyPostsState;
+    myCategories: IMyCategoriesState;
+    mediaFiles: IMediaFilesState;
     posts: IPostsState;
     tagPosts: ITagPostsState;
     userCategoryPosts: IUserCategoryPostsState;
@@ -21,49 +24,49 @@ export interface IRootState {
 }
 
 export interface IMeState {
-    myPost: IPostModel;
-    postsLimit: number;
-    hasMorePost: boolean;
+    // myPost: IPostModel;
+    // loadingMyPost: boolean;
+
+    // myPosts
+    // myPosts: IPostModel[];
+    // loadingMyPosts: boolean;
+    // postsLimit: number;
+    // hasMorePost: boolean;
     // searchKeyword?: string;
-    nextPageToken?: string;
-    postsCount: number;
+    // postsCount: number;
+    // postsCurrentPage?: number;
+    // loadMyPostsErrorReason?: string;
 
     // category
-    categories: ICategoryModel[];
-    loadingCategories: boolean;
-    loadCategoriesErrorReason?: string;
-    hasMoreCategories: boolean;
-    // categorySearchKeyword?: string;
-    categoryNextPageToken?: string;
-    categoryLimit: number;
-    categoriesCount: number;
-    categoriesCurrentPage: number;
+    // categories: ICategoryModel[];
+    // categoriesLoading: boolean;
+    // categoriesErrorReason?: string;
+    // categoriesHasMore: boolean;
+    //   categoriesLimit: number;
+    // categoriesCount: number;
+    // categoriesCurrentPage: number;
 
     // tag
     tags: ITagModel[];
-    myPosts: IPostModel[];
-
-    loadingMyPost: boolean;
     loadingTags: boolean;
-    loadingMyPosts: boolean;
 
-    loadTagsErrorReason?: string;
-    loadMyPostsErrorReason?: string;
-    loadMyPostErrorReason?: string;
-    writingPost: boolean;
-    writePostErrorReason?: string;
+    TagsErrorReason?: string;
 
-    // media
-    mediaFiles: IImageModel[];
-    // mediaFilesNextPageToken?: string;
-    mediaFilesSearchKeyword?: string;
-    mediaFilesCurrentPage?: number;
-    mediaFilesCount: number;
-    mediaFilesLimit: number;
-    hasMoreMediaFiles: boolean;
-    loadingMediaFiles: boolean;
-    loadMediaFilesErrorReason?: string;
-    uploading: boolean;
+    // myPostErrorReason?: string;
+    // myPostWriting: boolean;
+    // writePostErrorReason?: string;
+
+    // // media
+    // mediaFiles: IImageModel[];
+    // // mediaFilesNextPageToken?: string;
+    // mediaFilesSearchKeyword?: string;
+    // mediaFilesCurrentPage?: number;
+    // mediaFilesCount: number;
+    // mediaFilesLimit: number;
+    // mediaFilesHasMore: boolean;
+    // mediaFilesLoading: boolean;
+    // mediaFilesErrorReason?: string;
+    // mediaFilesUploading: boolean;
 
     // menu
     sideMenuCollapsed: boolean;
@@ -75,7 +78,7 @@ export interface IMeState {
     likedPostsErrorReason?: string;
     likedPostsLimit: number;
     likedPostsHasMore: boolean;
-    likedPostsPageToken?: string;
+    // likedPostsPageToken?: string;
     likedPostsTotal: number;
     likedPostPage?: number;
 
@@ -217,7 +220,7 @@ export interface IPostsState {
     hasMorePost: boolean;
     loadPostErrorReason?: string;
     postsLimit: number;
-    nextPageToken: string;
+    // nextPageToken: string;
     currentPage?: number;
     searchKeyword: string;
 }
@@ -225,7 +228,7 @@ export interface IPostsState {
 export interface ITagPostsState {
     /** tag posts */
     tagPosts: IPostModel[];
-    tagPostsPageToken: string;
+    // tagPostsPageToken: string;
     tagPostsLoading: boolean;
     tagPostsErrorReason?: string;
     tagPostsHasMore: boolean;
@@ -239,7 +242,7 @@ export interface ITagPostsState {
 
 export interface IUserCategoryPostsState {
     userCategoryPosts: IPostModel[];
-    userCategoryPostsPageToken?: string;
+    // userCategoryPostsPageToken?: string;
     userCategoryPostsLoading: boolean;
     userCategoryPostsErrorReason?: string;
     userCategoryPostsHasMore: boolean;
@@ -254,7 +257,7 @@ export interface IUserCategoryPostsState {
 export interface ISearchPostsState {
     /** search posts */
     searchPosts: IPostModel[];
-    searchPostsPageToken?: string;
+    // searchPostsPageToken?: string;
     searchPostsLoading: boolean;
     searchPostsErrorReason?: string;
     searchPostsHasMore: boolean;
@@ -284,4 +287,48 @@ export interface ISinglePostState {
     loadingPost: boolean;
     // isSinglePost: boolean;
     // currentCategory?: string;
+}
+
+export interface IMyPostsState {
+    // myPosts
+    myPosts: IPostModel[];
+    myPostsLoading: boolean;
+    myPostsLimit: number;
+    myPostsHasMore: boolean;
+    myPostsSearchKeyword?: string;
+    myPostsCount: number;
+    myPostsCurrentPage?: number;
+    myPostsErrorReason?: string;
+
+    // myPost
+    myPost: IPostModel;
+    myPostLoading: boolean;
+    myPostErrorReason?: string;
+
+    myPostWriting: boolean;
+    writePostErrorReason?: string;
+}
+
+export interface IMyCategoriesState {
+    categories: ICategoryModel[];
+    categoriesLoading: boolean;
+    categoriesErrorReason?: string;
+    categoriesHasMore: boolean;
+    categoriesLimit: number;
+    categoriesCount: number;
+    categoriesCurrentPage: number;
+}
+
+export interface IMediaFilesState {
+    // media
+    mediaFiles: IImageModel[];
+    // mediaFilesNextPageToken?: string;
+    mediaFilesSearchKeyword?: string;
+    mediaFilesCurrentPage?: number;
+    mediaFilesCount: number;
+    mediaFilesLimit: number;
+    mediaFilesHasMore: boolean;
+    mediaFilesLoading: boolean;
+    mediaFilesErrorReason?: string;
+    mediaFilesUploading: boolean;
 }

@@ -34,7 +34,6 @@ export class TagPostsHandler {
             const index = this.draft.tagPosts.findIndex((x) => x.id === v.id);
             if (index < 0) {
                 this.draft.tagPosts.push(v);
-                this.draft.tagPostsPageToken = `${v.id}`;
             }
         });
 

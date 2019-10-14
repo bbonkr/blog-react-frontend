@@ -35,7 +35,6 @@ export class PostsHandler {
             const postIndex = this.draft.posts.findIndex((x) => x.id === v.id);
             if (postIndex < 0) {
                 this.draft.posts.push(v);
-                this.draft.nextPageToken = `${v.id}`;
             }
         });
 

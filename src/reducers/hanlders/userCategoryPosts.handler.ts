@@ -50,7 +50,7 @@ export class UserCategoryPostsHandler {
             );
             if (index < 0) {
                 this.draft.userCategoryPosts.push(v);
-                this.draft.userCategoryPostsPageToken = `${v.id}`;
+                // this.draft.userCategoryPostsPageToken = `${v.id}`;
             }
         });
 

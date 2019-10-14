@@ -4,7 +4,6 @@ import { ISettingState } from '../typings/reduxStates';
 
 export const initialState: ISettingState = {
     currentUrl: '', // 현재 URL 참조 eg.) /users/@test/posts/post-slug
-    // baseUrl: 'http://localhost:5000', // 현재 URL 호스트 이름 eg.) https://localhost:5000
 };
 
 const reducer = (state: ISettingState = initialState, action) =>

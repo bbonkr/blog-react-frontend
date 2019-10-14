@@ -8,17 +8,20 @@ import moment from 'moment';
 import { formatNumber } from '../../helpers/stringHelper';
 import Router from 'next/router';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IRootState, IMeState } from '../../typings/reduxStates';
+import { IRootState, IMeState, IMyPostsState } from '../../typings/reduxStates';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
 const Posts: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         myPosts,
-        postsCount,
-        loadingMyPosts,
-        postsLimit,
-        nextPageToken,
-    } = useSelector<IRootState, IMeState>((state) => state.me);
+        myPostsCount: postsCount,
+        myPostsLoading: loadingMyPosts,
+        myPostsLimit: postsLimit,
+    } = useSelector<IRootState, IMyPostsState>((state) => state.myPosts);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -28,29 +31,26 @@ const Posts: FunctionComponent = () => {
             dispatch({
                 type: actionTypes.LOAD_MY_POSTS_CALL,
                 data: {
-                    pageToken: nextPageToken,
+                    page: current,
                     limit: size || postsLimit || 10,
                     keyword: '',
                 },
             });
         },
-        [dispatch, nextPageToken, postsLimit],
+        [postsLimit],
     );
 
-    const onShowSizeChangePagination = useCallback(
-        (current, size) => {
-            setCurrentPage(current);
-            dispatch({
-                type: actionTypes.LOAD_MY_POSTS_CALL,
-                data: {
-                    pageToken: nextPageToken,
-                    limit: size,
-                    keyword: '',
-                },
-            });
-        },
-        [dispatch, nextPageToken],
-    );
+    const onShowSizeChangePagination = useCallback((current, size) => {
+        setCurrentPage(current);
+        dispatch({
+            type: actionTypes.LOAD_MY_POSTS_CALL,
+            data: {
+                page: current,
+                limit: size || postsLimit || 10,
+                keyword: '',
+            },
+        });
+    }, []);
 
     const onClickNewPost = useCallback(() => {
         Router.push('/me/write');
@@ -77,13 +77,13 @@ const Posts: FunctionComponent = () => {
                 onCancel: null,
             });
         },
-        [dispatch],
+        [],
     );
 
     const columns = [
         {
             key: 'title',
-            title: 'title',
+            title: 'Title',
             dataIndex: 'title',
             render: (text, record, index) => {
                 return (
@@ -205,17 +205,19 @@ const Posts: FunctionComponent = () => {
     );
 };
 
-Posts.getInitialProps = async (context) => {
+Posts.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IPageProps> => {
     const state = context.store.getState();
-    const { postsLimit, myPosts } = state.me;
+    const { myPostsLimit, myPosts } = state.myPosts;
     const lastPost =
         myPosts && myPosts.length > 0 && myPosts[myPosts.length - 1];
 
     context.store.dispatch({
         type: actionTypes.LOAD_MY_POSTS_CALL,
         data: {
-            pageToken: null,
-            limit: postsLimit || 10,
+            page: null,
+            limit: myPostsLimit || 10,
             keyword: '',
         },
     });

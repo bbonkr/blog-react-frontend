@@ -1,24 +1,29 @@
 /**
  * users/:user/posts
  */
-import React, { useCallback, FunctionComponent } from 'react';
+import React, { useCallback, FunctionComponent, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
 import DefaultLayout from '../../components/DefaultLayout';
 import { ContentWrapper } from '../../styledComponents/Wrapper';
 import ListExcerpt from '../../components/ListExcerpt';
 import { actionTypes } from '../../reducers/actionTypes';
-import { IUserModel } from '../../typings/dto';
 import { IRootState, IUsersPostsState } from '../../typings/reduxStates';
-import { PageHeader, Divider, Spin } from 'antd';
+import { PageHeader, Divider, Spin, Skeleton } from 'antd';
 import LinkUsersPosts from '../../components/LinkUsersPosts';
 import UserAvatar from '../../components/UserAvatar';
+import { appOptions } from '../../config/appOptions';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
+import Head from 'next/head';
 
-export interface IUsersPostsProps {
-    user: IUserModel;
+export interface IUsersPostsProps extends IPageProps {
+    user: string;
 }
 
 const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
+    const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
         usersPosts,
@@ -29,6 +34,13 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
         currentPage,
         postsLimit,
     } = useSelector<IRootState, IUsersPostsState>((s) => s.usersPosts);
+
+    const title: string = useMemo(() => {
+        return `${currentUser && currentUser.displayName}'s posts | ${
+            appOptions.title
+        }`;
+    }, [currentUser]);
+
     const onClickLoadMore = useCallback(() => {
         dispatch({
             type: actionTypes.LOAD_USERS_POSTS_CALL,
@@ -39,49 +51,61 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
                 keyword: '',
             },
         });
-    }, [dispatch, postsLimit, user, usersPosts]);
+    }, [dispatch, postsLimit, user, currentPage]);
+
+    if (!currentUser) {
+        return (
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Skeleton active={true} loading={true} />
+                </ContentWrapper>
+            </DefaultLayout>
+        );
+    }
+
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Spin spinning={loadingUsersPosts}>
-                    <PageHeader
-                        title={
-                            <div>
-                                <LinkUsersPosts user={currentUser}>
-                                    <UserAvatar user={currentUser} />
-                                </LinkUsersPosts>
-                                <span>
-                                    {currentUser && currentUser.displayName}
-                                </span>
-                            </div>
-                        }
-                    />
-                    <Divider />
-                    <ListExcerpt
-                        posts={usersPosts}
-                        hasMore={hasMoreUsersPosts}
-                        loading={loadingUsersPosts}
-                        loadMoreHandler={onClickLoadMore}
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Head>
+                <title>{title}</title>
+            </Head>
+
+            <DefaultLayout>
+                <ContentWrapper>
+                    <Spin spinning={loadingUsersPosts}>
+                        <PageHeader
+                            title={
+                                <div>
+                                    <LinkUsersPosts user={currentUser}>
+                                        <UserAvatar user={currentUser} />
+                                    </LinkUsersPosts>
+                                    <span>
+                                        {currentUser && currentUser.displayName}
+                                    </span>
+                                </div>
+                            }
+                        />
+                        <Divider />
+                        <ListExcerpt
+                            posts={usersPosts}
+                            hasMore={hasMoreUsersPosts}
+                            loading={loadingUsersPosts}
+                            loadMoreHandler={onClickLoadMore}
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 
-// UsersPosts.propTypes = {
-//     user: PropTypes.string.isRequired,
-// };
-
-UsersPosts.getInitialProps = async (context) => {
+UsersPosts.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IUsersPostsProps> => {
     const state = context.store.getState();
-    const { user } = context.query;
-    const {
-        postsLimit,
-        usersPosts,
-        currentUser,
-        currentUsername,
-    } = state.usersPosts;
+
+    const user: string = context.query.user as string;
+
+    const { postsLimit, usersPosts, currentUsername } = state.usersPosts;
 
     if (
         context.isServer ||

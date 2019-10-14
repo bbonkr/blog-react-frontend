@@ -12,10 +12,15 @@ import { withAuth } from '../../utils/auth';
 // import { markdownConverter } from '../../helpers/converter';
 import WritePostForm from '../../components/WritePostForm';
 import { actionTypes } from '../../reducers/actionTypes';
+import { NextPageContext } from 'next';
+import { NextJSContext } from 'next-redux-wrapper';
+import { IRootState } from '../../typings/reduxStates';
+import { IBlogAction } from '../../typings/IBlogAction';
+import { IPageProps } from '../../typings/IPageProps';
 
 const PLACEHOLDER_MARKDOWN = 'Write your thought!';
 
-export interface IWriteProps {
+export interface IWriteProps extends IPageProps {
     id?: number;
 }
 
@@ -31,15 +36,17 @@ const Write: FunctionComponent<IWriteProps> = ({ id }) => {
     );
 };
 
-Write.getInitialProps = async (context) => {
-    const { id } = context.query;
+Write.getInitialProps = async (
+    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
+): Promise<IWriteProps> => {
+    const id = parseInt((context.query.id as string) || '0', 10);
 
     // console.log('/me/write ==> id: ', id);
 
     if (id) {
         context.store.dispatch({
             type: actionTypes.LOAD_MY_POST_CALL,
-            data: id,
+            data: { id },
         });
     } else {
         context.store.dispatch({

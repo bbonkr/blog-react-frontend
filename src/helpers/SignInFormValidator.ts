@@ -1,15 +1,20 @@
-import { IValidationResult } from './IValidationResult';
+import { IValidationResult } from '../typings/IValidationResult';
 import { ValidationResult } from './ValidationResult';
 import { FormValidationResult } from './FormValidationResult';
-import { IUsernameFormValue } from './IUsernameFormValue';
-import { IPasswordFormValue } from './IPasswordFormValue';
 import { FormValidatorBase } from './FormValidatorBase';
-import { ISignInFormValue } from './ISignInFormValue';
+import {
+    IUsernameFormValue,
+    IPasswordFormValue,
+    ISignInFormValue,
+} from '../typings/IValidatorInputValues';
+
 export class SignInFormValidator extends FormValidatorBase {
     public checkUsername(formData: IUsernameFormValue): IValidationResult {
         const { username } = formData;
         if (!username || username.trim().length === 0) {
-            return ValidationResult.fail('Please Input your username or email address');
+            return ValidationResult.fail(
+                'Please Input your username or email address',
+            );
         }
         return ValidationResult.success;
     }

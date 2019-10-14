@@ -12,13 +12,14 @@ import { normalizeReturnUrl } from '../helpers/stringHelper';
 import { appOptions } from '../config/appOptions';
 import { IPageProps } from '../typings/IPageProps';
 import { actionTypes } from '../reducers/actionTypes';
-
-import '../styles/styles.scss';
 import { IRootState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { NextPageContext } from 'next';
 
-export interface IBlogAppProp {
+import 'antd/dist/antd.css';
+import '../styles/styles.scss';
+
+export interface IBlogAppProp extends IPageProps {
     Component: Element;
     store: Store;
     pageProps?: IPageProps;
@@ -30,7 +31,8 @@ export interface IBlogAppProp {
 class BlogApp extends App<IBlogAppProp> {
     public static async getInitialProps(
         context: AppContext & NextJSAppContext,
-    ): Promise<AppInitialProps & IPageProps> {
+    ): Promise<AppInitialProps> {
+        // console.debug('[APP] _app getInitialProps');
         // const { ctx, Component } = context;
 
         const ctx: NextPageContext & NextJSContext<IRootState, IBlogAction> =
@@ -78,6 +80,11 @@ class BlogApp extends App<IBlogAppProp> {
         }
 
         pageProps.returnUrl = url;
+        pageProps.me = me;
+        pageProps.token = token;
+
+        // console.debug('[APP] _app getInitailProps pageProps: ', pageProps);
+        // console.debug('[APP] _app getInitailProps url: ', url);
 
         return { pageProps };
     }
@@ -120,6 +127,7 @@ class BlogApp extends App<IBlogAppProp> {
                     href: '/bbon-icon.png',
                     sizes: '512x512',
                 },
+                // users-posts users
                 {
                     rel: 'me',
                     href: 'https://www.facebook.com/bbonkr',
@@ -129,23 +137,23 @@ class BlogApp extends App<IBlogAppProp> {
                     type: 'text/plain',
                     href: '/humans.txt',
                 },
-                {
-                    rel: 'stylesheet',
-                    href:
-                        'https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.css',
-                },
-                {
-                    rel: 'stylesheet',
-                    href:
-                        'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css',
-                    type: 'text/css',
-                },
-                {
-                    rel: 'stylesheet',
-                    href:
-                        'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css',
-                    type: 'text/css',
-                },
+                // {
+                //     rel: 'stylesheet',
+                //     href:
+                //         'https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.css',
+                // },
+                // {
+                //     rel: 'stylesheet',
+                //     href:
+                //         'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css',
+                //     type: 'text/css',
+                // },
+                // {
+                //     rel: 'stylesheet',
+                //     href:
+                //         'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css',
+                //     type: 'text/css',
+                // },
             ],
             script: [
                 {
@@ -155,12 +163,12 @@ class BlogApp extends App<IBlogAppProp> {
             ],
         };
 
-        console.info('[APP] _app render');
+        // console.info('[APP] _app render');
 
         return (
             <Fragment>
                 <Provider store={store}>
-                    <Helmet htmlAttributes={helmetProps} />
+                    {/* <Helmet htmlAttributes={helmetProps} /> */}
                     <AppLayout>
                         <Component {...pageProps} returnUrl={returnUrl} />
                     </AppLayout>
