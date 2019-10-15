@@ -8,7 +8,6 @@ import Document, {
     DocumentProps,
 } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
-import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IRootState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
@@ -18,6 +17,7 @@ import { appOptions } from '../config/appOptions';
 export interface IBlogDocumentProps extends IPageProps, DocumentInitialProps {
     // helmet: HelmetData;
     // styleTags: React.ReactElement<{}>[];
+    isProduction: boolean;
 }
 
 class BlogDocument extends Document<IBlogDocumentProps> {
@@ -26,6 +26,11 @@ class BlogDocument extends Document<IBlogDocumentProps> {
     ): Promise<IBlogDocumentProps> {
         const styleSheet = new ServerStyleSheet();
         const originalRenderPage = ctx.renderPage;
+
+        // TODO 디버깅
+        const isProduction = true;
+        // TODO 아래 코드를 사용해야 합니다.
+        //const isProduction = process.env.NODE_ENV === 'production';
 
         try {
             ctx.renderPage = () =>
@@ -38,19 +43,41 @@ class BlogDocument extends Document<IBlogDocumentProps> {
 
             return {
                 ...initialProps,
-
                 styles: (
                     <>
                         {initialProps.styles}
                         {styleSheet.getStyleElement()}
                     </>
                 ),
+                isProduction,
             };
         } finally {
             styleSheet.seal();
         }
 
         // https://github.com/zeit/next.js/blob/master/examples/with-styled-components/pages/_document.js
+    }
+
+    private hasGoogleAnalyticsTraceId(): boolean {
+        return !!appOptions.googleAnalyticsTraceId;
+    }
+
+    private addGoogleAnalyticsScript() {
+        if (!this.hasGoogleAnalyticsTraceId()) {
+            return {
+                __html: null,
+            };
+        }
+
+        return {
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', '${appOptions.googleAnalyticsTraceId}');
+            `,
+        };
     }
 
     public render() {
@@ -104,6 +131,18 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                         <script src='https://polyfill.io/v3/polyfill.min.js?features=es7%2Ces6%2Ces5%2Ces2017%2Ces2016%2Ces2015' />
                     )}
                     <NextScript />
+
+                    {this.props.isProduction &&
+                        this.hasGoogleAnalyticsTraceId() && (
+                            <>
+                                <script
+                                    async
+                                    src={`https://www.googletagmanager.com/gtag/js?id=${appOptions.googleAnalyticsTraceId}`}></script>
+                                <script
+                                    dangerouslySetInnerHTML={this.addGoogleAnalyticsScript()}
+                                />
+                            </>
+                        )}
                 </body>
             </html>
         );

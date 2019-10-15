@@ -4,6 +4,7 @@ import React, {
     useState,
     useCallback,
 } from 'react';
+import Router from 'next/router';
 import { BackTop, Affix, Progress } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState, IUserState } from '../typings/reduxStates';
@@ -15,7 +16,7 @@ import {
 
 import Head from 'next/head';
 import { appOptions } from '../config/appOptions';
-import { withSize } from 'react-sizeme';
+import { trackPageView } from '../helpers/trackPageView';
 
 export interface IAppLayoutProps {
     children: React.ReactNode;
@@ -33,6 +34,12 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
     const [visibleScrollPercent, setVisibleScrollPercent] = useState(false);
 
     useEffect(() => {
+        const handleRouteChangeComplete = (url) => {
+            console.info(`[ROUTER]: routeChangeComplete ==> ${url}`);
+
+            trackPageView(url);
+        };
+
         if (!token) {
             let jwt: string;
             const jwtLocalStorage = window.localStorage.getItem(
@@ -80,9 +87,19 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
             console.debug('[APP] scroll: ');
         };
 
+        console.info('[_app]: componentDidMount ==> Hit');
+        Router.events.on('routeChangeComplete', handleRouteChangeComplete);
+
         window.addEventListener('scroll', onScroll, false);
+
         setVerticalScrollPercent(0);
-        return () => window.removeEventListener('scroll', onScroll);
+
+        return () => {
+            console.info('[_app]: componentWillUnmount ==> Hit');
+
+            window.removeEventListener('scroll', onScroll);
+            Router.events.off('routeChangeComplete', handleRouteChangeComplete);
+        };
     }, []);
 
     const onContentDivScroll = useCallback(

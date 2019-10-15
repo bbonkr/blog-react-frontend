@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import App, { AppContext, AppInitialProps } from 'next/app';
+import Router from 'next/router';
 import { Store } from 'redux';
 import withRedux, { NextJSAppContext, NextJSContext } from 'next-redux-wrapper';
 import withReduxSaga from 'next-redux-saga';
 import { Provider } from 'react-redux';
 import Helmet, { HelmetProps } from 'react-helmet';
-import axios from 'axios';
 import AppLayout from '../components/AppLayout';
 import { configureStore } from '../store';
 import { normalizeReturnUrl } from '../helpers/stringHelper';
@@ -15,6 +15,7 @@ import { actionTypes } from '../reducers/actionTypes';
 import { IRootState } from '../typings/reduxStates';
 import { IBlogAction } from '../typings/IBlogAction';
 import { NextPageContext } from 'next';
+import { trackPageView } from '../helpers/trackPageView';
 
 import 'antd/dist/antd.css';
 import '../styles/styles.scss';
@@ -88,6 +89,24 @@ class BlogApp extends App<IBlogAppProp> {
 
         return { pageProps };
     }
+
+    // handleRouteChangeComplete(url) {
+    //     console.debug(`[ROUTER]: routeChangeComplete ==> ${url}`);
+
+    //     trackPageView(url);
+    // }
+
+    // componentDidMount() {
+    //     console.debug('[_app]: componentDidMount ==> Hit');
+    //     Router.events.on('routeChangeComplete', this.handleRouteChangeComplete);
+    // }
+
+    // componentWillUnmount() {
+    //     Router.events.off(
+    //         'routeChangeComplete',
+    //         this.handleRouteChangeComplete,
+    //     );
+    // }
 
     public render() {
         const { Component, store, pageProps, returnUrl } = this.props;

@@ -7,4 +7,5 @@ export const appOptions: IAppOptions = {
     description: '',
     fbAdmin: '',
     apiBaseUrl: publicRuntimeConfig.apiBaseUrl || 'http://localhost:5000',
+    googleAnalyticsTraceId: publicRuntimeConfig.googleAnalyticsTraceId,
 };
