@@ -6,4 +6,9 @@ export interface IAppOptions {
      * api URL
      */
     apiBaseUrl: string;
+    /**
+     * Google Analytics Trace Id
+     * https://analytics.google.com
+     */
+    googleAnalyticsTraceId?: string;
 }

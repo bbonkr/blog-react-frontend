@@ -37,6 +37,7 @@ module.exports = withBundleAnalyzer(
                 // apiBaseUrl: 'http://localhost:5000',
                 apiBaseUrl: process.env.API_BASEURL,
                 env: process.env.NODE_ENV,
+                googleAnalyticsTraceId: process.env.GOOGLE_ANALYTICS_TRACE_ID,
             },
             webpack(config) {
                 // console.log('config', config);
