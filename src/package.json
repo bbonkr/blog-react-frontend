@@ -1,7 +1,7 @@
 {
-    "name": "react-blog-frontend",
-    "version": "1.0.0",
-    "description": "",
+    "name": "blog-react-frontend",
+    "version": "1.0.4",
+    "description": "Blog service frontend: Next.js + React",
     "main": "index.js",
     "scripts": {
         "test": "react-scripts test --testMatch ./**/*.test.{js,jsx,ts,tsx}",

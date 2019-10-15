@@ -35,7 +35,7 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
 
     useEffect(() => {
         const handleRouteChangeComplete = (url) => {
-            console.info(`[ROUTER]: routeChangeComplete ==> ${url}`);
+            // console.info(`[ROUTER]: routeChangeComplete ==> ${url}`);
 
             trackPageView(url);
         };
@@ -84,10 +84,10 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
         }
 
         const onScroll = (e: Event): any => {
-            console.debug('[APP] scroll: ');
+            // console.debug('[APP] scroll: ');
         };
 
-        console.info('[_app]: componentDidMount ==> Hit');
+        // console.info('[_app]: componentDidMount ==> Hit');
         Router.events.on('routeChangeComplete', handleRouteChangeComplete);
 
         window.addEventListener('scroll', onScroll, false);
@@ -95,7 +95,7 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
         setVerticalScrollPercent(0);
 
         return () => {
-            console.info('[_app]: componentWillUnmount ==> Hit');
+            // console.info('[_app]: componentWillUnmount ==> Hit');
 
             window.removeEventListener('scroll', onScroll);
             Router.events.off('routeChangeComplete', handleRouteChangeComplete);

@@ -26,11 +26,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
     ): Promise<IBlogDocumentProps> {
         const styleSheet = new ServerStyleSheet();
         const originalRenderPage = ctx.renderPage;
-
-        // TODO 디버깅
-        const isProduction = true;
-        // TODO 아래 코드를 사용해야 합니다.
-        //const isProduction = process.env.NODE_ENV === 'production';
+        const isProduction = process.env.NODE_ENV === 'production';
 
         try {
             ctx.renderPage = () =>
@@ -101,7 +97,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
 
         // console.info('[APP] _document render');
         // {...htmlAttrs} {...bodyAttrs}
-        console.debug('[APP] styles: ', this.props.styles);
+        // console.debug('[APP] styles: ', this.props.styles);
         return (
             <html lang='ko'>
                 <Head>
@@ -127,9 +123,10 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                 </Head>
                 <body>
                     <Main />
-                    {/** IE supports */ prod && ieSupport && (
-                        <script src='https://polyfill.io/v3/polyfill.min.js?features=es7%2Ces6%2Ces5%2Ces2017%2Ces2016%2Ces2015' />
-                    )}
+                    {/** IE supports */ this.props.isProduction &&
+                        ieSupport && (
+                            <script src='https://polyfill.io/v3/polyfill.min.js?features=es7%2Ces6%2Ces5%2Ces2017%2Ces2016%2Ces2015' />
+                        )}
                     <NextScript />
 
                     {this.props.isProduction &&
