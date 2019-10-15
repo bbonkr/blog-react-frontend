@@ -24,6 +24,7 @@
 COOKIE_SECRET=cookiesecret
 API_BASEURL=http://localhost:5000
 ANALYZE=false
+GOOGLE_ANALYTICS_TRACE_ID=GOOGLE-ANALYTICS-TRACE-ID
 ```
 
 COOKIE_SECRET:
@@ -38,5 +39,5 @@ ANALYZE:
 ## docker
 
 ```bash
-$ docker build -t bbonkr/blog-service-frontend:1.0.0 .
+$ sudo docker build -t bbonkr/blog-service-frontend:1.0.0 .
 ```
