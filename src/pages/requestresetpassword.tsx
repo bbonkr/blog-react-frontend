@@ -6,6 +6,8 @@ import { ContentWrapper } from '../styledComponents/Wrapper';
 import { SignUpFormValidator } from '../helpers/SignUpFormValidator';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, IUserState } from '../typings/reduxStates';
+import Head from 'next/head';
+import { appOptions } from '../config/appOptions';
 
 const signUpFormValidator = new SignUpFormValidator();
 
@@ -42,35 +44,40 @@ const RequestResetPassword: FunctionComponent = () => {
     );
 
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <PageHeader title='Reset Password Request' />
-                <Divider />
-                <Form onSubmit={onSubmit}>
-                    <Form.Item
-                        label='Email address'
-                        hasFeedback={true}
-                        help={emailErrorMessage}
-                        validateStatus={
-                            !emailErrorMessage ? 'success' : 'error'
-                        }>
-                        <Input
-                            value={email}
-                            onChange={onChangeEmail}
-                            placeholder='Input your email address'
-                        />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            type='primary'
-                            htmlType='submit'
-                            loading={requestResetPasswordLoading}>
-                            Send a Reset Password Request
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Head>
+                <title>{`Request to reset password  | ${appOptions.title}`}</title>
+            </Head>
+            <DefaultLayout>
+                <ContentWrapper>
+                    <PageHeader title='Reset Password Request' />
+                    <Divider />
+                    <Form onSubmit={onSubmit}>
+                        <Form.Item
+                            label='Email address'
+                            hasFeedback={true}
+                            help={emailErrorMessage}
+                            validateStatus={
+                                !emailErrorMessage ? 'success' : 'error'
+                            }>
+                            <Input
+                                value={email}
+                                onChange={onChangeEmail}
+                                placeholder='Input your email address'
+                            />
+                        </Form.Item>
+                        <Form.Item>
+                            <Button
+                                type='primary'
+                                htmlType='submit'
+                                loading={requestResetPasswordLoading}>
+                                Send a Reset Password Request
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

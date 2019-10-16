@@ -17,6 +17,8 @@ import {
 import Head from 'next/head';
 import { appOptions } from '../config/appOptions';
 import { trackPageView } from '../helpers/trackPageView';
+import { IBlogAction } from '../typings/IBlogAction';
+import { IPageviewParameters } from '../@types/global';
 
 export interface IAppLayoutProps {
     children: React.ReactNode;
@@ -34,10 +36,21 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
     const [visibleScrollPercent, setVisibleScrollPercent] = useState(false);
 
     useEffect(() => {
+        // console.info('[APP]: AppLayout componentDidMount');
         const handleRouteChangeComplete = (url) => {
             // console.info(`[ROUTER]: routeChangeComplete ==> ${url}`);
 
-            trackPageView(url);
+            const { href, pathname } = window.location;
+            const { title } = window.document;
+            // trackPageView(url);
+            dispatch({
+                type: actionTypes.TRACE_GOOGLE_ANALYTICS,
+                data: {
+                    page_title: title,
+                    page_location: href,
+                    page_path: pathname,
+                } as IPageviewParameters,
+            });
         };
 
         if (!token) {

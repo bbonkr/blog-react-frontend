@@ -90,6 +90,24 @@ class BlogApp extends App<IBlogAppProp> {
         return { pageProps };
     }
 
+    // private handleRouteChangeComplete(url) {
+    //     // console.info(`[ROUTER]: routeChangeComplete ==> ${url}`);
+
+    //     trackPageView(url);
+    // }
+
+    // componentDidMount() {
+    //     console.info('[APP]: _app componentDidMount');
+    //     Router.events.on('routeChangeComplete', this.handleRouteChangeComplete);
+    // }
+
+    // componentWillUnmount() {
+    //     Router.events.off(
+    //         'routeChangeComplete',
+    //         this.handleRouteChangeComplete,
+    //     );
+    // }
+
     public render() {
         const { Component, store, pageProps, returnUrl } = this.props;
         const fbAdmin = appOptions.fbAdmin;

@@ -66,7 +66,7 @@ function* signIn(action) {
             },
         );
 
-        console.debug(result.data);
+        // console.debug(result.data);
 
         const { success, data, message } = result.data;
         if (success) {
@@ -85,7 +85,7 @@ function* signIn(action) {
             });
         }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.SIGN_IN_FAIL,
             error: e,

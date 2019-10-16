@@ -11,6 +11,8 @@ import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IPageProps } from '../typings/IPageProps';
+import Head from 'next/head';
+import { appOptions } from '../config/appOptions';
 
 export interface IVerifyEmailProps extends IPageProps {
     email: string;
@@ -48,45 +50,52 @@ const VerifyEmail: FunctionComponent<IVerifyEmailProps> = ({ email, code }) => {
     }, []);
 
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <PageHeader title='Verify Email' />
-                <Divider />
-                <Spin spinning={verifyEmailLoading}>
-                    <Alert
-                        message={
-                            !!verifyEmailErrorReason ? 'Warning' : 'Success'
-                        }
-                        type={!!verifyEmailErrorReason ? 'warning' : 'success'}
-                        showIcon={true}
-                        description={
-                            !!verifyEmailErrorReason ? (
-                                <div>
-                                    {' '}
-                                    <div>{verifyEmailErrorReason}</div>{' '}
-                                    <Form onSubmit={onSubmitRetry}>
-                                        <Button
-                                            type='primary'
-                                            htmlType='submit'>
-                                            Retry
-                                        </Button>
-                                    </Form>
-                                </div>
-                            ) : (
-                                <div>
-                                    <div>{'Your email was verified.'}</div>
+        <>
+            <Head>
+                <title>{`Verify e-mail | ${appOptions.title}`}</title>
+            </Head>
+            <DefaultLayout>
+                <ContentWrapper>
+                    <PageHeader title='Verify Email' />
+                    <Divider />
+                    <Spin spinning={verifyEmailLoading}>
+                        <Alert
+                            message={
+                                !!verifyEmailErrorReason ? 'Warning' : 'Success'
+                            }
+                            type={
+                                !!verifyEmailErrorReason ? 'warning' : 'success'
+                            }
+                            showIcon={true}
+                            description={
+                                !!verifyEmailErrorReason ? (
                                     <div>
-                                        <Button onClick={onClickGoToHome}>
-                                            Go to home
-                                        </Button>
+                                        {' '}
+                                        <div>{verifyEmailErrorReason}</div>{' '}
+                                        <Form onSubmit={onSubmitRetry}>
+                                            <Button
+                                                type='primary'
+                                                htmlType='submit'>
+                                                Retry
+                                            </Button>
+                                        </Form>
                                     </div>
-                                </div>
-                            )
-                        }
-                    />
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+                                ) : (
+                                    <div>
+                                        <div>{'Your email was verified.'}</div>
+                                        <div>
+                                            <Button onClick={onClickGoToHome}>
+                                                Go to home
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        />
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

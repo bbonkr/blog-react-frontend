@@ -10,6 +10,8 @@ import Router from 'next/router';
 import UserAvatar from './UserAvatar';
 import { actionTypes } from '../reducers/actionTypes';
 import { IRootState, IUserState, IMeState } from '../typings/reduxStates';
+import Head from 'next/head';
+import { appOptions } from '../config/appOptions';
 const { Sider } = Layout;
 
 const menusSide = [
@@ -159,82 +161,91 @@ const MeLayout: FunctionComponent<IMeLayoutPorps> = ({ children }) => {
     }, []);
 
     return (
-        <Layout style={{ minHeight: '100%' }}>
-            <Layout.Header
-                style={{ position: 'fixed', zIndex: 500, width: '100%' }}>
-                <div className='logo' />
-                <Menu
-                    theme='dark'
-                    mode='horizontal'
-                    style={{ lineHeight: '64px' }}
-                    defaultSelectedKeys={['me']}
-                    selectedKeys={selectedMenuKeys}
-                    onClick={onClickMenu}>
-                    <Menu.Item key='home'>NodeBlog</Menu.Item>
-                    <Menu.Item key='me'>
-                        <Icon type='user' /> <span>Me</span>
-                    </Menu.Item>
-                    <Menu.Item key='posts'>
-                        <Icon type='container' /> <span>Posts</span>
-                    </Menu.Item>
-                    <Menu.Item key='signout'>Sign out</Menu.Item>
-                </Menu>
-            </Layout.Header>
-            <Layout.Content
-                style={{
-                    marginTop: '64px',
-                    minHeight: '100vh',
-                }}>
-                <Layout style={{ minHeight: '100vh' }}>
-                    <Drawer
-                        placement='left'
-                        closable={false}
-                        visible={false}
-                        bodyStyle={{ padding: 0 }}></Drawer>
-
-                    <Sider
-                        collapsible={true}
-                        collapsed={sideMenuCollapsed}
-                        onCollapse={onCollapse}>
-                        <div
-                            style={{
-                                textAlign: 'center',
-                                color: '#9f9f9f',
-                                padding: '1.0rem',
-                            }}>
-                            <UserAvatar user={me} />
-
-                            <div>{!sideMenuCollapsed && me && me.username}</div>
-                            <div>
-                                {!sideMenuCollapsed && me && me.displayName}
-                            </div>
-                        </div>
-                        <Menu
-                            mode='inline'
-                            defaultSelectedKeys={['me']}
-                            selectedKeys={selectedMenuKeys}
-                            onClick={onClickSideMenu}>
-                            {menusSide.map((v) => {
-                                return (
-                                    <Menu.Item key={v.key}>
-                                        {v.icon && <Icon type={v.icon} />}
-                                        <span>{v.caption}</span>
-                                    </Menu.Item>
-                                );
-                            })}
-                        </Menu>
-                    </Sider>
-
+        <>
+            <Head>
+                <title>{`${me && me.displayName}'s content management | ${
+                    appOptions.title
+                }`}</title>
+            </Head>
+            <Layout style={{ minHeight: '100%' }}>
+                <Layout.Header
+                    style={{ position: 'fixed', zIndex: 500, width: '100%' }}>
+                    <div className='logo' />
+                    <Menu
+                        theme='dark'
+                        mode='horizontal'
+                        style={{ lineHeight: '64px' }}
+                        defaultSelectedKeys={['me']}
+                        selectedKeys={selectedMenuKeys}
+                        onClick={onClickMenu}>
+                        <Menu.Item key='home'>NodeBlog</Menu.Item>
+                        <Menu.Item key='me'>
+                            <Icon type='user' /> <span>Me</span>
+                        </Menu.Item>
+                        <Menu.Item key='posts'>
+                            <Icon type='container' /> <span>Posts</span>
+                        </Menu.Item>
+                        <Menu.Item key='signout'>Sign out</Menu.Item>
+                    </Menu>
+                </Layout.Header>
+                <Layout.Content
+                    style={{
+                        marginTop: '64px',
+                        minHeight: '100vh',
+                    }}>
                     <Layout style={{ minHeight: '100vh' }}>
-                        {/* <Layout.Header /> */}
-                        <Layout.Content>
-                            <article>{children}</article>
-                        </Layout.Content>
+                        <Drawer
+                            placement='left'
+                            closable={false}
+                            visible={false}
+                            bodyStyle={{ padding: 0 }}></Drawer>
+
+                        <Sider
+                            collapsible={true}
+                            collapsed={sideMenuCollapsed}
+                            onCollapse={onCollapse}>
+                            <div
+                                style={{
+                                    textAlign: 'center',
+                                    color: '#9f9f9f',
+                                    padding: '1.0rem',
+                                }}>
+                                <UserAvatar user={me} />
+
+                                <div>
+                                    {!sideMenuCollapsed && me && me.username}
+                                </div>
+                                <div>
+                                    {!sideMenuCollapsed && me && me.displayName}
+                                </div>
+                            </div>
+                            <Menu
+                                mode='inline'
+                                defaultSelectedKeys={['me']}
+                                selectedKeys={selectedMenuKeys}
+                                onClick={onClickSideMenu}>
+                                {menusSide.map((v) => {
+                                    return (
+                                        <Menu.Item key={v.key}>
+                                            {v.icon && <Icon type={v.icon} />}
+                                            <span>{v.caption}</span>
+                                        </Menu.Item>
+                                    );
+                                })}
+                            </Menu>
+                        </Sider>
+
+                        <Layout style={{ minHeight: '100vh' }}>
+                            {/* <Layout.Header /> */}
+                            <Layout.Content>
+                                <article>{children}</article>
+                            </Layout.Content>
+                        </Layout>
                     </Layout>
-                </Layout>
-            </Layout.Content>
-            <Layout.Footer />
-        </Layout>
+                </Layout.Content>
+                <Layout.Footer />
+            </Layout>
+        </>
     );
 };
 

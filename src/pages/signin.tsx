@@ -6,7 +6,17 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
-import { Form, Input, Checkbox, Button, Icon, Row, Col } from 'antd';
+import {
+    Form,
+    Input,
+    Checkbox,
+    Button,
+    Icon,
+    Row,
+    Col,
+    PageHeader,
+    Divider,
+} from 'antd';
 import Router from 'next/router';
 import {
     ERROR_COLOR,
@@ -25,6 +35,8 @@ import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IPageProps } from '../typings/IPageProps';
+import Head from 'next/head';
+import { appOptions } from '../config/appOptions';
 
 const validator = new SignInFormValidator();
 
@@ -156,39 +168,45 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
     }
 
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <Row type='flex' justify='center' align='middle'>
-                    <Col xs={24} sm={24} md={12}>
-                        {signInFailMessage && (
-                            <ErrorMessageWrapper>
-                                <h4>Please check your input.</h4>
-                                {signInFailMessage}
-                            </ErrorMessageWrapper>
-                        )}
-                        <Form onSubmit={onSubmit}>
-                            <Form.Item
-                                hasFeedback={true}
-                                help={emailError}
-                                validateStatus={
-                                    !emailError ? 'success' : 'error'
-                                }>
-                                <Input
-                                    type='text'
-                                    style={{ width: '100%' }}
-                                    value={email}
-                                    onChange={onEmailChange}
-                                    placeholder={INPUT_EMAIL_PLACEHOLDER}
-                                    prefix={
-                                        <Icon
-                                            type='mail'
-                                            style={{
-                                                color: 'rgba(0,0,0,0.25)',
-                                            }}
-                                        />
-                                    }
-                                />
-                                {/* {emailError && (
+        <>
+            <Head>
+                <title>{`Sign in | ${appOptions.title}`}</title>
+            </Head>
+            <DefaultLayout>
+                <ContentWrapper>
+                    <PageHeader title='Sign in' />
+                    <Divider />
+                    <Row type='flex' justify='center' align='middle'>
+                        <Col xs={24} sm={24} md={12}>
+                            {signInFailMessage && (
+                                <ErrorMessageWrapper>
+                                    <h4>Please check your input.</h4>
+                                    {signInFailMessage}
+                                </ErrorMessageWrapper>
+                            )}
+                            <Form onSubmit={onSubmit}>
+                                <Form.Item
+                                    hasFeedback={true}
+                                    help={emailError}
+                                    validateStatus={
+                                        !emailError ? 'success' : 'error'
+                                    }>
+                                    <Input
+                                        type='text'
+                                        style={{ width: '100%' }}
+                                        value={email}
+                                        onChange={onEmailChange}
+                                        placeholder={INPUT_EMAIL_PLACEHOLDER}
+                                        prefix={
+                                            <Icon
+                                                type='mail'
+                                                style={{
+                                                    color: 'rgba(0,0,0,0.25)',
+                                                }}
+                                            />
+                                        }
+                                    />
+                                    {/* {emailError && (
                                     <span>
                                         <Icon
                                             type='alert'
@@ -199,29 +217,29 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                                         </span>
                                     </span>
                                 )} */}
-                            </Form.Item>
-                            <Form.Item
-                                hasFeedback={true}
-                                help={passwordError}
-                                validateStatus={
-                                    !passwordError ? 'success' : 'error'
-                                }>
-                                <Input.Password
-                                    type='password'
-                                    style={{ width: '100%' }}
-                                    value={password}
-                                    onChange={onPasswordChange}
-                                    placeholder={INPUT_PASSWORD_PLACEHOLDER}
-                                    prefix={
-                                        <Icon
-                                            type='lock'
-                                            style={{
-                                                color: 'rgba(0,0,0,0.25)',
-                                            }}
-                                        />
-                                    }
-                                />
-                                {/* {passwordError && (
+                                </Form.Item>
+                                <Form.Item
+                                    hasFeedback={true}
+                                    help={passwordError}
+                                    validateStatus={
+                                        !passwordError ? 'success' : 'error'
+                                    }>
+                                    <Input.Password
+                                        type='password'
+                                        style={{ width: '100%' }}
+                                        value={password}
+                                        onChange={onPasswordChange}
+                                        placeholder={INPUT_PASSWORD_PLACEHOLDER}
+                                        prefix={
+                                            <Icon
+                                                type='lock'
+                                                style={{
+                                                    color: 'rgba(0,0,0,0.25)',
+                                                }}
+                                            />
+                                        }
+                                    />
+                                    {/* {passwordError && (
                                     <span>
                                         <Icon
                                             type='alert'
@@ -232,35 +250,36 @@ const SignIn: FunctionComponent<ISignInProps> = ({ returnUrl }) => {
                                         </span>
                                     </span>
                                 )} */}
-                            </Form.Item>
-                            <Form.Item>
-                                <Checkbox
-                                    checked={remember}
-                                    onChange={onRememberChange}>
-                                    Remember me
-                                </Checkbox>
-                                <Link href='/requestresetpassword'>
-                                    <a style={{ float: 'right' }}>
-                                        Reset my password
-                                    </a>
-                                </Link>
-                                <Button
-                                    type='primary'
-                                    htmlType='submit'
-                                    style={{ width: '100%' }}
-                                    disabled={isSubmitButtonDisabled()}>
-                                    Log in
-                                </Button>
-                                {'Or '}
-                                <Link href='/signup'>
-                                    <a>Register</a>
-                                </Link>
-                            </Form.Item>
-                        </Form>
-                    </Col>
-                </Row>
-            </ContentWrapper>
-        </DefaultLayout>
+                                </Form.Item>
+                                <Form.Item>
+                                    <Checkbox
+                                        checked={remember}
+                                        onChange={onRememberChange}>
+                                        Remember me
+                                    </Checkbox>
+                                    <Link href='/requestresetpassword'>
+                                        <a style={{ float: 'right' }}>
+                                            Reset my password
+                                        </a>
+                                    </Link>
+                                    <Button
+                                        type='primary'
+                                        htmlType='submit'
+                                        style={{ width: '100%' }}
+                                        disabled={isSubmitButtonDisabled()}>
+                                        Log in
+                                    </Button>
+                                    {'Or '}
+                                    <Link href='/signup'>
+                                        <a>Register</a>
+                                    </Link>
+                                </Form.Item>
+                            </Form>
+                        </Col>
+                    </Row>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 
