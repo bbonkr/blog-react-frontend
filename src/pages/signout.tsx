@@ -14,6 +14,8 @@ import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IPageProps } from '../typings/IPageProps';
+import Head from 'next/head';
+import { appOptions } from '../config/appOptions';
 
 const SignOut: FunctionComponent = () => {
     const { me, signOutLoading, signOutReturnUrl } = useSelector<
@@ -42,21 +44,26 @@ const SignOut: FunctionComponent = () => {
     );
 
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <PageHeader title='Sign out' />
-                <Divider />
-                <Spin spinning={signOutLoading}>
-                    <p>
-                        Click a 'Navigate to Home' button if does not navigate
-                        to home.
-                    </p>
-                    <Button onClick={onClickNavigateToHome}>
-                        Navigate to Home
-                    </Button>
-                </Spin>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Head>
+                <title>{`Sign out | ${appOptions.title}`}</title>
+            </Head>
+            <DefaultLayout>
+                <ContentWrapper>
+                    <PageHeader title='Sign out' />
+                    <Divider />
+                    <Spin spinning={signOutLoading}>
+                        <p>
+                            Click a 'Navigate to Home' button if does not
+                            navigate to home.
+                        </p>
+                        <Button onClick={onClickNavigateToHome}>
+                            Navigate to Home
+                        </Button>
+                    </Spin>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

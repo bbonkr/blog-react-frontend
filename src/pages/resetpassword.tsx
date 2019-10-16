@@ -16,6 +16,8 @@ import { IPageProps } from '../typings/IPageProps';
 import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
+import Head from 'next/head';
+import { appOptions } from '../config/appOptions';
 
 export interface IResetPasswordProps extends IPageProps {
     email: string;
@@ -110,61 +112,70 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({
     );
 
     return (
-        <DefaultLayout>
-            <ContentWrapper>
-                <PageHeader title='Reset a password' />
-                <Divider />
-                <Form onSubmit={onSubmit}>
-                    <Form.Item
-                        label='Temporary password'
-                        hasFeedback={true}
-                        help={temporaryPasswordErrorMessage}
-                        validateStatus={
-                            !temporaryPasswordErrorMessage ? 'success' : 'error'
-                        }>
-                        <Input.Password
-                            value={temporaryPassword}
-                            onChange={onChangeTemporaryPassword}
-                            placeholder='Input a temporary password.'
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label='Password'
-                        hasFeedback={true}
-                        help={passwordErrorMessage}
-                        validateStatus={
-                            !passwordErrorMessage ? 'success' : 'error'
-                        }>
-                        <Input.Password
-                            value={password}
-                            onChange={onChangePassword}
-                            placeholder='Input a new password'
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label='Password (again)'
-                        hasFeedback={true}
-                        help={passwordConfirmErrorMessage}
-                        validateStatus={
-                            !passwordConfirmErrorMessage ? 'success' : 'error'
-                        }>
-                        <Input.Password
-                            value={passwordConfirm}
-                            onChange={onChangePasswordConfirm}
-                            placeholder='Input a new password again'
-                        />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            type='primary'
-                            htmlType='submit'
-                            loading={resetPasswordLoading}>
-                            Reset
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </ContentWrapper>
-        </DefaultLayout>
+        <>
+            <Head>
+                <title>{`Reset password | ${appOptions.title}`}</title>
+            </Head>
+            <DefaultLayout>
+                <ContentWrapper>
+                    <PageHeader title='Reset a password' />
+                    <Divider />
+                    <Form onSubmit={onSubmit}>
+                        <Form.Item
+                            label='Temporary password'
+                            hasFeedback={true}
+                            help={temporaryPasswordErrorMessage}
+                            validateStatus={
+                                !temporaryPasswordErrorMessage
+                                    ? 'success'
+                                    : 'error'
+                            }>
+                            <Input.Password
+                                value={temporaryPassword}
+                                onChange={onChangeTemporaryPassword}
+                                placeholder='Input a temporary password.'
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label='Password'
+                            hasFeedback={true}
+                            help={passwordErrorMessage}
+                            validateStatus={
+                                !passwordErrorMessage ? 'success' : 'error'
+                            }>
+                            <Input.Password
+                                value={password}
+                                onChange={onChangePassword}
+                                placeholder='Input a new password'
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label='Password (again)'
+                            hasFeedback={true}
+                            help={passwordConfirmErrorMessage}
+                            validateStatus={
+                                !passwordConfirmErrorMessage
+                                    ? 'success'
+                                    : 'error'
+                            }>
+                            <Input.Password
+                                value={passwordConfirm}
+                                onChange={onChangePasswordConfirm}
+                                placeholder='Input a new password again'
+                            />
+                        </Form.Item>
+                        <Form.Item>
+                            <Button
+                                type='primary'
+                                htmlType='submit'
+                                loading={resetPasswordLoading}>
+                                Reset
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </ContentWrapper>
+            </DefaultLayout>
+        </>
     );
 };
 

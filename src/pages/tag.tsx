@@ -1,4 +1,5 @@
 import React, { useCallback, FunctionComponent } from 'react';
+import Head from 'next/head';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Divider, PageHeader, Spin, Skeleton } from 'antd';
@@ -53,9 +54,16 @@ const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
         );
     }
 
+    const title: string = `TAG: ${currentTag &&
+        currentTag.name} posts | ${siteName}`;
+
     return (
         <>
-            <Helmet title={`${currentTag && currentTag.name} | ${siteName}`} />
+            {/* <Helmet title={title} /> */}
+            <Head>
+                <title>{title}</title>
+            </Head>
+
             <DefaultLayout>
                 <ContentWrapper>
                     <Spin spinning={tagPostsLoading}>

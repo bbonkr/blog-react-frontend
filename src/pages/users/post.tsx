@@ -1,7 +1,12 @@
 /**
  * /users/:user/posts
  */
-import React, { useCallback, FunctionComponent, useMemo } from 'react';
+import React, {
+    useCallback,
+    FunctionComponent,
+    useMemo,
+    useEffect,
+} from 'react';
 import { useSelector } from 'react-redux';
 // import Helmet from 'react-helmet';
 import Head from 'next/head';
@@ -37,11 +42,16 @@ const UsersPost: FunctionComponent = () => {
         IRootState,
         ISinglePostState
     >((s) => s.singlePost);
+
     const { currentUrl } = useSelector<IRootState, ISettingState>(
         (s) => s.settings,
     );
 
     const baseUrl: string = appOptions.apiBaseUrl;
+
+    useEffect(() => {
+        console.info('[APP] Post componentDidMount');
+    }, []);
 
     // const getOgImage = useCallback(() => {
     //     if (!singlePost) {
@@ -69,10 +79,17 @@ const UsersPost: FunctionComponent = () => {
         return '';
     }, [singlePost]);
 
-    const title: string = useMemo(() => {
-        return `${singlePost && singlePost.title} | ${singlePost &&
-            singlePost.user.displayName} | ${siteName}`;
-    }, [singlePost]);
+    // const title: string = useMemo(() => {
+    //     if (!singlePost) {
+    //         return siteName;
+    //     }
+
+    //     return `${singlePost && singlePost.title} | ${singlePost &&
+    //         singlePost.user.displayName} | ${siteName}`;
+    // }, [singlePost]);
+
+    const title: string = `${singlePost && singlePost.title} | ${singlePost &&
+        singlePost.user.displayName} | ${siteName}`;
 
     return (
         <>

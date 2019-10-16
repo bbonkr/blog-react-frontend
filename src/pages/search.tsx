@@ -12,6 +12,7 @@ import { NextPageContext } from 'next';
 import { NextJSContext } from 'next-redux-wrapper';
 import { IBlogAction } from '../typings/IBlogAction';
 import { IPageProps } from '../typings/IPageProps';
+import Head from 'next/head';
 
 const KEYWORD_INPUT_PLACEHOLDER = 'Searching keyword';
 
@@ -69,7 +70,10 @@ const Search: FunctionComponent<ISearchPageProps> = ({ keyword }) => {
 
     return (
         <>
-            <Helmet title={`${searchPostsKeyword} | ${siteName}`} />
+            {/* <Helmet title={`${searchPostsKeyword} | ${siteName}`} /> */}
+            <Head>
+                <title>{`${searchPostsKeyword} | ${siteName}`}</title>
+            </Head>
             <DefaultLayout>
                 <ContentWrapper>
                     <Spin spinning={searchPostsLoading}>

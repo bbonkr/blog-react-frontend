@@ -35,6 +35,7 @@ module.exports = withBundleAnalyzer(
                 // Will be available on both server and client
                 // Pass through env variables
                 // apiBaseUrl: 'http://localhost:5000',
+                // env: 'production',
                 apiBaseUrl: process.env.API_BASEURL,
                 env: process.env.NODE_ENV,
                 googleAnalyticsTraceId: process.env.GOOGLE_ANALYTICS_TRACE_ID,

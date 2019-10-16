@@ -53,7 +53,7 @@ function* loadPosts(action) {
             });
         }
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         yield put<IBlogAction>({
             type: actionTypes.LOAD_POSTS_FAIL,
             error: e,
