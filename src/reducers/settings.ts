@@ -1,13 +1,13 @@
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
-import { ISettingState } from '../typings/reduxStates';
+import { SettingState } from '../typings/reduxStates';
 import { trackPageView } from '../helpers/trackPageView';
 
-export const initialState: ISettingState = {
+export const initialState: SettingState = {
     currentUrl: '', // 현재 URL 참조 eg.) /users/@test/posts/post-slug
 };
 
-const reducer = (state: ISettingState = initialState, action) =>
+const reducer = (state: SettingState = initialState, action) =>
     produce(state, (draft) => {
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
         switch (action.type) {

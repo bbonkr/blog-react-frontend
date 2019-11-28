@@ -1,13 +1,13 @@
 import { notification } from 'antd';
 
-export interface IShowNotificationProps {
+export interface ShowNotificationProps {
     title: string;
     message: string;
     onClick?: () => void;
     icon?: string;
 }
 
-export const ShowNotification = ({ title, message, onClick, icon }: IShowNotificationProps): void => {
+export const ShowNotification = ({ title, message, onClick, icon }: ShowNotificationProps): void => {
     notification.open({
         message: title,
         description: message,

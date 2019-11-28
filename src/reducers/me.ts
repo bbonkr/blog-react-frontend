@@ -2,12 +2,12 @@ import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import Router from 'next/router';
 import { actionTypes } from './actionTypes';
-import { IPostModel } from '../typings/dto';
-import { IBlogAction } from '../typings/IBlogAction';
+import { PostModel } from '../typings/dto';
+import { BaseAction } from '../typings/BaseAction';
 import { MeHanlder } from './hanlders/me.handler';
-import { IMeState } from '../typings/reduxStates';
+import { MeState } from '../typings/reduxStates';
 
-export const initialState: IMeState = {
+export const initialState: MeState = {
     // category
     // categories: [],
     // categoriesLoading: false,
@@ -63,7 +63,7 @@ export const initialState: IMeState = {
     statReadErrorReason: '',
 };
 
-export const me = (state: IMeState = initialState, action: IBlogAction) =>
+export const me = (state: MeState = initialState, action: BaseAction) =>
     produce(state, (draft) => {
         // https://lannstark.github.io/nodejs/console/3
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);

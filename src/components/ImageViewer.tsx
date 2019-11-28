@@ -2,27 +2,27 @@ import React, {
     useState,
     useCallback,
     useEffect,
-    FunctionComponent,
-} from 'react';
-import { PageHeader, Carousel, Icon, Typography } from 'antd';
-import FullSizeModal from '../styledComponents/FullSizeModal';
-import { IImageModel } from '../typings/dto';
-import { appOptions } from '../config/appOptions';
+    FunctionComponent
+} from "react";
+import { PageHeader, Carousel, Icon, Typography } from "antd";
+import FullSizeModal from "../styledComponents/FullSizeModal";
+import { ImageModel } from "../typings/dto";
+import { appOptions } from "../config/appOptions";
 
-export interface IImageViewerProps {
-    files: IImageModel[];
+export interface ImageViewerProps {
+    files: ImageModel[];
     visible: boolean;
     closeImageviewer: () => void;
 }
 
-const ImageViewer: FunctionComponent<IImageViewerProps> = ({
+const ImageViewer: FunctionComponent<ImageViewerProps> = ({
     files,
     visible,
-    closeImageviewer,
+    closeImageviewer
 }) => {
-    const [title, setTitle] = useState('Image viewer');
+    const [title, setTitle] = useState("Image viewer");
     // const [url, setUrl] = useState('');
-    const [fullUrl, setFullUrl] = useState('');
+    const [fullUrl, setFullUrl] = useState("");
 
     useEffect(() => {
         if (files && files.length > 0) {
@@ -40,7 +40,7 @@ const ImageViewer: FunctionComponent<IImageViewerProps> = ({
             // setUrl(file.url);
             setFullUrl(`${window.location.origin}${file.src}`);
         },
-        [files],
+        [files]
     );
 
     return (
@@ -49,11 +49,12 @@ const ImageViewer: FunctionComponent<IImageViewerProps> = ({
             visible={visible}
             maskClosable={true}
             onCancel={closeImageviewer}
-            width='100%'>
+            width="100%"
+        >
             <PageHeader
                 title={
                     <Typography.Title level={3} copyable={{ text: fullUrl }}>
-                        <Icon type='file-image' /> {title}
+                        <Icon type="file-image" /> {title}
                     </Typography.Title>
                 }
                 extra={
@@ -67,19 +68,19 @@ const ImageViewer: FunctionComponent<IImageViewerProps> = ({
                 }
             />
 
-            <Carousel style={{ width: '100%' }} afterChange={onAafterChange}>
-                {files.map((f) => {
+            <Carousel style={{ width: "100%" }} afterChange={onAafterChange}>
+                {files.map(f => {
                     let src = f.src;
-                    if (f.src.startsWith('/')) {
+                    if (f.src.startsWith("/")) {
                         src = `${appOptions.apiBaseUrl}${f.src}`;
                     }
 
                     return (
-                        <div key={f.id} style={{ textAlign: 'center' }}>
+                        <div key={f.id} style={{ textAlign: "center" }}>
                             <img
                                 src={src}
                                 alt={`${f.fileName}${f.fileExtension}`}
-                                style={{ maxWidth: '100%', margin: '0 auto' }}
+                                style={{ maxWidth: "100%", margin: "0 auto" }}
                             />
                         </div>
                     );

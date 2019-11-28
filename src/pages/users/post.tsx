@@ -5,52 +5,51 @@ import React, {
     useCallback,
     FunctionComponent,
     useMemo,
-    useEffect,
-} from 'react';
-import { useSelector } from 'react-redux';
+    useEffect
+} from "react";
+import { useSelector } from "react-redux";
 // import Helmet from 'react-helmet';
-import Head from 'next/head';
-import DefaultLayout from '../../components/DefaultLayout';
-import { ContentWrapper } from '../../styledComponents/Wrapper';
-import SinglePost from '../../components/SinglePost';
-import { Skeleton, Spin } from 'antd';
-import { actionTypes } from '../../reducers/actionTypes';
+import Head from "next/head";
+import DefaultLayout from "../../components/DefaultLayout";
+import { ContentWrapper } from "../../styledComponents/Wrapper";
+import SinglePost from "../../components/SinglePost";
+import { Skeleton, Spin } from "antd";
+import { actionTypes } from "../../reducers/actionTypes";
 import {
-    IRootState,
-    ISettingState,
-    ISinglePostState,
-} from '../../typings/reduxStates';
-import { appOptions } from '../../config/appOptions';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IPageProps } from '../../typings/IPageProps';
+    RootState,
+    SettingState,
+    SinglePostState
+} from "../../typings/reduxStates";
+import { appOptions } from "../../config/appOptions";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../../typings/BaseAction";
+import { PageProps } from "../../typings/PageProps";
 
-import '../../styles/prism.css';
-import 'prismjs/themes/prism-okaidia.css';
-import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
-import '../../styles/singlepost.css';
+import "../../styles/prism.css";
+import "prismjs/themes/prism-okaidia.css";
+import "prismjs/plugins/line-numbers/prism-line-numbers.css";
+import "../../styles/singlepost.css";
 
-export interface IUsersPostProps extends IPageProps {
+export interface UsersPostPageProps extends PageProps {
     user: string;
     slug: string;
 }
 
 const UsersPost: FunctionComponent = () => {
     const siteName = appOptions.title;
-    const { loadingPost, singlePost } = useSelector<
-        IRootState,
-        ISinglePostState
-    >((s) => s.singlePost);
+    const { loadingPost, singlePost } = useSelector<RootState, SinglePostState>(
+        s => s.singlePost
+    );
 
-    const { currentUrl } = useSelector<IRootState, ISettingState>(
-        (s) => s.settings,
+    const { currentUrl } = useSelector<RootState, SettingState>(
+        s => s.settings
     );
 
     const baseUrl: string = appOptions.apiBaseUrl;
 
     useEffect(() => {
-        console.info('[APP] Post componentDidMount');
+        console.info("[APP] Post componentDidMount");
     }, []);
 
     // const getOgImage = useCallback(() => {
@@ -68,7 +67,7 @@ const UsersPost: FunctionComponent = () => {
 
     const ogImage = useMemo(() => {
         if (!singlePost) {
-            return '';
+            return "";
         }
         if (singlePost.coverImage) {
             return `${appOptions.apiBaseUrl}${singlePost.coverImage}`;
@@ -76,7 +75,7 @@ const UsersPost: FunctionComponent = () => {
         if (!!singlePost.user && singlePost.user.photo) {
             return `${appOptions.apiBaseUrl}${singlePost.user.photo}`;
         }
-        return '';
+        return "";
     }, [singlePost]);
 
     // const title: string = useMemo(() => {
@@ -108,23 +107,23 @@ const UsersPost: FunctionComponent = () => {
             <Head>
                 <title>{title}</title>
                 <meta
-                    name='description'
+                    name="description"
                     content={singlePost && singlePost.excerpt}
                 />
                 <meta
-                    name='og:title'
+                    name="og:title"
                     content={singlePost && singlePost.title}
                 />
                 <meta
-                    name='og:description'
+                    name="og:description"
                     content={singlePost && singlePost.excerpt}
                 />
-                <meta name='og:url' content={currentUrl} />
-                <meta name='og:image' content={ogImage} />
+                <meta name="og:url" content={currentUrl} />
+                <meta name="og:image" content={ogImage} />
             </Head>
             <DefaultLayout>
                 <ContentWrapper>
-                    <Spin spinning={loadingPost} tip='loading ...'>
+                    <Spin spinning={loadingPost} tip="loading ...">
                         {singlePost && !loadingPost ? (
                             <SinglePost post={singlePost} />
                         ) : (
@@ -138,8 +137,8 @@ const UsersPost: FunctionComponent = () => {
 };
 
 UsersPost.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IUsersPostProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<UsersPostPageProps> => {
     const user: string = context.query.user as string;
     const slug: string = context.query.slug as string;
     // console.log('Post.getInitialize() ==> user: ', user);
@@ -148,12 +147,12 @@ UsersPost.getInitialProps = async (
     const decodedSlug = decodeURIComponent(slug);
     context.store.dispatch({
         type: actionTypes.LOAD_SINGLE_POST_CALL,
-        data: { user: decodedUser, slug: decodedSlug },
+        data: { user: decodedUser, slug: decodedSlug }
     });
 
     return {
         user,
-        slug,
+        slug
     };
 };
 

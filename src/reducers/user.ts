@@ -1,11 +1,11 @@
 import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import { actionTypes } from './actionTypes';
-import { IUserState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { UserState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 import { UserHandler } from './hanlders/user.handler';
 
-export const initialState: IUserState = {
+export const initialState: UserState = {
     me: null,
     signInFailMessage: '',
     signInInProcess: false,
@@ -51,7 +51,7 @@ export const initialState: IUserState = {
     unregisterSuccess: false,
 };
 
-const reducer = (state: IUserState = initialState, action: IBlogAction) =>
+const reducer = (state: UserState = initialState, action: BaseAction) =>
     produce(state, (draft) => {
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
 

@@ -10,12 +10,12 @@ import {
 } from 'redux-saga/effects';
 import { http } from './httpHelper';
 import { actionTypes } from '../reducers/actionTypes';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IDictionary } from '../typings/IDictionary';
-import { IJsonResult, IListResult, IPostModel } from '../typings/dto';
+import { BaseAction } from '../typings/BaseAction';
+import { Dictionary } from '../typings/Dictionary';
+import { JsonResult, ListResult, PostModel } from '../typings/dto';
 import { AxiosResponse } from 'axios';
 
-function loadPostsApi(query: IDictionary<any>) {
+function loadPostsApi(query: Dictionary<any>) {
     const { page, limit, keyword } = query;
     return http().get(
         `/posts?page=${page}&limit=${limit}&keyword=${encodeURIComponent(
@@ -33,10 +33,10 @@ function* loadPosts(action) {
             keyword: keyword,
         });
 
-        const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
+        const resultData = result.data as JsonResult<ListResult<PostModel>>;
         const { success, data, message } = resultData;
         if (success) {
-            yield put<IBlogAction>({
+            yield put<BaseAction>({
                 type: actionTypes.LOAD_POSTS_DONE,
                 data: {
                     ...data,
@@ -46,7 +46,7 @@ function* loadPosts(action) {
                 },
             });
         } else {
-            yield put<IBlogAction>({
+            yield put<BaseAction>({
                 type: actionTypes.LOAD_POSTS_FAIL,
                 error: new Error(message),
                 message: message,
@@ -54,7 +54,7 @@ function* loadPosts(action) {
         }
     } catch (e) {
         // console.error(e);
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_POSTS_FAIL,
             error: e,
             message: (e.response && e.response.data) || e.message,
@@ -74,14 +74,14 @@ function* loadSinglePost(action) {
     try {
         const { user, slug } = action.data;
         const result = yield call(loadSinglePostApi, user, slug);
-        const resultData = result.data as IJsonResult<IPostModel>;
+        const resultData = result.data as JsonResult<PostModel>;
 
         const { success, data, message } = resultData;
         if (!success) {
             throw new Error(message);
         }
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_SINGLE_POST_DONE,
             data: {
                 post: data,
@@ -89,7 +89,7 @@ function* loadSinglePost(action) {
         });
     } catch (e) {
         // console.error(e);
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_SINGLE_POST_FAIL,
             error: e,
             message: (e.response && e.response.data) || e.message,
@@ -165,7 +165,7 @@ function loadTagPostsApi(query) {
 function* loadTagPosts(action) {
     try {
         const { tag, page, limit, keyword } = action.data;
-        const result: AxiosResponse<IListResult<IPostModel>> = yield call(
+        const result: AxiosResponse<ListResult<PostModel>> = yield call(
             loadTagPostsApi,
             {
                 page: page || 1,
@@ -180,7 +180,7 @@ function* loadTagPosts(action) {
             throw new Error(message);
         }
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_TAG_POSTS_DONE,
             data: {
                 ...data,
@@ -189,7 +189,7 @@ function* loadTagPosts(action) {
         });
     } catch (e) {
         // console.error(e);
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_TAG_POSTS_FAIL,
             error: e,
         });
@@ -213,7 +213,7 @@ function* loadUsersPosts(action) {
     try {
         const { user, page, limit, keyword } = action.data;
         const result: AxiosResponse<
-            IJsonResult<IListResult<IPostModel>>
+            JsonResult<ListResult<PostModel>>
         > = yield call(loadUsersPostsApi, {
             user: user,
             page: page || 1,
@@ -226,7 +226,7 @@ function* loadUsersPosts(action) {
             throw new Error(message);
         }
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_USERS_POSTS_DONE,
             data: {
                 ...data, // { records, total, user }
@@ -238,7 +238,7 @@ function* loadUsersPosts(action) {
         });
     } catch (e) {
         // console.error(e);
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_USERS_POSTS_FAIL,
             error: e,
             message: (e.response && e.response.data) || e.message,
@@ -268,10 +268,10 @@ function* loadUserCategoryPosts(action) {
             limit: limit || 10,
             keyword: keyword,
         });
-        const resultData = result.data as IJsonResult<IListResult<IPostModel>>;
+        const resultData = result.data as JsonResult<ListResult<PostModel>>;
         const { success, data, message } = resultData;
         if (success) {
-            yield put<IBlogAction>({
+            yield put<BaseAction>({
                 type: actionTypes.LOAD_USER_CATEGORY_POSTS_DONE,
                 data: {
                     // todo type result data
@@ -282,14 +282,14 @@ function* loadUserCategoryPosts(action) {
                 },
             });
         } else {
-            yield put<IBlogAction>({
+            yield put<BaseAction>({
                 type: actionTypes.LOAD_USER_CATEGORY_POSTS_FAIL,
                 error: new Error(message),
                 message: message,
             });
         }
     } catch (e) {
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_USER_CATEGORY_POSTS_FAIL,
             error: e,
             message: (e.response && e.response.data) || e.message,
@@ -317,7 +317,7 @@ function* loadSearchPosts(action) {
     try {
         const { page, keyword } = action.data;
         const result: AxiosResponse<
-            IJsonResult<IListResult<IPostModel>>
+            JsonResult<ListResult<PostModel>>
         > = yield call(loadSearchPostsApi, {
             ...action.data,
             page: action.data.page || 1,
@@ -327,7 +327,7 @@ function* loadSearchPosts(action) {
         if (!success) {
             throw new Error(message);
         }
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_SEARCH_POSTS_DONE,
             data: {
                 ...data,
@@ -337,7 +337,7 @@ function* loadSearchPosts(action) {
         });
     } catch (e) {
         // console.error(e);
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.LOAD_SEARCH_POSTS_FAIL,
             error: e,
             message: (e.response && e.response.data) || e.message,
@@ -358,52 +358,52 @@ function* addUserLikePost(action) {
     try {
         const result = yield call(addUserLikePostApi, action.data);
 
-        const resultData = result.data as IJsonResult<IPostModel>;
+        const resultData = result.data as JsonResult<PostModel>;
         const { success, data, message } = resultData;
 
         if (!success) {
             throw new Error(message);
         }
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.ADD_LIKE_POST_DONE,
             data: data,
         });
 
         // 좋아요 업데이트
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_CATEGORY_POSTS_LIKERS,
             data: {
                 post: data,
             },
         });
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_POSTS_LIKERS,
             data: {
                 post: data,
             },
         });
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_SEARCH_POSTS_LIKERS,
             data: {
                 post: data,
             },
         });
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_SINGLE_POST_LIKERS,
             data: {
                 post: data,
             },
         });
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_TAG_POSTS_LIKERS,
             data: {
                 post: data,
             },
         });
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_USERS_POSTS_LIKERS,
             data: {
                 post: data,
@@ -411,7 +411,7 @@ function* addUserLikePost(action) {
         });
     } catch (e) {
         console.error(e);
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.ADD_LIKE_POST_FAIL,
             error: e,
             message: (e.response && e.response.data) || e.message,
@@ -430,7 +430,7 @@ function removeUserLikePostApi(data) {
 
 function* removeUserLikePost(action) {
     try {
-        const result: AxiosResponse<IJsonResult<IPostModel>> = yield call(
+        const result: AxiosResponse<JsonResult<PostModel>> = yield call(
             removeUserLikePostApi,
             action.data,
         );
@@ -440,45 +440,45 @@ function* removeUserLikePost(action) {
             throw new Error(message);
         }
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.REMOVE_LIKE_POST_DONE,
             data: result.data,
         });
 
         // 좋아요 업데이트
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_CATEGORY_POSTS_LIKERS,
             data: {
                 post: data,
             },
         });
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_POSTS_LIKERS,
             data: {
                 post: data,
             },
         });
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_SEARCH_POSTS_LIKERS,
             data: {
                 post: data,
             },
         });
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_SINGLE_POST_LIKERS,
             data: {
                 post: data,
             },
         });
 
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_TAG_POSTS_LIKERS,
             data: {
                 post: data,
             },
         });
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.UPDATE_USERS_POSTS_LIKERS,
             data: {
                 post: data,
@@ -486,7 +486,7 @@ function* removeUserLikePost(action) {
         });
     } catch (e) {
         // console.error(e);
-        yield put<IBlogAction>({
+        yield put<BaseAction>({
             type: actionTypes.REMOVE_LIKE_POST_FAIL,
             error: e,
             message: (e.response && e.response.data) || e.message,

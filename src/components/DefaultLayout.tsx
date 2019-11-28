@@ -2,9 +2,9 @@ import React, {
     useEffect,
     useState,
     useCallback,
-    FunctionComponent,
-} from 'react';
-import Link from 'next/link';
+    FunctionComponent
+} from "react";
+import Link from "next/link";
 import {
     Menu,
     Input,
@@ -17,17 +17,17 @@ import {
     Affix,
     Progress,
     Spin,
-    Drawer,
-} from 'antd';
-import { useSelector } from 'react-redux';
-import Router from 'next/router';
-import SubMenu from 'antd/lib/menu/SubMenu';
-import UserAvatar from './UserAvatar';
-import { IRootState, IUserState, ISettingState } from '../typings/reduxStates';
-import { appOptions } from '../config/appOptions';
-import { IPageProps } from '../typings/IPageProps';
+    Drawer
+} from "antd";
+import { useSelector } from "react-redux";
+import Router from "next/router";
+import SubMenu from "antd/lib/menu/SubMenu";
+import UserAvatar from "./UserAvatar";
+import { RootState, UserState, SettingState } from "../typings/reduxStates";
+import { appOptions } from "../config/appOptions";
+import { PageProps } from "../typings/PageProps";
 
-export interface IDefaultLayoutProps extends IPageProps {
+export interface DefaultLayoutProps extends PageProps {
     children: React.ReactNode;
 }
 
@@ -36,19 +36,19 @@ export interface IDefaultLayoutProps extends IPageProps {
  *
  * @param {element} 자식 요소
  */
-const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
-    children,
+const DefaultLayout: FunctionComponent<DefaultLayoutProps> = ({
+    children
     // size,
 }) => {
     // const dispatch = useDispatch();
     // const { width } = size;
-    const { me } = useSelector<IRootState, IUserState>((s) => s.user);
-    const { currentUrl } = useSelector<IRootState, ISettingState>(
-        (state) => state.settings,
+    const { me } = useSelector<RootState, UserState>(s => s.user);
+    const { currentUrl } = useSelector<RootState, SettingState>(
+        state => state.settings
     );
 
     const [searchModalVisible, setSearchModalVisible] = useState(false);
-    const [searchKeywordText, setSearchKeywordText] = useState('');
+    const [searchKeywordText, setSearchKeywordText] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isSmall, setIsSmall] = useState(false);
     const [documentElementWidth, setDocumentElementWidth] = useState(0);
@@ -61,14 +61,14 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
 
         const onResize = () => {
             setDocumentElementWidth(
-                window.document.documentElement.clientWidth,
+                window.document.documentElement.clientWidth
             );
         };
 
-        window.addEventListener('resize', onResize);
+        window.addEventListener("resize", onResize);
 
         return () => {
-            window.removeEventListener('resize', onResize);
+            window.removeEventListener("resize", onResize);
         };
     }, []);
 
@@ -83,7 +83,7 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
     }, [me]);
 
     const onClickShowSearchModal = useCallback(() => {
-        setSearchKeywordText('');
+        setSearchKeywordText("");
         setSearchModalVisible(true);
     }, []);
 
@@ -91,7 +91,7 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
         setSearchModalVisible(false);
     }, []);
 
-    const onChangeSearchKeywordText = useCallback((e) => {
+    const onChangeSearchKeywordText = useCallback(e => {
         setSearchKeywordText(e.target.value);
     }, []);
 
@@ -102,20 +102,20 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
             setSearchModalVisible(false);
             await Router.push(
                 {
-                    pathname: '/search',
-                    query: { keyword: value },
+                    pathname: "/search",
+                    query: { keyword: value }
                 },
-                `/search/${encodeURIComponent(value)}`,
+                `/search/${encodeURIComponent(value)}`
             );
         }
     }, []);
 
     const onClickBarIcon = useCallback(
-        (e) => {
+        e => {
             const collapsed = drawerCollapsed;
             setDrawerCollapsed(!collapsed);
         },
-        [drawerCollapsed],
+        [drawerCollapsed]
     );
 
     // const onClickSignOut = useCallback(
@@ -130,26 +130,26 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
 
     // console.info('[APP] DefaultLayout render');
     const menu: React.ReactNode = (
-        <Menu theme='light' mode='inline' defaultSelectedKeys={['home']}>
-            <Menu.Item key='home'>
-                <Link href='/'>
+        <Menu theme="light" mode="inline" defaultSelectedKeys={["home"]}>
+            <Menu.Item key="home">
+                <Link href="/">
                     <a>{appOptions.title}</a>
                 </Link>
             </Menu.Item>
-            <div style={{ padding: '0.3rem 0.6rem' }}>
+            <div style={{ padding: "0.3rem 0.6rem" }}>
                 <Input.Search
                     value={searchKeywordText}
                     onChange={onChangeSearchKeywordText}
                     onSearch={onSearch}
                 />
             </div>
-            <Menu.Item key='recently'>
-                <Link href='/'>
+            <Menu.Item key="recently">
+                <Link href="/">
                     <a>Recently posts</a>
                 </Link>
             </Menu.Item>
-            <Menu.Item key='profile'>
-                <Link href='/me'>
+            <Menu.Item key="profile">
+                <Link href="/me">
                     <a>Profile</a>
                 </Link>
             </Menu.Item>
@@ -162,31 +162,33 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
                 </Button>
             </Menu.Item> */}
             {!isLoggedIn && (
-                <Menu.Item key='signin'>
+                <Menu.Item key="signin">
                     <Link
                         href={{
-                            pathname: '/signin',
+                            pathname: "/signin",
                             query: {
-                                returnUrl: currentUrl,
-                            },
-                        }}>
+                                returnUrl: currentUrl
+                            }
+                        }}
+                    >
                         <a>Sign in</a>
                     </Link>
                 </Menu.Item>
             )}
             {!isLoggedIn && (
-                <Menu.Item key='signup'>
-                    <Link href='/signup'>
+                <Menu.Item key="signup">
+                    <Link href="/signup">
                         <a>Sign up</a>
                     </Link>
                 </Menu.Item>
             )}
             {isLoggedIn && (
                 <SubMenu
-                    key='user'
-                    title={<UserAvatar user={me} showDisplayName={true} />}>
-                    <Menu.Item key='user-me'>
-                        <Link href='/me'>
+                    key="user"
+                    title={<UserAvatar user={me} showDisplayName={true} />}
+                >
+                    <Menu.Item key="user-me">
+                        <Link href="/me">
                             <a>Profile</a>
                         </Link>
                     </Menu.Item>
@@ -194,7 +196,7 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
                                     Sign out
                                 </Menu.Item> */}
                     <Menu.Item>
-                        <Link href='/signout'>
+                        <Link href="/signout">
                             <a>Sign out</a>
                         </Link>
                     </Menu.Item>
@@ -205,7 +207,7 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
 
     if (!documentElementWidth) {
         return (
-            <div style={{ position: 'fixed', top: '50%', left: '50%' }}>
+            <div style={{ position: "fixed", top: "50%", left: "50%" }}>
                 <Spin spinning={true} />
             </div>
         );
@@ -218,37 +220,41 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
                     width={200}
                     hidden={isSmall}
                     style={{
-                        overflow: 'auth',
-                        height: '100vh',
-                        position: 'fixed',
-                        left: 0,
-                    }}>
+                        overflow: "auth",
+                        height: "100vh",
+                        position: "fixed",
+                        left: 0
+                    }}
+                >
                     {menu}
                 </Layout.Sider>
                 <Layout
                     style={{
                         marginLeft: isSmall ? 0 : 200,
-                        height: '100vh',
-                    }}>
+                        height: "100vh"
+                    }}
+                >
                     <Layout.Header
                         hidden={!isSmall}
                         style={{
-                            paddingLeft: '1rem',
-                            width: '100%',
-                        }}>
+                            paddingLeft: "1rem",
+                            width: "100%"
+                        }}
+                    >
                         <Typography.Title
                             level={1}
-                            style={{ color: '#efefef' }}>
+                            style={{ color: "#efefef" }}
+                        >
                             <Icon
-                                className='trigger'
+                                className="trigger"
                                 type={
                                     drawerCollapsed
-                                        ? 'menu-unfold'
-                                        : 'menu-fold'
+                                        ? "menu-unfold"
+                                        : "menu-fold"
                                 }
                                 onClick={onClickBarIcon}
                             />
-                            <Divider type='vertical' />
+                            <Divider type="vertical" />
                             {appOptions.title}
                         </Typography.Title>
                     </Layout.Header>
@@ -258,10 +264,11 @@ const DefaultLayout: FunctionComponent<IDefaultLayoutProps> = ({
             <Drawer
                 visible={!drawerCollapsed}
                 closable={false}
-                placement='left'
+                placement="left"
                 getContainer={false}
                 bodyStyle={{ padding: 0, margin: 0 }}
-                onClose={(e) => setDrawerCollapsed(true)}>
+                onClose={e => setDrawerCollapsed(true)}
+            >
                 {menu}
             </Drawer>
         </>

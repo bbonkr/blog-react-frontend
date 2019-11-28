@@ -1,15 +1,15 @@
-import { ITagPostsState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
+import { TagPostsState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
 import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface ITagPostsHandlerValue {
-    draft: ITagPostsState;
-    action: IBlogAction;
+    draft: TagPostsState;
+    action: BaseAction;
 }
 
 export class TagPostsHandler {
-    private draft: ITagPostsState;
-    private action: IBlogAction;
+    private draft: TagPostsState;
+    private action: BaseAction;
 
     constructor(value: ITagPostsHandlerValue) {
         this.draft = value.draft;

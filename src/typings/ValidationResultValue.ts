@@ -1,4 +1,4 @@
-export interface IValidationResult {
+export interface ValidationResultValue {
     valid: boolean;
     message?: string;
 }

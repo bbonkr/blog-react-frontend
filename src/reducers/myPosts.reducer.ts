@@ -1,13 +1,13 @@
 import produce from 'immer';
 import Router from 'next/router';
-import { IMyPostsState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { MyPostsState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 import { actionTypes } from './actionTypes';
 import { MyPostsHanlder } from './hanlders/myPosts.handler';
-import { IPostModel } from '../typings/dto';
+import { PostModel } from '../typings/dto';
 import { ShowNotification } from '../components/ShowNotification';
 
-export const initialMyPostsState: IMyPostsState = {
+export const initialMyPostsState: MyPostsState = {
     // myPosts
     myPosts: [],
     myPostsLoading: false,
@@ -27,8 +27,8 @@ export const initialMyPostsState: IMyPostsState = {
 };
 
 export const myPosts = (
-    state: IMyPostsState = initialMyPostsState,
-    action: IBlogAction,
+    state: MyPostsState = initialMyPostsState,
+    action: BaseAction,
 ) =>
     produce(state, (draft) => {
         const handler = new MyPostsHanlder({ draft, action });
@@ -64,7 +64,7 @@ export const myPosts = (
                 break;
             case actionTypes.LOAD_MY_POST_DONE:
                 draft.myPostLoading = false;
-                draft.myPost = action.data.post as IPostModel;
+                draft.myPost = action.data.post as PostModel;
                 break;
             case actionTypes.LOAD_MY_POST_FAIL:
                 draft.myPostLoading = false;

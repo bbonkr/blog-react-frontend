@@ -1,9 +1,9 @@
 import { FormValidationResult } from './FormValidationResult';
 import { FormValidator } from './FormValidator';
-import { IChangePasswordFormValues } from '../typings/IValidatorInputValues';
+import { ChangePasswordFormValues } from '../typings/ValidatorInputValues';
 
 export class ChangePasswordValidator extends FormValidator {
-    public validate(formData: IChangePasswordFormValues) {
+    public validate(formData: ChangePasswordFormValues) {
         const result: FormValidationResult = new FormValidationResult([
             this.checkPassword({ password: formData.currentPassword }),
             this.checkPassword(formData),

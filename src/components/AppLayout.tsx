@@ -2,25 +2,25 @@ import React, {
     FunctionComponent,
     useEffect,
     useState,
-    useCallback,
-} from 'react';
-import Router from 'next/router';
-import { BackTop, Affix, Progress } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { IRootState, IUserState } from '../typings/reduxStates';
-import { actionTypes } from '../reducers/actionTypes';
+    useCallback
+} from "react";
+import Router from "next/router";
+import { BackTop, Affix, Progress } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, UserState } from "../typings/reduxStates";
+import { actionTypes } from "../reducers/actionTypes";
 import {
     LOCAL_STORAGE_KEY_JWT,
-    LOCAL_STORAGE_KEY_SAVED_AT,
-} from '../typings/constant';
+    LOCAL_STORAGE_KEY_SAVED_AT
+} from "../typings/constant";
 
-import Head from 'next/head';
-import { appOptions } from '../config/appOptions';
-import { trackPageView } from '../helpers/trackPageView';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IPageviewParameters } from '../@types/global';
+import Head from "next/head";
+import { appOptions } from "../config/appOptions";
+import { trackPageView } from "../helpers/trackPageView";
+import { BaseAction } from "../typings/BaseAction";
+import { IPageviewParameters } from "../@types/global";
 
-export interface IAppLayoutProps {
+export interface AppLayoutProps {
     children: React.ReactNode;
 }
 
@@ -29,15 +29,15 @@ export interface IAppLayoutProps {
  *
  * @param {element} 내부에 렌더링될 요소
  */
-const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
+const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
     const dispatch = useDispatch();
-    const { me, token } = useSelector<IRootState, IUserState>((s) => s.user);
+    const { me, token } = useSelector<RootState, UserState>(s => s.user);
     const [verticalScrollPercent, setVerticalScrollPercent] = useState(0);
     const [visibleScrollPercent, setVisibleScrollPercent] = useState(false);
 
     useEffect(() => {
         // console.info('[APP]: AppLayout componentDidMount');
-        const handleRouteChangeComplete = (url) => {
+        const handleRouteChangeComplete = url => {
             // console.info(`[ROUTER]: routeChangeComplete ==> ${url}`);
 
             const { href, pathname } = window.location;
@@ -48,25 +48,25 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
                 data: {
                     page_title: title,
                     page_location: href,
-                    page_path: pathname,
-                } as IPageviewParameters,
+                    page_path: pathname
+                } as IPageviewParameters
             });
         };
 
         if (!token) {
             let jwt: string;
             const jwtLocalStorage = window.localStorage.getItem(
-                LOCAL_STORAGE_KEY_JWT,
+                LOCAL_STORAGE_KEY_JWT
             );
             const jwtLocalStorageSavedAt = window.localStorage.getItem(
-                LOCAL_STORAGE_KEY_SAVED_AT,
+                LOCAL_STORAGE_KEY_SAVED_AT
             );
 
             const jwtSessionStorage = window.sessionStorage.getItem(
-                LOCAL_STORAGE_KEY_JWT,
+                LOCAL_STORAGE_KEY_JWT
             );
             const jwtSessionStorageSavedAt = window.sessionStorage.getItem(
-                LOCAL_STORAGE_KEY_SAVED_AT,
+                LOCAL_STORAGE_KEY_SAVED_AT
             );
 
             if (jwtLocalStorage && jwtSessionStorage) {
@@ -90,8 +90,8 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
                 dispatch({
                     type: actionTypes.SET_JWT,
                     data: {
-                        token: jwt,
-                    },
+                        token: jwt
+                    }
                 });
             }
         }
@@ -101,17 +101,17 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
         };
 
         // console.info('[_app]: componentDidMount ==> Hit');
-        Router.events.on('routeChangeComplete', handleRouteChangeComplete);
+        Router.events.on("routeChangeComplete", handleRouteChangeComplete);
 
-        window.addEventListener('scroll', onScroll, false);
+        window.addEventListener("scroll", onScroll, false);
 
         setVerticalScrollPercent(0);
 
         return () => {
             // console.info('[_app]: componentWillUnmount ==> Hit');
 
-            window.removeEventListener('scroll', onScroll);
-            Router.events.off('routeChangeComplete', handleRouteChangeComplete);
+            window.removeEventListener("scroll", onScroll);
+            Router.events.off("routeChangeComplete", handleRouteChangeComplete);
         };
     }, []);
 
@@ -131,16 +131,16 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
             setVerticalScrollPercent(
                 (element.scrollTop /
                     (element.scrollHeight - element.clientHeight)) *
-                    100,
+                    100
             );
         },
-        [verticalScrollPercent],
+        [verticalScrollPercent]
     );
 
     useEffect(() => {
         if (!me && token) {
             dispatch({
-                type: actionTypes.ME_CALL,
+                type: actionTypes.ME_CALL
             });
         }
     }, [me, token]);
@@ -151,61 +151,64 @@ const AppLayout: FunctionComponent<IAppLayoutProps> = ({ children }) => {
         <>
             <Head>
                 <title>{appOptions.title}</title>
-                <meta charSet='UTF-8' />
+                <meta charSet="UTF-8" />
                 <meta
-                    name='viewport'
-                    content='width=device-width,minimum-scale=1,initial-scale=1'
+                    name="viewport"
+                    content="width=device-width,minimum-scale=1,initial-scale=1"
                 />
-                <meta httpEquiv='X-UA-Compatible' content='IE-edge' />
+                <meta httpEquiv="X-UA-Compatible" content="IE-edge" />
                 <meta
-                    name='description'
+                    name="description"
                     content={appOptions.description || appOptions.title}
                 />
-                <meta name='og:title' content={appOptions.title} />
-                <meta name='og:site_name' content={appOptions.title} />
+                <meta name="og:title" content={appOptions.title} />
+                <meta name="og:site_name" content={appOptions.title} />
                 <meta
-                    name='og:description'
+                    name="og:description"
                     content={appOptions.description || appOptions.title}
                 />
-                <meta name='og:type' content='website' />
+                <meta name="og:type" content="website" />
                 {appOptions.fbAdmin && (
-                    <meta name='fb:admins' content={appOptions.fbAdmin} />
+                    <meta name="fb:admins" content={appOptions.fbAdmin} />
                 )}
                 <link
-                    href='/favicon.ico'
-                    rel='shortcut icon'
-                    type='image/x-icon'
+                    href="/favicon.ico"
+                    rel="shortcut icon"
+                    type="image/x-icon"
                 />
                 <link
-                    href='/bbon-icon.png'
-                    rel='apple-touch-icon'
-                    sizes='512x512'
+                    href="/bbon-icon.png"
+                    rel="apple-touch-icon"
+                    sizes="512x512"
                 />
             </Head>
             <div
                 style={{
-                    minHeight: '100vh',
+                    minHeight: "100vh"
                 }}
-                onScroll={onContentDivScroll}>
+                onScroll={onContentDivScroll}
+            >
                 <div
                     style={{
                         padding: 0,
                         margin: 0,
                         top: 0,
-                        width: '100%',
-                        height: '2px',
-                        position: 'fixed',
+                        width: "100%",
+                        height: "2px",
+                        position: "fixed",
                         zIndex: 100,
-                        backgroundColor: '#6d6d6d',
-                        visibility: visibleScrollPercent ? 'visible' : 'hidden',
-                        display: visibleScrollPercent ? 'block' : 'none',
-                    }}>
+                        backgroundColor: "#6d6d6d",
+                        visibility: visibleScrollPercent ? "visible" : "hidden",
+                        display: visibleScrollPercent ? "block" : "none"
+                    }}
+                >
                     <div
                         style={{
-                            backgroundColor: '#ef6233',
+                            backgroundColor: "#ef6233",
                             width: `${verticalScrollPercent}%`,
-                            height: '2px',
-                        }}></div>
+                            height: "2px"
+                        }}
+                    ></div>
                 </div>
                 <div>{children}</div>
             </div>

@@ -1,17 +1,17 @@
-import React, { useCallback, useState, FunctionComponent } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Upload, Typography, PageHeader } from 'antd';
-import { ContentWrapper } from '../../styledComponents/Wrapper';
-import MeLayout from '../../components/MeLayout';
-import styled from 'styled-components';
-import FileList from '../../components/FileList';
-import { withAuth } from '../../utils/auth';
-import { actionTypes } from '../../reducers/actionTypes';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IRootState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IPageProps } from '../../typings/IPageProps';
+import React, { useCallback, useState, FunctionComponent } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Upload, Typography, PageHeader } from "antd";
+import { ContentWrapper } from "../../styledComponents/Wrapper";
+import MeLayout from "../../components/MeLayout";
+import styled from "styled-components";
+import FileList from "../../components/FileList";
+import { withAuth } from "../../utils/auth";
+import { actionTypes } from "../../reducers/actionTypes";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { RootState } from "../../typings/reduxStates";
+import { BaseAction } from "../../typings/BaseAction";
+import { PageProps } from "../../typings/PageProps";
 
 // const DropZoneDiv = styled.div`
 //     border: '2px dashed gray';
@@ -26,7 +26,7 @@ const Media: FunctionComponent = () => {
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title='Media' />
+                <PageHeader title="Media" />
                 <FileList />
             </ContentWrapper>
         </MeLayout>
@@ -34,8 +34,8 @@ const Media: FunctionComponent = () => {
 };
 
 Media.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IPageProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<PageProps> => {
     const state = context.store.getState();
     const { mediaFilesLimit } = state.mediaFiles;
     context.store.dispatch({
@@ -43,8 +43,8 @@ Media.getInitialProps = async (
         data: {
             page: 1,
             limit: mediaFilesLimit,
-            keyword: '',
-        },
+            keyword: ""
+        }
     });
 
     return {};

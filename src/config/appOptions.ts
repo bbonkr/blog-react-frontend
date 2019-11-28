@@ -1,8 +1,8 @@
-import { IAppOptions } from '../typings/IAppOptions';
+import { AppOptions } from '../typings/AppOptions';
 import getConfig from 'next/config';
 const { publicRuntimeConfig } = getConfig();
 
-export const appOptions: IAppOptions = {
+export const appOptions: AppOptions = {
     title: 'Blog Service',
     description: '',
     fbAdmin: '',

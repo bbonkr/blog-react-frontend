@@ -1,10 +1,10 @@
-import { IMyCategoriesState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { MyCategoriesState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
 import { MyCategoriesHandler } from './hanlders/myCategories.handler';
 
-export const initialMyCategoriesState: IMyCategoriesState = {
+export const initialMyCategoriesState: MyCategoriesState = {
     categories: [],
     categoriesLoading: false,
     categoriesErrorReason: '',
@@ -15,8 +15,8 @@ export const initialMyCategoriesState: IMyCategoriesState = {
 };
 
 export const myCategories = (
-    state: IMyCategoriesState = initialMyCategoriesState,
-    action: IBlogAction,
+    state: MyCategoriesState = initialMyCategoriesState,
+    action: BaseAction,
 ) =>
     produce(state, (draft) => {
         const handler = new MyCategoriesHandler({ draft, action });

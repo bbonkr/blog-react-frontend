@@ -1,11 +1,11 @@
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
-import { ICategoryModel } from '../typings/dto';
-import { ICategoryState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { CategoryModel } from '../typings/dto';
+import { CategoryState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 import { CategoryHanlder } from './hanlders/category.handler';
 
-export const initialState: ICategoryState = {
+export const initialState: CategoryState = {
     categories: [],
     loadingCategories: false,
 };
@@ -14,7 +14,7 @@ export const initialState: ICategoryState = {
 // export const LOAD_CATEGORIES_DONE = 'LOAD_CATEGORIES_DONE';
 // export const LOAD_CATEGORIES_FAIL = 'LOAD_CATEGORIES_FAIL';
 
-const reducer = (state = initialState, action: IBlogAction) =>
+const reducer = (state = initialState, action: BaseAction) =>
     produce(state, (draft) => {
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);
         const handler = new CategoryHanlder({ draft, action });

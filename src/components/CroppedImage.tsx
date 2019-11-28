@@ -1,17 +1,17 @@
-import React, { FunctionComponent, useCallback } from 'react';
-import { IImageModel } from '../typings/dto';
-import { appOptions } from '../config/appOptions';
+import React, { FunctionComponent, useCallback } from "react";
+import { ImageModel } from "../typings/dto";
+import { appOptions } from "../config/appOptions";
 
-export interface ICroppedImageProps {
-    image: IImageModel;
+export interface CroppedImageProps {
+    image: ImageModel;
     altText?: string;
-    onClickHandler?: (image: IImageModel) => void;
+    onClickHandler?: (image: ImageModel) => void;
 }
 
-const CroppedImage: FunctionComponent<ICroppedImageProps> = ({
+const CroppedImage: FunctionComponent<CroppedImageProps> = ({
     image,
     altText,
-    onClickHandler,
+    onClickHandler
 }) => {
     const filename = `${image.fileName}${image.fileExtension}`;
 
@@ -21,10 +21,10 @@ const CroppedImage: FunctionComponent<ICroppedImageProps> = ({
                 onClickHandler(image);
             }
         },
-        [],
+        []
     );
     let src = decodeURIComponent(image.src);
-    if (src.startsWith('/')) {
+    if (src.startsWith("/")) {
         src = `${appOptions.apiBaseUrl}${src}`;
     }
 
@@ -32,16 +32,17 @@ const CroppedImage: FunctionComponent<ICroppedImageProps> = ({
         <>
             <figure
                 style={{
-                    width: '100%',
-                    height: '20rem',
-                    overflow: 'hidden',
-                    margin: '0',
-                }}>
+                    width: "100%",
+                    height: "20rem",
+                    overflow: "hidden",
+                    margin: "0"
+                }}
+            >
                 <img
                     style={{
-                        display: 'block',
-                        width: '177.777%',
-                        margin: '0 -38.885%',
+                        display: "block",
+                        width: "177.777%",
+                        margin: "0 -38.885%"
                     }}
                     src={src}
                     alt={altText || filename}

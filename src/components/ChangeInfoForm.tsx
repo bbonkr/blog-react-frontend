@@ -10,13 +10,13 @@ import FileList from './FileList';
 import FullSizeModal from '../styledComponents/FullSizeModal';
 import { actionTypes } from '../reducers/actionTypes';
 import { ChangeInfoValidator } from '../helpers/ChangeInfoValidator';
-import { IRootState, IUserState } from '../typings/reduxStates';
+import { RootState, UserState } from '../typings/reduxStates';
 
 const validator = new ChangeInfoValidator();
 
 const ChangeInfoForm: FunctionComponent = () => {
     const dispatch = useDispatch();
-    const { me, loadingChangeInfo } = useSelector<IRootState, IUserState>(
+    const { me, loadingChangeInfo } = useSelector<RootState, UserState>(
         (s) => s.user,
     );
 

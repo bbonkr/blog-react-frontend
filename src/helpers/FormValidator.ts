@@ -1,5 +1,5 @@
 import Validator from './validator';
-import { IValidationResult } from '../typings/IValidationResult';
+import { ValidationResultValue } from '../typings/ValidationResultValue';
 import { ValidationResult } from './ValidationResult';
 import { FormValidatorBase } from './FormValidatorBase';
 import {
@@ -8,19 +8,19 @@ import {
     DISPLAYNAME_MIN_LENGTH,
 } from './formValidators';
 import {
-    IEmailFormValue,
-    IPasswordFormValue,
-    IPasswordConfirmFormValue,
-    IUsernameFormValue,
-    IDisplayNameFormValue,
-} from '../typings/IValidatorInputValues';
+    EmailFormValue,
+    PasswordFormValue,
+    PasswordConfirmFormValue,
+    UsernameFormValue,
+    DisplayNameFormValue,
+} from '../typings/ValidatorInputValues';
 
 export abstract class FormValidator extends FormValidatorBase {
     /**
      * 비밀번호 유효성 검사를 실행합니다.
      * @param {string} password
      */
-    public validatePassword(password: string): IValidationResult {
+    public validatePassword(password: string): ValidationResultValue {
         if (!password || password.length === 0) {
             return ValidationResult.fail('Please input your password.');
         }
@@ -31,7 +31,7 @@ export abstract class FormValidator extends FormValidatorBase {
         }
         return ValidationResult.success;
     }
-    public checkEmail(formValues: IEmailFormValue): IValidationResult {
+    public checkEmail(formValues: EmailFormValue): ValidationResultValue {
         const { email } = formValues;
         if (!email || email.trim().length === 0) {
             return ValidationResult.fail('Please input your email address');
@@ -43,13 +43,13 @@ export abstract class FormValidator extends FormValidatorBase {
         }
         return ValidationResult.success;
     }
-    public checkPassword(formValues: IPasswordFormValue): IValidationResult {
+    public checkPassword(formValues: PasswordFormValue): ValidationResultValue {
         const { password } = formValues;
         return this.validatePassword(password.trim());
     }
     public checkPasswordConfirm(
-        formValues: IPasswordFormValue & IPasswordConfirmFormValue,
-    ): IValidationResult {
+        formValues: PasswordFormValue & PasswordConfirmFormValue,
+    ): ValidationResultValue {
         const { password, passwordConfirm } = formValues;
         const result = this.validatePassword(passwordConfirm.trim());
         if (!result.valid) {
@@ -60,7 +60,7 @@ export abstract class FormValidator extends FormValidatorBase {
         }
         return ValidationResult.success;
     }
-    public checkUsername(formValues: IUsernameFormValue): IValidationResult {
+    public checkUsername(formValues: UsernameFormValue): ValidationResultValue {
         const { username } = formValues;
         if (!username || username.trim().length === 0) {
             return ValidationResult.fail('Please input your username');
@@ -78,8 +78,8 @@ export abstract class FormValidator extends FormValidatorBase {
         return ValidationResult.success;
     }
     public checkDisplayName(
-        formValues: IDisplayNameFormValue,
-    ): IValidationResult {
+        formValues: DisplayNameFormValue,
+    ): ValidationResultValue {
         const { displayName } = formValues;
         if (!displayName || displayName.trim().length === 0) {
             return ValidationResult.fail('Please input your display name.');

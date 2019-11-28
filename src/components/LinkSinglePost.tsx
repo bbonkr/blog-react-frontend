@@ -1,13 +1,13 @@
-import React, { FunctionComponent, memo } from 'react';
-import Link from 'next/link';
-import { IPostModel } from '../typings/dto';
+import React, { FunctionComponent, memo } from "react";
+import Link from "next/link";
+import { PostModel } from "../typings/dto";
 
-export interface ILinkSinglePostProps {
-    post: IPostModel;
+export interface LinkSinglePostProps {
+    post: PostModel;
     children: React.ReactNode;
 }
 
-const LinkSinglePost: FunctionComponent<ILinkSinglePostProps> = memo(
+const LinkSinglePost: FunctionComponent<LinkSinglePostProps> = memo(
     ({ post, children }) => {
         const user = `@${post.user.username}`;
         const slug = encodeURIComponent(post.slug);
@@ -15,17 +15,18 @@ const LinkSinglePost: FunctionComponent<ILinkSinglePostProps> = memo(
         return (
             <Link
                 href={{
-                    pathname: '/users/post',
+                    pathname: "/users/post",
                     query: {
                         user: user,
-                        slug: slug,
-                    },
+                        slug: slug
+                    }
                 }}
-                as={`/users/${user}/posts/${slug}`}>
+                as={`/users/${user}/posts/${slug}`}
+            >
                 <a>{children}</a>
             </Link>
         );
-    },
+    }
 );
 
 export default LinkSinglePost;

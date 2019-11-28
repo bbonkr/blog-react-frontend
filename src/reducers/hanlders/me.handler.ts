@@ -1,35 +1,35 @@
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IMeState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { MeState } from '../../typings/reduxStates';
 import {
-    IListResult,
-    IPostModel,
-    ICategoryModel,
-    ITagModel,
+    ListResult,
+    PostModel,
+    CategoryModel,
+    TagModel,
 } from '../../typings/dto';
 
 export interface IMeHandlerValue {
-    draft: IMeState;
-    action: IBlogAction;
+    draft: MeState;
+    action: BaseAction;
 }
 
 export class MeHanlder {
-    private draft: IMeState;
-    private action: IBlogAction;
+    private draft: MeState;
+    private action: BaseAction;
 
     constructor(value: IMeHandlerValue) {
         this.draft = value.draft;
         this.action = value.action;
     }
 
-    public loadMyTagsDone(action: IBlogAction): void {
-        const actionData = action.data as IListResult<ITagModel>;
+    public loadMyTagsDone(action: BaseAction): void {
+        const actionData = action.data as ListResult<TagModel>;
         const { records, total } = actionData;
         this.draft.loadingTags = false;
         this.draft.tags = records;
     }
 
-    public loadLikedPostsDone(action: IBlogAction): void {
-        const actionData = action.data as IListResult<IPostModel>;
+    public loadLikedPostsDone(action: BaseAction): void {
+        const actionData = action.data as ListResult<PostModel>;
         const { total, records, keyword, page } = actionData;
         records.forEach((x) => {
             const post = this.draft.likedPosts.find(

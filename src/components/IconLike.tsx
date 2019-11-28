@@ -3,26 +3,24 @@ import React, {
     useMemo,
     useState,
     FunctionComponent,
-    useEffect,
-} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Icon } from 'antd';
-import { actionTypes } from '../reducers/actionTypes';
-import { IPostModel } from '../typings/dto';
-import { IRootState, IUserState, IPostState } from '../typings/reduxStates';
+    useEffect
+} from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Icon } from "antd";
+import { actionTypes } from "../reducers/actionTypes";
+import { PostModel } from "../typings/dto";
+import { RootState, UserState, PostState } from "../typings/reduxStates";
 
-const LIKE_COLOR = '#eb2f96';
+const LIKE_COLOR = "#eb2f96";
 
-export interface IIconLikeProps {
-    post: IPostModel;
+export interface IconLikeProps {
+    post: PostModel;
 }
 
-const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
+const IconLike: FunctionComponent<IconLikeProps> = ({ post }) => {
     const dispatch = useDispatch();
-    const { me } = useSelector<IRootState, IUserState>((s) => s.user);
-    const { likePostLoading } = useSelector<IRootState, IPostState>(
-        (s) => s.post,
-    );
+    const { me } = useSelector<RootState, UserState>(s => s.user);
+    const { likePostLoading } = useSelector<RootState, PostState>(s => s.post);
     const [loading, setLoading] = useState(false);
 
     useMemo(() => {
@@ -37,9 +35,7 @@ const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
 
     const liked: boolean = useMemo(() => {
         return (
-            me &&
-            post.likers &&
-            post.likers.findIndex((x) => x.id === me.id) >= 0
+            me && post.likers && post.likers.findIndex(x => x.id === me.id) >= 0
         );
     }, [me, post.likers]);
 
@@ -52,21 +48,21 @@ const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
 
     const description: string = useMemo(() => {
         if (isMyPost) {
-            return 'This post is yours.';
+            return "This post is yours.";
         }
 
         if (liked) {
-            return 'Cancel to like a post.';
+            return "Cancel to like a post.";
         }
 
-        return 'Like this post';
+        return "Like this post";
     }, [liked, isMyPost]);
 
     const cursor: string = useMemo(() => {
         if (!me || isMyPost) {
-            return 'not-allowed';
+            return "not-allowed";
         }
-        return 'pointer';
+        return "pointer";
     }, [me, isMyPost]);
 
     const onClickLike = useCallback(() => {
@@ -84,8 +80,8 @@ const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
                     type: action,
                     data: {
                         user: post.user.username,
-                        post: post.slug,
-                    },
+                        post: post.slug
+                    }
                 });
             }
         }
@@ -95,13 +91,14 @@ const IconLike: FunctionComponent<IIconLikeProps> = ({ post }) => {
         <span
             onClick={onClickLike}
             style={{ cursor: cursor }}
-            title={description}>
+            title={description}
+        >
             <Icon
-                type={loading ? 'loading' : 'heart'}
-                theme={!liked || loading ? 'outlined' : 'twoTone'}
+                type={loading ? "loading" : "heart"}
+                theme={!liked || loading ? "outlined" : "twoTone"}
                 twoToneColor={LIKE_COLOR}
                 spin={loading}
-            />{' '}
+            />{" "}
             {`${likersCount}`}
         </span>
     );

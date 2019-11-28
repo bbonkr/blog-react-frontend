@@ -3,9 +3,9 @@ import React, {
     useState,
     useEffect,
     FunctionComponent,
-    useMemo,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+    useMemo
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     Upload,
     Icon,
@@ -15,31 +15,31 @@ import {
     Modal,
     Divider,
     Spin,
-    List,
-} from 'antd';
-import moment from 'moment';
-import StackGrid from 'react-stack-grid';
-import ImageViewer from './ImageViewer';
-import CroppedImage from './CroppedImage';
-import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, IMeState, IMediaFilesState } from '../typings/reduxStates';
-import { appOptions } from '../config/appOptions';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IImageModel } from '../typings/dto';
-import { ButtonFullWidth } from '../styledComponents/Buttons';
-import { IPageProps } from '../typings/IPageProps';
+    List
+} from "antd";
+import moment from "moment";
+import StackGrid from "react-stack-grid";
+import ImageViewer from "./ImageViewer";
+import CroppedImage from "./CroppedImage";
+import { actionTypes } from "../reducers/actionTypes";
+import { RootState, MeState, MediaFilesState } from "../typings/reduxStates";
+import { appOptions } from "../config/appOptions";
+import { BaseAction } from "../typings/BaseAction";
+import { ImageModel } from "../typings/dto";
+import { ButtonFullWidth } from "../styledComponents/Buttons";
+import { PageProps } from "../typings/PageProps";
 
 const Paragraph = Typography.Paragraph;
 const Dragger = Upload.Dragger;
 
-export interface IFileListProps extends IPageProps {
+export interface FileListProps extends PageProps {
     onSelect?: (item: any) => void;
 }
 
-const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
+const FileList: FunctionComponent<FileListProps> = ({ onSelect }) => {
     const dispatch = useDispatch();
 
-    const {} = useSelector<IRootState, IMeState>((s) => s.me);
+    const {} = useSelector<RootState, MeState>(s => s.me);
 
     const {
         mediaFiles,
@@ -47,8 +47,8 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
         mediaFilesHasMore,
         mediaFilesCurrentPage,
         mediaFilesLimit,
-        mediaFilesUploading: uploading,
-    } = useSelector<IRootState, IMediaFilesState>((s) => s.mediaFiles);
+        mediaFilesUploading: uploading
+    } = useSelector<RootState, MediaFilesState>(s => s.mediaFiles);
 
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [imageViewerFiles, setImageViewerFiles] = useState([]);
@@ -62,34 +62,34 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
 
         const onResize = () => {
             setDocumentElementWidth(
-                window.document.documentElement.clientWidth,
+                window.document.documentElement.clientWidth
             );
         };
 
-        window.addEventListener('resize', onResize);
+        window.addEventListener("resize", onResize);
 
         return () => {
-            window.removeEventListener('resize', onResize);
+            window.removeEventListener("resize", onResize);
         };
     }, []);
 
     const stackGridColumnWidth = useMemo(() => {
-        let columnWidth = '100%';
+        let columnWidth = "100%";
 
         // if (documentElementWidth > 576) {
         //     columnWidth = '50%';
         // }
 
         if (documentElementWidth > 768) {
-            columnWidth = '50%'; //'33.33%';
+            columnWidth = "50%"; //'33.33%';
         }
 
         if (documentElementWidth > 992) {
-            columnWidth = '33.33%'; // '25.0%';
+            columnWidth = "33.33%"; // '25.0%';
         }
 
         if (documentElementWidth > 1200) {
-            columnWidth = '25.0%'; //'20%';
+            columnWidth = "25.0%"; //'20%';
         }
 
         return columnWidth;
@@ -105,8 +105,8 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
             data: {
                 page: 1,
                 limit: mediaFilesLimit,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }, [dispatch, mediaFilesLimit]);
 
@@ -122,13 +122,13 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
 
                 if (uploadBuffer.length === fileList.length) {
                     const formData = new FormData();
-                    uploadBuffer.forEach((f) => {
-                        formData.append('files', f);
+                    uploadBuffer.forEach(f => {
+                        formData.append("files", f);
                     });
 
                     dispatch({
                         type: actionTypes.UPLOAD_MY_MEDIA_FILES_CALL,
-                        data: formData,
+                        data: formData
                     });
 
                     uploadBuffer.splice(0, uploadBuffer.length);
@@ -136,7 +136,7 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
             }
             return false;
         },
-        [dispatch, uploadBuffer, uploading],
+        [dispatch, uploadBuffer, uploading]
     );
 
     const onClickLoadMore = useCallback(() => {
@@ -146,65 +146,65 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
                 data: {
                     page: (mediaFilesCurrentPage || 0) + 1,
                     limit: mediaFilesLimit,
-                    keyword: '',
-                },
+                    keyword: ""
+                }
             });
         }
     }, [dispatch, mediaFilesHasMore, mediaFilesLimit, mediaFilesCurrentPage]);
 
     const onClickImage = useCallback(
-        (image) => () => {
+        image => () => {
             setImageViewerVisible(true);
             setImageViewerFiles([image]);
         },
-        [],
+        []
     );
 
     const onClickDeleteFile = useCallback(
-        (media: IImageModel) => () => {
+        (media: ImageModel) => () => {
             Modal.confirm({
-                title: 'Do you want to delete this file?',
+                title: "Do you want to delete this file?",
                 content: `${media.fileName}${media.fileExtension}`,
                 onOk: () => {
-                    dispatch<IBlogAction>({
+                    dispatch<BaseAction>({
                         type: actionTypes.DELETE_MY_MEDIA_FILES_CALL,
                         data: {
-                            id: media.id,
-                        },
+                            id: media.id
+                        }
                     });
                 },
-                onCancel: null,
+                onCancel: null
             });
         },
-        [dispatch],
+        [dispatch]
     );
 
     const onClickSelectFile = useCallback(
-        (selectedItem) => () => {
+        selectedItem => () => {
             if (!!onSelect) {
                 onSelect(selectedItem);
             }
         },
-        [onSelect],
+        [onSelect]
     );
 
-    const getCardActions = (item) => {
+    const getCardActions = item => {
         const actions = [];
 
         if (!!onSelect) {
             actions.push(
-                <Icon type='check' onClick={onClickSelectFile(item)} />,
+                <Icon type="check" onClick={onClickSelectFile(item)} />
             );
         }
 
         actions.push(
             <Paragraph
                 copyable={{
-                    text: item.src,
+                    text: item.src
                 }}
-            />,
+            />
         );
-        actions.push(<Icon type='delete' onClick={onClickDeleteFile(item)} />);
+        actions.push(<Icon type="delete" onClick={onClickDeleteFile(item)} />);
         return actions;
     };
 
@@ -272,10 +272,10 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
                     md: 2,
                     lg: 3,
                     xl: 6,
-                    xxl: 8,
+                    xxl: 8
                 }}
                 dataSource={mediaFiles}
-                renderItem={(item: IImageModel) => {
+                renderItem={(item: ImageModel) => {
                     const filename = `${item.fileName}${item.fileExtension}`;
 
                     return (
@@ -283,31 +283,33 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
                             <Card
                                 key={item.src}
                                 cover={
-                                    item.contentType.indexOf('image') >= 0 && (
+                                    item.contentType.indexOf("image") >= 0 && (
                                         <CroppedImage
                                             image={item}
                                             onClickHandler={onClickImage}
                                         />
                                     )
                                 }
-                                actions={getCardActions(item)}>
+                                actions={getCardActions(item)}
+                            >
                                 <Card.Meta
                                     title={filename}
                                     description={
                                         <span>
-                                            <Icon type='clock-circle' />{' '}
+                                            <Icon type="clock-circle" />{" "}
                                             {moment(
                                                 new Date(item.createdAt),
-                                                'YYYY-MM-DD HH:mm:ss',
+                                                "YYYY-MM-DD HH:mm:ss"
                                             ).fromNow()}
                                         </span>
                                     }
                                 />
-                                <div style={{ textOverflow: 'ellipsis' }}>
+                                <div style={{ textOverflow: "ellipsis" }}>
                                     <Paragraph
                                         copyable={{
-                                            text: item.src,
-                                        }}>
+                                            text: item.src
+                                        }}
+                                    >
                                         {`${item.fileName}${item.fileExtension}`}
                                     </Paragraph>
                                 </div>
@@ -324,17 +326,18 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
             <Dragger
                 disabled={uploading}
                 supportServerRender={true}
-                name='files'
+                name="files"
                 multiple={true}
                 showUploadList={false}
-                beforeUpload={onBeforeUploadFiles}>
-                <p className='ant-upload-drag-icon'>
-                    <Icon type='inbox' />
+                beforeUpload={onBeforeUploadFiles}
+            >
+                <p className="ant-upload-drag-icon">
+                    <Icon type="inbox" />
                 </p>
-                <p className='ant-upload-text'>
+                <p className="ant-upload-text">
                     Click or drag file to this area to upload
                 </p>
-                <p className='ant-upload-hint'>
+                <p className="ant-upload-hint">
                     Support for a single or bulk upload. Strictly prohibit from
                     uploading company data or other band files
                 </p>
@@ -347,7 +350,8 @@ const FileList: FunctionComponent<IFileListProps> = ({ onSelect }) => {
             <ButtonFullWidth
                 loading={mediaFilesLoading || uploading}
                 onClick={onClickLoadMore}
-                disabled={!mediaFilesHasMore}>
+                disabled={!mediaFilesHasMore}
+            >
                 Load more
             </ButtonFullWidth>
 

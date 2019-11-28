@@ -1,29 +1,30 @@
-import React, { FunctionComponent, memo } from 'react';
-import Link from 'next/link';
-import { IUserModel } from '../typings/dto';
+import React, { FunctionComponent, memo } from "react";
+import Link from "next/link";
+import { UserModel } from "../typings/dto";
 
-export interface ILinkUsersPostsProps {
-    user: IUserModel;
+export interface LinkUsersPostsProps {
+    user: UserModel;
     children: React.ReactNode;
 }
 
-const LinkUsersPosts: FunctionComponent<ILinkUsersPostsProps> = memo(
+const LinkUsersPosts: FunctionComponent<LinkUsersPostsProps> = memo(
     ({ user, children }) => {
-        const username = (user && user.username) || '';
+        const username = (user && user.username) || "";
         const displayUsername: string = `@${username}`;
         return (
             <Link
                 href={{
-                    pathname: '/users/posts',
+                    pathname: "/users/posts",
                     query: {
-                        user: displayUsername,
-                    },
+                        user: displayUsername
+                    }
                 }}
-                as={`/users/${displayUsername}/posts`}>
+                as={`/users/${displayUsername}/posts`}
+            >
                 <a>{children}</a>
             </Link>
         );
-    },
+    }
 );
 
 export default LinkUsersPosts;

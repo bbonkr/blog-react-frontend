@@ -1,40 +1,40 @@
-import React, { Component, FunctionComponent, useEffect } from 'react';
-import Router from 'next/router';
-import { Spin } from 'antd';
-import { normalizeReturnUrl } from '../helpers/stringHelper';
-import { NextJSContext } from 'next-redux-wrapper';
-import { NextPageContext } from 'next';
-import { IRootState, IUserState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IUserModel } from '../typings/dto';
-import { IPageProps } from '../typings/IPageProps';
-import { useSelector } from 'react-redux';
-import Loading from '../components/Loading';
+import React, { Component, FunctionComponent, useEffect } from "react";
+import Router from "next/router";
+import { Spin } from "antd";
+import { normalizeReturnUrl } from "../helpers/stringHelper";
+import { NextJSContext } from "next-redux-wrapper";
+import { NextPageContext } from "next";
+import { RootState, UserState } from "../typings/reduxStates";
+import { BaseAction } from "../typings/BaseAction";
+import { UserModel } from "../typings/dto";
+import { PageProps } from "../typings/PageProps";
+import { useSelector } from "react-redux";
+import Loading from "../components/Loading";
 
-export interface IWithAuthProps extends IPageProps {
-    me: IUserModel;
+export interface WithAuthProps extends PageProps {
+    me: UserModel;
     returnUrl?: string;
 }
 
-export interface IWithAuthState {
+export interface WithAuthState {
     loading: boolean;
 }
 
-const getDisplayName = (Component) =>
-    Component.displayName || Component.name || 'Component';
+const getDisplayName = Component =>
+    Component.displayName || Component.name || "Component";
 
-export const withAuth = (WrappedComponent) => {
-    class AuthComponent extends Component<IWithAuthProps, IWithAuthState> {
+export const withAuth = WrappedComponent => {
+    class AuthComponent extends Component<WithAuthProps, WithAuthState> {
         public static displayName = `withAuthSync(${getDisplayName(
-            WrappedComponent,
+            WrappedComponent
         )})`;
 
         public static async getInitialProps(
-            ctx: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-        ): Promise<IWithAuthProps> {
+            ctx: NextPageContext & NextJSContext<RootState, BaseAction>
+        ): Promise<WithAuthProps> {
             // console.debug('[APP] withAuth getInitialProps');
 
-            const state: IRootState = ctx.store.getState();
+            const state: RootState = ctx.store.getState();
 
             const { me } = state.user;
             // const { currentUrl } = state.settings;
@@ -48,7 +48,7 @@ export const withAuth = (WrappedComponent) => {
             //     currentUrl,
             // );
 
-            let pageProps: IPageProps = {};
+            let pageProps: PageProps = {};
 
             if (WrappedComponent.getInitialProps) {
                 pageProps = (await WrappedComponent.getInitialProps(ctx)) || {};
@@ -56,7 +56,7 @@ export const withAuth = (WrappedComponent) => {
 
             return {
                 ...pageProps,
-                me: me,
+                me: me
                 // returnUrl: currentUrl,
             };
         }

@@ -1,26 +1,26 @@
-import React, { useState, useCallback, FunctionComponent } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Input, Divider, Spin } from 'antd';
-import ListExcerpt from '../components/ListExcerpt';
-import { ContentWrapper } from '../styledComponents/Wrapper';
-import DefaultLayout from '../components/DefaultLayout';
-import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, ISearchPostsState } from '../typings/reduxStates';
-import Helmet from 'react-helmet';
-import { appOptions } from '../config/appOptions';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IPageProps } from '../typings/IPageProps';
-import Head from 'next/head';
+import React, { useState, useCallback, FunctionComponent } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Input, Divider, Spin } from "antd";
+import ListExcerpt from "../components/ListExcerpt";
+import { ContentWrapper } from "../styledComponents/Wrapper";
+import DefaultLayout from "../components/DefaultLayout";
+import { actionTypes } from "../reducers/actionTypes";
+import { RootState, SearchPostsState } from "../typings/reduxStates";
+import Helmet from "react-helmet";
+import { appOptions } from "../config/appOptions";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../typings/BaseAction";
+import { PageProps } from "../typings/PageProps";
+import Head from "next/head";
 
-const KEYWORD_INPUT_PLACEHOLDER = 'Searching keyword';
+const KEYWORD_INPUT_PLACEHOLDER = "Searching keyword";
 
-export interface ISearchPageProps extends IPageProps {
+export interface SearchPageProps extends PageProps {
     keyword?: string;
 }
 
-const Search: FunctionComponent<ISearchPageProps> = ({ keyword }) => {
+const Search: FunctionComponent<SearchPageProps> = ({ keyword }) => {
     const siteName = appOptions.title;
     const dispatch = useDispatch();
     const [keywordText, setKeywordText] = useState(keyword);
@@ -30,10 +30,10 @@ const Search: FunctionComponent<ISearchPageProps> = ({ keyword }) => {
         searchPostsLoading,
         searchPostsKeyword,
         postsLimit,
-        searchPostsCurrentPage,
-    } = useSelector<IRootState, ISearchPostsState>((s) => s.searchPosts);
+        searchPostsCurrentPage
+    } = useSelector<RootState, SearchPostsState>(s => s.searchPosts);
 
-    const onChangeKeyword = useCallback((e) => {
+    const onChangeKeyword = useCallback(e => {
         setKeywordText(e.target.value);
     }, []);
 
@@ -45,12 +45,12 @@ const Search: FunctionComponent<ISearchPageProps> = ({ keyword }) => {
                     data: {
                         page: 1,
                         limit: postsLimit,
-                        keyword: value,
-                    },
+                        keyword: value
+                    }
                 });
             }
         },
-        [dispatch, postsLimit],
+        [dispatch, postsLimit]
     );
 
     const loadMoreHandler = useCallback(() => {
@@ -63,8 +63,8 @@ const Search: FunctionComponent<ISearchPageProps> = ({ keyword }) => {
             data: {
                 page: (searchPostsCurrentPage || 0) + 1,
                 limit: postsLimit,
-                keyword: searchPostsKeyword,
-            },
+                keyword: searchPostsKeyword
+            }
         });
     }, [dispatch, postsLimit, searchPosts, searchPostsKeyword]);
 
@@ -79,7 +79,7 @@ const Search: FunctionComponent<ISearchPageProps> = ({ keyword }) => {
                     <Spin spinning={searchPostsLoading}>
                         <Input.Search
                             enterButton
-                            name='keyword'
+                            name="keyword"
                             value={keywordText}
                             onChange={onChangeKeyword}
                             onSearch={onSearch}
@@ -101,10 +101,10 @@ const Search: FunctionComponent<ISearchPageProps> = ({ keyword }) => {
 };
 
 Search.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<ISearchPageProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<SearchPageProps> => {
     const keyword: string = decodeURIComponent(
-        (context.query.keyword as string) || '',
+        (context.query.keyword as string) || ""
     );
 
     if (keyword) {
@@ -115,13 +115,13 @@ Search.getInitialProps = async (
             data: {
                 page: null,
                 limit: postsLimit,
-                keyword: keyword,
-            },
+                keyword: keyword
+            }
         });
     }
 
     return {
-        keyword,
+        keyword
     };
 };
 

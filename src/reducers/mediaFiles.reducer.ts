@@ -1,9 +1,9 @@
-import { IMediaFilesState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { MediaFilesState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
 
-export const initialMediaFilesState: IMediaFilesState = {
+export const initialMediaFilesState: MediaFilesState = {
     mediaFiles: [],
     mediaFilesSearchKeyword: '',
     mediaFilesCount: 0,
@@ -16,8 +16,8 @@ export const initialMediaFilesState: IMediaFilesState = {
 };
 
 export const mediaFiles = (
-    state: IMediaFilesState = initialMediaFilesState,
-    action: IBlogAction,
+    state: MediaFilesState = initialMediaFilesState,
+    action: BaseAction,
 ) =>
     produce(state, (draft) => {
         switch (action.type) {

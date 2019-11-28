@@ -1,10 +1,10 @@
-import { IUsersPostsState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { UsersPostsState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
 import { UsersPostsHandler } from './hanlders/usersPosts.handler';
 
-export const initialState: IUsersPostsState = {
+export const initialState: UsersPostsState = {
     /** users posts */
     usersPosts: [],
     loadingUsersPosts: false,
@@ -17,8 +17,8 @@ export const initialState: IUsersPostsState = {
 };
 
 export const usersPosts = (
-    state: IUsersPostsState = initialState,
-    action: IBlogAction,
+    state: UsersPostsState = initialState,
+    action: BaseAction,
 ) =>
     produce(state, (draft) => {
         const handler = new UsersPostsHandler({ draft, action });

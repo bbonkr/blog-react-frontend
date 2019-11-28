@@ -1,17 +1,17 @@
-import { IValidationResult } from '../typings/IValidationResult';
+import { ValidationResultValue } from '../typings/ValidationResultValue';
 
-export class ValidationResult implements IValidationResult {
+export class ValidationResult implements ValidationResultValue {
     /**
      * 성공
      */
-    public static success: ValidationResult = new ValidationResult({
+    public static success: ValidationResultValue = new ValidationResult({
         valid: true,
     });
     /**
      * 실패
      * @param message 실패 메시지
      */
-    public static fail(message: string): ValidationResult {
+    public static fail(message: string): ValidationResultValue {
         return new ValidationResult({
             valid: false,
             message: message,
@@ -19,7 +19,7 @@ export class ValidationResult implements IValidationResult {
     }
     public valid: boolean;
     public message?: string;
-    constructor(value: IValidationResult) {
+    constructor(value: ValidationResultValue) {
         this.valid = value && value.valid;
         this.message = value && value.message;
     }

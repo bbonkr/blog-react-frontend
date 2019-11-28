@@ -1,4 +1,4 @@
-import { IPostModel } from '../../typings/dto';
+import { PostModel } from '../../typings/dto';
 
 /**
  * 글 좋아요 데이터를 갱신합니다.
@@ -6,8 +6,8 @@ import { IPostModel } from '../../typings/dto';
  * @param update 글; 좋아요 데이터 포함 (likers)
  */
 export const applyUpdatedPostLikers = (
-    source: IPostModel | IPostModel[],
-    update: IPostModel,
+    source: PostModel | PostModel[],
+    update: PostModel,
 ): void => {
     if (source == null) {
         return;

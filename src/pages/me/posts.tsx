@@ -1,18 +1,18 @@
-import React, { useState, useCallback, FunctionComponent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Tag, Table, Modal, Button, Icon, PageHeader } from 'antd';
-import MeLayout from '../../components/MeLayout';
-import { ContentWrapper } from '../../styledComponents/Wrapper';
-import { withAuth } from '../../utils/auth';
-import moment from 'moment';
-import { formatNumber } from '../../helpers/stringHelper';
-import Router from 'next/router';
-import { actionTypes } from '../../reducers/actionTypes';
-import { IRootState, IMeState, IMyPostsState } from '../../typings/reduxStates';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IPageProps } from '../../typings/IPageProps';
+import React, { useState, useCallback, FunctionComponent } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Tag, Table, Modal, Button, Icon, PageHeader } from "antd";
+import MeLayout from "../../components/MeLayout";
+import { ContentWrapper } from "../../styledComponents/Wrapper";
+import { withAuth } from "../../utils/auth";
+import moment from "moment";
+import { formatNumber } from "../../helpers/stringHelper";
+import Router from "next/router";
+import { actionTypes } from "../../reducers/actionTypes";
+import { RootState, MeState, MyPostsState } from "../../typings/reduxStates";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../../typings/BaseAction";
+import { PageProps } from "../../typings/PageProps";
 
 const Posts: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -20,8 +20,8 @@ const Posts: FunctionComponent = () => {
         myPosts,
         myPostsCount: postsCount,
         myPostsLoading: loadingMyPosts,
-        myPostsLimit: postsLimit,
-    } = useSelector<IRootState, IMyPostsState>((state) => state.myPosts);
+        myPostsLimit: postsLimit
+    } = useSelector<RootState, MyPostsState>(state => state.myPosts);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -33,11 +33,11 @@ const Posts: FunctionComponent = () => {
                 data: {
                     page: current,
                     limit: size || postsLimit || 10,
-                    keyword: '',
-                },
+                    keyword: ""
+                }
             });
         },
-        [postsLimit],
+        [postsLimit]
     );
 
     const onShowSizeChangePagination = useCallback((current, size) => {
@@ -47,44 +47,44 @@ const Posts: FunctionComponent = () => {
             data: {
                 page: current,
                 limit: size || postsLimit || 10,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }, []);
 
     const onClickNewPost = useCallback(() => {
-        Router.push('/me/write');
+        Router.push("/me/write");
     }, []);
 
     const onClickEditPost = useCallback(
-        (post) => () => {
-            Router.push({ pathname: '/me/write', query: { id: post.id } });
+        post => () => {
+            Router.push({ pathname: "/me/write", query: { id: post.id } });
         },
-        [],
+        []
     );
 
     const onClickDeletePost = useCallback(
-        (post) => () => {
+        post => () => {
             Modal.confirm({
-                title: 'Do you want to delete this post?',
+                title: "Do you want to delete this post?",
                 content: post.title,
                 onOk: () => {
                     dispatch({
                         type: actionTypes.DELETE_POST_CALL,
-                        data: post.id,
+                        data: post.id
                     });
                 },
-                onCancel: null,
+                onCancel: null
             });
         },
-        [],
+        []
     );
 
     const columns = [
         {
-            key: 'title',
-            title: 'Title',
-            dataIndex: 'title',
+            key: "title",
+            title: "Title",
+            dataIndex: "title",
             render: (text, record, index) => {
                 return (
                     <span onClick={onClickEditPost(record)}>{text}</span>
@@ -97,72 +97,73 @@ const Posts: FunctionComponent = () => {
                     // </Link>
                 );
             },
-            whidh: '40%',
+            whidh: "40%"
         },
         {
-            key: 'createdAt',
-            title: 'Created',
-            dataIndex: 'createdAt',
-            render: (createdAt) => (
+            key: "createdAt",
+            title: "Created",
+            dataIndex: "createdAt",
+            render: createdAt => (
                 <span>
                     {moment(
                         new Date(createdAt),
-                        'YYYY-MM-DD HH:mm:ss',
+                        "YYYY-MM-DD HH:mm:ss"
                     ).fromNow()}
                 </span>
             ),
-            whidh: '20%',
+            whidh: "20%"
         },
         {
-            key: 'categories',
-            title: 'Categories',
-            dataIndex: 'categories',
-            render: (categories) => (
+            key: "categories",
+            title: "Categories",
+            dataIndex: "categories",
+            render: categories => (
                 <span>
-                    {categories.map((category) => {
+                    {categories.map(category => {
                         return <Tag key={category.slug}>{category.name}</Tag>;
                     })}
                 </span>
             ),
-            whidh: '20%',
+            whidh: "20%"
         },
         {
-            key: 'tags',
-            title: 'Tags',
-            dataIndex: 'tags',
-            render: (tags) => (
+            key: "tags",
+            title: "Tags",
+            dataIndex: "tags",
+            render: tags => (
                 <span>
-                    {tags.map((tag) => {
+                    {tags.map(tag => {
                         return <Tag key={tag.slug}>{tag.name}</Tag>;
                     })}
                 </span>
             ),
-            whidh: '20%',
-        },
+            whidh: "20%"
+        }
     ];
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title='Posts' />
+                <PageHeader title="Posts" />
                 <div>
                     <Table
-                        title={(currentPageData) => {
+                        title={currentPageData => {
                             return (
                                 <div>
                                     <div>
                                         <Button
-                                            type='primary'
-                                            onClick={onClickNewPost}>
+                                            type="primary"
+                                            onClick={onClickNewPost}
+                                        >
                                             New Post
                                         </Button>
                                     </div>
                                     <div>{`Total: ${formatNumber(
-                                        postsCount,
+                                        postsCount
                                     )}`}</div>
                                 </div>
                             );
                         }}
-                        rowKey={(record) => record.id}
+                        rowKey={record => record.id}
                         dataSource={myPosts}
                         columns={columns}
                         loading={loadingMyPosts}
@@ -172,26 +173,28 @@ const Posts: FunctionComponent = () => {
                             defaultCurrent: 1,
                             defaultPageSize: 10,
                             showSizeChanger: true,
-                            pageSizeOptions: ['10', '20', '30', '50', '100'],
+                            pageSizeOptions: ["10", "20", "30", "50", "100"],
                             onChange: onChangePagination,
                             onShowSizeChange: onShowSizeChangePagination,
-                            position: 'both',
+                            position: "both"
                         }}
-                        expandedRowRender={(record) => {
+                        expandedRowRender={record => {
                             return (
                                 <div>
                                     <Button.Group>
                                         <Button
-                                            onClick={onClickEditPost(record)}>
+                                            onClick={onClickEditPost(record)}
+                                        >
                                             <span>
-                                                <Icon type='edit' /> Edit
+                                                <Icon type="edit" /> Edit
                                             </span>
                                         </Button>
                                         <Button
-                                            type='danger'
-                                            onClick={onClickDeletePost(record)}>
+                                            type="danger"
+                                            onClick={onClickDeletePost(record)}
+                                        >
                                             <span>
-                                                <Icon type='delete' /> Delete
+                                                <Icon type="delete" /> Delete
                                             </span>
                                         </Button>
                                     </Button.Group>
@@ -206,8 +209,8 @@ const Posts: FunctionComponent = () => {
 };
 
 Posts.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IPageProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<PageProps> => {
     const state = context.store.getState();
     const { myPostsLimit, myPosts } = state.myPosts;
     const lastPost =
@@ -218,8 +221,8 @@ Posts.getInitialProps = async (
         data: {
             page: null,
             limit: myPostsLimit || 10,
-            keyword: '',
-        },
+            keyword: ""
+        }
     });
 
     return {};

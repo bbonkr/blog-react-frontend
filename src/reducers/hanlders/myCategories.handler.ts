@@ -1,15 +1,15 @@
-import { IMyCategoriesState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IListResult, ICategoryModel } from '../../typings/dto';
+import { MyCategoriesState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { ListResult, CategoryModel } from '../../typings/dto';
 
 export interface IMyCategoriesHandlerValue {
-    draft: IMyCategoriesState;
-    action: IBlogAction;
+    draft: MyCategoriesState;
+    action: BaseAction;
 }
 
 export class MyCategoriesHandler {
-    private draft: IMyCategoriesState;
-    private action: IBlogAction;
+    private draft: MyCategoriesState;
+    private action: BaseAction;
 
     constructor(value: IMyCategoriesHandlerValue) {
         this.draft = value.draft;
@@ -28,9 +28,9 @@ export class MyCategoriesHandler {
     }
 
     // LOAD_MY_CATEGORIES_DONE
-    public loadMyCategoriesDone(action: IBlogAction): void {
+    public loadMyCategoriesDone(action: BaseAction): void {
         this.draft.categoriesLoading = false;
-        const actionData = action.data as IListResult<ICategoryModel>;
+        const actionData = action.data as ListResult<CategoryModel>;
         const { records, total, page } = actionData;
 
         records.forEach((v) => {
@@ -54,7 +54,7 @@ export class MyCategoriesHandler {
     }
 
     // EDIT_MY_CATEGORY_DONE
-    public editMyCategoryDone(action: IBlogAction): void {
+    public editMyCategoryDone(action: BaseAction): void {
         const { category } = action.data;
 
         const foundCategoryIndex = this.draft.categories.findIndex(

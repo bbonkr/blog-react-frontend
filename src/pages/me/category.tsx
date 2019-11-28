@@ -2,9 +2,9 @@ import React, {
     useState,
     useCallback,
     useEffect,
-    FunctionComponent,
-} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+    FunctionComponent
+} from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
     Table,
     Button,
@@ -13,23 +13,23 @@ import {
     Form,
     Input,
     InputNumber,
-    PageHeader,
-} from 'antd';
-import MeLayout from '../../components/MeLayout';
-import { ContentWrapper } from '../../styledComponents/Wrapper';
-import { withAuth } from '../../utils/auth';
-import { formatNumber, makeSlug } from '../../helpers/stringHelper';
-import { actionTypes } from '../../reducers/actionTypes';
-import { CategoryFormValidator } from '../../helpers/CategoryFormValidator';
+    PageHeader
+} from "antd";
+import MeLayout from "../../components/MeLayout";
+import { ContentWrapper } from "../../styledComponents/Wrapper";
+import { withAuth } from "../../utils/auth";
+import { formatNumber, makeSlug } from "../../helpers/stringHelper";
+import { actionTypes } from "../../reducers/actionTypes";
+import { CategoryFormValidator } from "../../helpers/CategoryFormValidator";
 import {
-    IRootState,
-    IMeState,
-    IMyCategoriesState,
-} from '../../typings/reduxStates';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IPageProps } from '../../typings/IPageProps';
+    RootState,
+    MeState,
+    MyCategoriesState
+} from "../../typings/reduxStates";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../../typings/BaseAction";
+import { PageProps } from "../../typings/PageProps";
 
 const validator = new CategoryFormValidator();
 
@@ -40,38 +40,38 @@ const MyCategory: FunctionComponent = () => {
         categoriesLoading,
         categoriesCount,
         categoriesCurrentPage,
-        categoriesLimit,
-    } = useSelector<IRootState, IMyCategoriesState>((s) => s.myCategories);
+        categoriesLimit
+    } = useSelector<RootState, MyCategoriesState>(s => s.myCategories);
 
     const [currentPage, setCurrentPage] = useState(0);
     const [editFormVisible, setEditFormVisible] = useState(false);
     const [id, setId] = useState(0);
-    const [name, setName] = useState('');
-    const [nameErrorMessage, setNameErrorMessage] = useState('');
-    const [slug, setSlug] = useState('');
-    const [slugErrorMessage, setSlugErrorMessage] = useState('');
+    const [name, setName] = useState("");
+    const [nameErrorMessage, setNameErrorMessage] = useState("");
+    const [slug, setSlug] = useState("");
+    const [slugErrorMessage, setSlugErrorMessage] = useState("");
     const [ordinal, setOrdinal] = useState(1);
-    const [ordinalErrorMessage, setOrdinalErrorMessage] = useState('');
+    const [ordinalErrorMessage, setOrdinalErrorMessage] = useState("");
 
     const columns = [
         {
-            key: 'name',
-            title: 'Name',
-            dataIndex: 'name',
-            whidh: '50%',
+            key: "name",
+            title: "Name",
+            dataIndex: "name",
+            whidh: "50%"
         },
         {
-            key: 'slug',
-            title: 'Slug',
-            dataIndex: 'slug',
-            whidh: '30%',
+            key: "slug",
+            title: "Slug",
+            dataIndex: "slug",
+            whidh: "30%"
         },
         {
-            key: 'orinal',
-            title: 'Orinal',
-            dataIndex: 'ordinal',
-            whidh: '20%',
-        },
+            key: "orinal",
+            title: "Orinal",
+            dataIndex: "ordinal",
+            whidh: "20%"
+        }
     ];
 
     const onChangePagination = useCallback(
@@ -82,11 +82,11 @@ const MyCategory: FunctionComponent = () => {
                 data: {
                     page: current,
                     limit: size || categoriesLimit || 10,
-                    keyword: '',
-                },
+                    keyword: ""
+                }
             });
         },
-        [categoriesLimit, dispatch],
+        [categoriesLimit, dispatch]
     );
 
     const onShowSizeChangePagination = useCallback(
@@ -97,24 +97,24 @@ const MyCategory: FunctionComponent = () => {
                 data: {
                     page: current,
                     limit: size,
-                    keyword: '',
-                },
+                    keyword: ""
+                }
             });
         },
-        [dispatch],
+        [dispatch]
     );
 
     const onClickNewCategory = useCallback(() => {
         setId(0);
-        setName('');
-        setSlug('');
+        setName("");
+        setSlug("");
         setOrdinal(1);
 
         setEditFormVisible(true);
     }, []);
 
     const onClickEditCategory = useCallback(
-        (record) => () => {
+        record => () => {
             setId(record.id);
             setName(record.name);
             setSlug(record.slug);
@@ -122,27 +122,27 @@ const MyCategory: FunctionComponent = () => {
 
             setEditFormVisible(true);
         },
-        [],
+        []
     );
 
     const onClickDeleteCategory = useCallback(
-        (record) => () => {
+        record => () => {
             Modal.confirm({
-                title: 'Do you want to delete this category?',
+                title: "Do you want to delete this category?",
                 content: record.name,
                 onOk: () => {
                     dispatch({
                         type: actionTypes.DELETE_MY_CATEGORY_CALL,
-                        data: record,
+                        data: record
                     });
                 },
-                onCancel: null,
+                onCancel: null
             });
         },
-        [dispatch],
+        [dispatch]
     );
 
-    const onChangeName = useCallback((e) => {
+    const onChangeName = useCallback(e => {
         const newValue = e.target.value;
         setName(newValue);
         const { valid, message } = validator.checkName({ name: newValue });
@@ -152,14 +152,14 @@ const MyCategory: FunctionComponent = () => {
         setNameErrorMessage(message);
     }, []);
 
-    const onChangeSlug = useCallback((e) => {
+    const onChangeSlug = useCallback(e => {
         const newValue = e.target.value;
         setSlug(newValue);
         const { valid, message } = validator.checkSlug({ slug: newValue });
         setSlugErrorMessage(message);
     }, []);
 
-    const onChangeOrdinal = useCallback((value) => {
+    const onChangeOrdinal = useCallback(value => {
         // const newValue = e.target.value;
         setOrdinal(value);
         const { valid, message } = validator.checkOrdinal({ ordinal: value });
@@ -167,7 +167,7 @@ const MyCategory: FunctionComponent = () => {
     }, []);
 
     const onSubmitEditForm = useCallback(
-        (e) => {
+        e => {
             e.preventDefault();
 
             const formData = { id, name, slug, ordinal };
@@ -177,31 +177,32 @@ const MyCategory: FunctionComponent = () => {
             if (valid) {
                 dispatch({
                     type: actionTypes.EDIT_MY_CATEGORY_CALL,
-                    data: formData,
+                    data: formData
                 });
                 setEditFormVisible(false);
             }
         },
-        [dispatch, id, name, ordinal, slug],
+        [dispatch, id, name, ordinal, slug]
     );
 
-    const onClickCancelEditForm = useCallback((e) => {
+    const onClickCancelEditForm = useCallback(e => {
         setEditFormVisible(false);
     }, []);
 
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title='Categories' />
+                <PageHeader title="Categories" />
 
                 <Table
-                    title={(currentPageData) => {
+                    title={currentPageData => {
                         return (
                             <div>
                                 <div>
                                     <Button
-                                        type='primary'
-                                        onClick={onClickNewCategory}>
+                                        type="primary"
+                                        onClick={onClickNewCategory}
+                                    >
                                         New category
                                     </Button>
                                 </div>
@@ -211,7 +212,7 @@ const MyCategory: FunctionComponent = () => {
                             </div>
                         );
                     }}
-                    rowKey={(record) => record.slug}
+                    rowKey={record => record.slug}
                     dataSource={categories}
                     columns={columns}
                     loading={categoriesLoading}
@@ -221,26 +222,28 @@ const MyCategory: FunctionComponent = () => {
                         defaultCurrent: 1,
                         defaultPageSize: 10,
                         showSizeChanger: true,
-                        pageSizeOptions: ['10', '20', '30', '50', '100'],
+                        pageSizeOptions: ["10", "20", "30", "50", "100"],
                         onChange: onChangePagination,
                         onShowSizeChange: onShowSizeChangePagination,
-                        position: 'both',
+                        position: "both"
                     }}
-                    expandedRowRender={(record) => {
+                    expandedRowRender={record => {
                         return (
                             <div>
                                 <Button.Group>
                                     <Button
-                                        onClick={onClickEditCategory(record)}>
+                                        onClick={onClickEditCategory(record)}
+                                    >
                                         <span>
-                                            <Icon type='edit' /> Edit
+                                            <Icon type="edit" /> Edit
                                         </span>
                                     </Button>
                                     <Button
-                                        type='danger'
-                                        onClick={onClickDeleteCategory(record)}>
+                                        type="danger"
+                                        onClick={onClickDeleteCategory(record)}
+                                    >
                                         <span>
-                                            <Icon type='delete' /> Delete
+                                            <Icon type="delete" /> Delete
                                         </span>
                                     </Button>
                                 </Button.Group>
@@ -252,24 +255,27 @@ const MyCategory: FunctionComponent = () => {
                     visible={editFormVisible}
                     footer={false}
                     maskClosable={true}
-                    onCancel={onClickCancelEditForm}>
+                    onCancel={onClickCancelEditForm}
+                >
                     <Form onSubmit={onSubmitEditForm}>
                         <Form.Item
-                            label='Name'
+                            label="Name"
                             help={nameErrorMessage}
                             hasFeedback={true}
                             validateStatus={
-                                !nameErrorMessage ? 'success' : 'error'
-                            }>
+                                !nameErrorMessage ? "success" : "error"
+                            }
+                        >
                             <Input value={name} onChange={onChangeName} />
                         </Form.Item>
                         <Form.Item
-                            label='Slug'
+                            label="Slug"
                             help={slugErrorMessage}
                             hasFeedback={true}
                             validateStatus={
-                                !slugErrorMessage ? 'success' : 'error'
-                            }>
+                                !slugErrorMessage ? "success" : "error"
+                            }
+                        >
                             <Input
                                 value={slug}
                                 onChange={onChangeSlug}
@@ -277,12 +283,13 @@ const MyCategory: FunctionComponent = () => {
                             />
                         </Form.Item>
                         <Form.Item
-                            label='Ordinal'
+                            label="Ordinal"
                             help={ordinalErrorMessage}
                             hasFeedback={true}
                             validateStatus={
-                                !ordinalErrorMessage ? 'success' : 'error'
-                            }>
+                                !ordinalErrorMessage ? "success" : "error"
+                            }
+                        >
                             <InputNumber
                                 value={ordinal}
                                 onChange={onChangeOrdinal}
@@ -291,7 +298,7 @@ const MyCategory: FunctionComponent = () => {
                         </Form.Item>
                         <Form.Item>
                             <Button.Group>
-                                <Button type='primary' htmlType='submit'>
+                                <Button type="primary" htmlType="submit">
                                     Save
                                 </Button>
                                 <Button onClick={onClickCancelEditForm}>
@@ -307,8 +314,8 @@ const MyCategory: FunctionComponent = () => {
 };
 
 MyCategory.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IPageProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<PageProps> => {
     const state = context.store.getState();
     const { categories, categoriesLimit: categoryLimit } = state.myCategories;
 
@@ -318,8 +325,8 @@ MyCategory.getInitialProps = async (
             data: {
                 page: null,
                 limit: categoryLimit,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }
 

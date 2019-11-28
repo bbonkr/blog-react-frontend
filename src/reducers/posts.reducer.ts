@@ -1,10 +1,10 @@
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
-import { IBlogAction } from '../typings/IBlogAction';
+import { BaseAction } from '../typings/BaseAction';
 import { PostsHandler } from './hanlders/posts.handler';
-import { IPostsState } from '../typings/reduxStates';
+import { PostsState } from '../typings/reduxStates';
 
-export const initialState: IPostsState = {
+export const initialState: PostsState = {
     /** posts */
     posts: [],
     /** posts loading */
@@ -16,7 +16,7 @@ export const initialState: IPostsState = {
     searchKeyword: '',
 };
 
-const reducer = (state: IPostsState = initialState, action: IBlogAction) =>
+const reducer = (state: PostsState = initialState, action: BaseAction) =>
     produce(state, (draft) => {
         const handler = new PostsHandler({ draft, action });
         switch (action.type) {
