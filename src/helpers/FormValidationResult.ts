@@ -1,10 +1,10 @@
-import { IValidationResult } from '../typings/IValidationResult';
-import { IFormValidationResult } from '../typings/IValidatorInputValues';
+import { ValidationResultValue } from '../typings/ValidationResultValue';
+import { FormValidationResultValue } from '../typings/ValidatorInputValues';
 
-export class FormValidationResult implements IFormValidationResult {
+export class FormValidationResult implements FormValidationResultValue {
     public valid: boolean;
     public messages: string[];
-    constructor(value: IValidationResult[]) {
+    constructor(value: ValidationResultValue[]) {
         this.valid = true;
         this.messages = [];
         value.forEach((v) => {

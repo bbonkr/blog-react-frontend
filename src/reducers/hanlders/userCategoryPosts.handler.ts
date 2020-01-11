@@ -1,15 +1,15 @@
-import { IUserCategoryPostsState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
+import { UserCategoryPostsState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
 import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface IUserCategoryPostsHandlerValue {
-    draft: IUserCategoryPostsState;
-    action: IBlogAction;
+    draft: UserCategoryPostsState;
+    action: BaseAction;
 }
 
 export class UserCategoryPostsHandler {
-    private draft: IUserCategoryPostsState;
-    private action: IBlogAction;
+    private draft: UserCategoryPostsState;
+    private action: BaseAction;
 
     constructor(value: IUserCategoryPostsHandlerValue) {
         this.draft = value.draft;

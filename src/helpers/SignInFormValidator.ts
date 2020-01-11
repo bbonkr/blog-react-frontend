@@ -1,15 +1,15 @@
-import { IValidationResult } from '../typings/IValidationResult';
+import { ValidationResultValue } from '../typings/ValidationResultValue';
 import { ValidationResult } from './ValidationResult';
 import { FormValidationResult } from './FormValidationResult';
 import { FormValidatorBase } from './FormValidatorBase';
 import {
-    IUsernameFormValue,
-    IPasswordFormValue,
-    ISignInFormValue,
-} from '../typings/IValidatorInputValues';
+    UsernameFormValue,
+    PasswordFormValue,
+    SignInFormValue,
+} from '../typings/ValidatorInputValues';
 
 export class SignInFormValidator extends FormValidatorBase {
-    public checkUsername(formData: IUsernameFormValue): IValidationResult {
+    public checkUsername(formData: UsernameFormValue): ValidationResultValue {
         const { username } = formData;
         if (!username || username.trim().length === 0) {
             return ValidationResult.fail(
@@ -18,14 +18,14 @@ export class SignInFormValidator extends FormValidatorBase {
         }
         return ValidationResult.success;
     }
-    public checkPassword(formData: IPasswordFormValue): IValidationResult {
+    public checkPassword(formData: PasswordFormValue): ValidationResultValue {
         const { password } = formData;
         if (!password || password.trim().length === 0) {
             return ValidationResult.fail('Please Input your password');
         }
         return ValidationResult.success;
     }
-    public validate(formData: ISignInFormValue): FormValidationResult {
+    public validate(formData: SignInFormValue): FormValidationResult {
         const result = new FormValidationResult([
             this.checkUsername(formData),
             this.checkPassword(formData),

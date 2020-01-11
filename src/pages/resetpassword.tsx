@@ -2,98 +2,98 @@ import React, {
     useState,
     useEffect,
     useCallback,
-    FunctionComponent,
-} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { PageHeader, Form, Input, Button, Divider } from 'antd';
-import DefaultLayout from '../components/DefaultLayout';
-import { ContentWrapper } from '../styledComponents/Wrapper';
-import { ChangePasswordValidator } from '../helpers/ChangePasswordValidator';
-import Router from 'next/router';
-import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, IUserState } from '../typings/reduxStates';
-import { IPageProps } from '../typings/IPageProps';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../typings/IBlogAction';
-import Head from 'next/head';
-import { appOptions } from '../config/appOptions';
+    FunctionComponent
+} from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { PageHeader, Form, Input, Button, Divider } from "antd";
+import DefaultLayout from "../components/DefaultLayout";
+import { ContentWrapper } from "../styledComponents/Wrapper";
+import { ChangePasswordValidator } from "../helpers/ChangePasswordValidator";
+import Router from "next/router";
+import { actionTypes } from "../reducers/actionTypes";
+import { RootState, UserState } from "../typings/reduxStates";
+import { PageProps } from "../typings/PageProps";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../typings/BaseAction";
+import Head from "next/head";
+import { appOptions } from "../config/appOptions";
 
-export interface IResetPasswordProps extends IPageProps {
+export interface ResetPasswordPageProps extends PageProps {
     email: string;
     code: string;
 }
 
 const validator = new ChangePasswordValidator();
 
-const ResetPassword: FunctionComponent<IResetPasswordProps> = ({
+const ResetPassword: FunctionComponent<ResetPasswordPageProps> = ({
     email,
-    code,
+    code
 }) => {
     const dispatch = useDispatch();
     const { resetPasswordLoading, resetPasswordSuccess } = useSelector<
-        IRootState,
-        IUserState
-    >((s) => s.user);
+        RootState,
+        UserState
+    >(s => s.user);
 
-    const [temporaryPassword, setTemporaryPassword] = useState('');
+    const [temporaryPassword, setTemporaryPassword] = useState("");
     const [
         temporaryPasswordErrorMessage,
-        setTemporaryPasswordErrorMessage,
-    ] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-    const [passwordConfirm, setPasswordConfirm] = useState('');
+        setTemporaryPasswordErrorMessage
+    ] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
     const [
         passwordConfirmErrorMessage,
-        setPasswordConfirmErrorMessage,
-    ] = useState('');
+        setPasswordConfirmErrorMessage
+    ] = useState("");
 
     useEffect(() => {
         if (resetPasswordSuccess) {
-            Router.push('/signin');
+            Router.push("/signin");
         }
     }, [resetPasswordSuccess]);
 
-    const onChangeTemporaryPassword = useCallback((e) => {
+    const onChangeTemporaryPassword = useCallback(e => {
         const newValue = e.target.value;
         setTemporaryPassword(newValue);
         const { message } = validator.checkPassword({
-            password: newValue,
+            password: newValue
         });
         setTemporaryPasswordErrorMessage(message);
     }, []);
 
-    const onChangePassword = useCallback((e) => {
+    const onChangePassword = useCallback(e => {
         const newValue = e.target.value;
         setPassword(newValue);
         const { message } = validator.checkPassword({
-            password: newValue,
+            password: newValue
         });
         setPasswordErrorMessage(message);
     }, []);
 
     const onChangePasswordConfirm = useCallback(
-        (e) => {
+        e => {
             const newValue = e.target.value;
             setPasswordConfirm(newValue);
             const { message } = validator.checkPasswordConfirm({
                 password: password,
-                passwordConfirm: newValue,
+                passwordConfirm: newValue
             });
             setPasswordConfirmErrorMessage(message);
         },
-        [password],
+        [password]
     );
 
     const onSubmit = useCallback(
-        (e) => {
+        e => {
             e.preventDefault();
 
             const result = validator.validate({
                 currentPassword: temporaryPassword,
                 password: password,
-                passwordConfirm: passwordConfirm,
+                passwordConfirm: passwordConfirm
             });
 
             if (result.valid) {
@@ -103,12 +103,12 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({
                         email: email,
                         code: code,
                         password: temporaryPassword,
-                        newPassword: password,
-                    },
+                        newPassword: password
+                    }
                 });
             }
         },
-        [code, dispatch, email, password, passwordConfirm, temporaryPassword],
+        [code, dispatch, email, password, passwordConfirm, temporaryPassword]
     );
 
     return (
@@ -118,57 +118,61 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({
             </Head>
             <DefaultLayout>
                 <ContentWrapper>
-                    <PageHeader title='Reset a password' />
+                    <PageHeader title="Reset a password" />
                     <Divider />
                     <Form onSubmit={onSubmit}>
                         <Form.Item
-                            label='Temporary password'
+                            label="Temporary password"
                             hasFeedback={true}
                             help={temporaryPasswordErrorMessage}
                             validateStatus={
                                 !temporaryPasswordErrorMessage
-                                    ? 'success'
-                                    : 'error'
-                            }>
+                                    ? "success"
+                                    : "error"
+                            }
+                        >
                             <Input.Password
                                 value={temporaryPassword}
                                 onChange={onChangeTemporaryPassword}
-                                placeholder='Input a temporary password.'
+                                placeholder="Input a temporary password."
                             />
                         </Form.Item>
                         <Form.Item
-                            label='Password'
+                            label="Password"
                             hasFeedback={true}
                             help={passwordErrorMessage}
                             validateStatus={
-                                !passwordErrorMessage ? 'success' : 'error'
-                            }>
+                                !passwordErrorMessage ? "success" : "error"
+                            }
+                        >
                             <Input.Password
                                 value={password}
                                 onChange={onChangePassword}
-                                placeholder='Input a new password'
+                                placeholder="Input a new password"
                             />
                         </Form.Item>
                         <Form.Item
-                            label='Password (again)'
+                            label="Password (again)"
                             hasFeedback={true}
                             help={passwordConfirmErrorMessage}
                             validateStatus={
                                 !passwordConfirmErrorMessage
-                                    ? 'success'
-                                    : 'error'
-                            }>
+                                    ? "success"
+                                    : "error"
+                            }
+                        >
                             <Input.Password
                                 value={passwordConfirm}
                                 onChange={onChangePasswordConfirm}
-                                placeholder='Input a new password again'
+                                placeholder="Input a new password again"
                             />
                         </Form.Item>
                         <Form.Item>
                             <Button
-                                type='primary'
-                                htmlType='submit'
-                                loading={resetPasswordLoading}>
+                                type="primary"
+                                htmlType="submit"
+                                loading={resetPasswordLoading}
+                            >
                                 Reset
                             </Button>
                         </Form.Item>
@@ -180,14 +184,14 @@ const ResetPassword: FunctionComponent<IResetPasswordProps> = ({
 };
 
 ResetPassword.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IResetPasswordProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<ResetPasswordPageProps> => {
     const email = context.query.email as string;
     const code = context.query.code as string;
 
     return {
         email,
-        code,
+        code
     };
 };
 

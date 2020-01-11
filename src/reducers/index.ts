@@ -13,10 +13,10 @@ import { myPosts } from './myPosts.reducer';
 import { myCategories } from './myCategories.reducer';
 import { mediaFiles } from './mediaFiles.reducer';
 import { me } from './me';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IRootState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
+import { RootState } from '../typings/reduxStates';
 
-export type BlogReducer = Reducer<IRootState, IBlogAction>;
+export type BlogReducer = Reducer<RootState, BaseAction>;
 
 const map: ReducersMapObject = {
     user,
@@ -35,4 +35,4 @@ const map: ReducersMapObject = {
     singlePost,
 };
 
-export const rootReducer = combineReducers<IRootState, IBlogAction>(map);
+export const rootReducer = combineReducers<RootState, BaseAction>(map);

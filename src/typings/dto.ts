@@ -1,12 +1,12 @@
-import { IDictionary } from './IDictionary';
+import { Dictionary } from './Dictionary';
 
-export interface IModelBase {
+interface ModelBase {
     id: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface ICategoryModel extends IModelBase {
+export interface CategoryModel extends ModelBase {
     /**
      * 이름
      */
@@ -20,21 +20,21 @@ export interface ICategoryModel extends IModelBase {
      */
     ordinal?: number;
     userId?: number;
-    user?: IUserModel;
-    posts?: IPostModel[];
+    user?: UserModel;
+    posts?: PostModel[];
 }
 
-export interface ICommentModel extends IModelBase {
+export interface CommentModel extends ModelBase {
     markdown?: string;
     html?: string;
     text?: string;
     userId?: number;
-    user?: IUserModel;
+    user?: UserModel;
     postId?: number;
-    post?: IPostModel;
+    post?: PostModel;
 }
 
-export interface IImageModel extends IModelBase {
+export interface ImageModel extends ModelBase {
     src?: string;
     // path: string;
     fileName?: string;
@@ -42,19 +42,19 @@ export interface IImageModel extends IModelBase {
     size?: number;
     contentType?: string;
     userId?: number;
-    user?: IUserModel;
-    posts?: IPostModel[];
+    user?: UserModel;
+    posts?: PostModel[];
 }
 
-export interface IPostAccessLogModel extends IModelBase {
+export interface PostAccessLogModel extends ModelBase {
     ipAddress?: string;
     userAgent?: string;
     userId?: number;
     postId?: number;
-    post?: IPostModel;
+    post?: PostModel;
 }
 
-export interface IPostModel extends IModelBase {
+export interface PostModel extends ModelBase {
     title?: string;
     slug?: string;
     markdown?: string;
@@ -69,51 +69,51 @@ export interface IPostModel extends IModelBase {
     // isDeleted: boolean;
     deletedAt?: Date;
     userId?: number;
-    user?: IUserModel;
-    categories?: ICategoryModel[];
-    comments?: ICommentModel[];
-    accessLogs?: IPostAccessLogModel[];
-    images?: IImageModel[];
-    tags?: ITagModel[];
-    likers?: IUserModel[];
+    user?: UserModel;
+    categories?: CategoryModel[];
+    comments?: CommentModel[];
+    accessLogs?: PostAccessLogModel[];
+    images?: ImageModel[];
+    tags?: TagModel[];
+    likers?: UserModel[];
 }
 
-export interface ITagModel extends IModelBase {
+export interface TagModel extends ModelBase {
     name?: string;
     slug?: string;
-    posts?: IPostModel[];
+    posts?: PostModel[];
 }
 
-export interface IUserModel extends IModelBase {
+export interface UserModel extends ModelBase {
     username?: string;
     displayName?: string;
     email?: string;
     //  password?: string;
     isEmailConfirmed?: boolean;
     photo?: string;
-    categories?: ICategoryModel[];
-    comments?: ICommentModel[];
-    images?: IImageModel[];
-    posts?: IPostModel[];
-    likedPosts?: IPostModel[];
+    categories?: CategoryModel[];
+    comments?: CommentModel[];
+    images?: ImageModel[];
+    posts?: PostModel[];
+    likedPosts?: PostModel[];
 }
 
-export interface IJsonResult<T> {
+export interface JsonResult<T> {
     success: boolean;
     data?: T | null;
     message?: string;
 }
 
-export interface IListResult<T> extends IDictionary<any> {
+export interface ListResult<T> extends Dictionary<any> {
     records: T[];
     total: number;
 }
 
 export interface IListResultWithInformation<T>
-    extends IListResult<T>,
-        IDictionary<any> {}
+    extends ListResult<T>,
+    Dictionary<any> { }
 
-export interface ISigninResult extends IDictionary<any> {
-    user?: IUserModel;
+export interface ISigninResult extends Dictionary<any> {
+    user?: UserModel;
     token?: string;
 }

@@ -1,10 +1,10 @@
-import { IUserCategoryPostsState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { UserCategoryPostsState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
 import { UserCategoryPostsHandler } from './hanlders/userCategoryPosts.handler';
 
-export const initialState: IUserCategoryPostsState = {
+export const initialState: UserCategoryPostsState = {
     userCategoryPosts: [],
     userCategoryPostsLoading: false,
     userCategoryPostsErrorReason: '',
@@ -17,8 +17,8 @@ export const initialState: IUserCategoryPostsState = {
 };
 
 export const userCategoryPosts = (
-    state: IUserCategoryPostsState = initialState,
-    action: IBlogAction,
+    state: UserCategoryPostsState = initialState,
+    action: BaseAction,
 ) =>
     produce(state, (draft) => {
         const handler = new UserCategoryPostsHandler({ draft, action });

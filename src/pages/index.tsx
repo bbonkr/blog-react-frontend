@@ -1,21 +1,21 @@
-import React, { useCallback, FunctionComponent, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import ListExcerpt from '../components/ListExcerpt';
-import { ContentWrapper } from '../styledComponents/Wrapper';
-import DefaultLayout from '../components/DefaultLayout';
-import { actionTypes } from '../reducers/actionTypes';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IRootState, IPostsState } from '../typings/reduxStates';
-import { Spin } from 'antd';
-import { appOptions } from '../config/appOptions';
-import { IPageProps } from '../typings/IPageProps';
-import { IPostModel } from '../typings/dto';
-import Head from 'next/head';
-import { Store } from 'redux';
+import React, { useCallback, FunctionComponent, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import ListExcerpt from "../components/ListExcerpt";
+import { ContentWrapper } from "../styledComponents/Wrapper";
+import DefaultLayout from "../components/DefaultLayout";
+import { actionTypes } from "../reducers/actionTypes";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../typings/BaseAction";
+import { RootState, PostsState } from "../typings/reduxStates";
+import { Spin } from "antd";
+import { appOptions } from "../config/appOptions";
+import { PageProps } from "../typings/PageProps";
+import { PostModel } from "../typings/dto";
+import Head from "next/head";
+import { Store } from "redux";
 
-export interface IHomePageProps extends IPageProps {
+export interface HomePageProps extends PageProps {
     // posts: IPostModel[];
     // currentPage?: number;
     // postsLimit: number;
@@ -23,14 +23,14 @@ export interface IHomePageProps extends IPageProps {
     // hasMorePost: boolean;
 }
 
-const Home: FunctionComponent<IHomePageProps> = (
+const Home: FunctionComponent<HomePageProps> = (
     {
         // posts,
         // currentPage,
         // postsLimit,
         // loadingPosts,
         // hasMorePost,
-    },
+    }
 ) => {
     const dispatch = useDispatch();
     const {
@@ -38,8 +38,8 @@ const Home: FunctionComponent<IHomePageProps> = (
         currentPage,
         postsLimit,
         loadingPosts,
-        hasMorePost,
-    } = useSelector<IRootState, IPostsState>((s) => s.posts);
+        hasMorePost
+    } = useSelector<RootState, PostsState>(s => s.posts);
 
     const onClickLoadMorePosts = useCallback(() => {
         dispatch({
@@ -47,8 +47,8 @@ const Home: FunctionComponent<IHomePageProps> = (
             data: {
                 page: (currentPage || 0) + 1,
                 limit: postsLimit,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }, [dispatch, currentPage, postsLimit]);
 
@@ -77,9 +77,9 @@ const Home: FunctionComponent<IHomePageProps> = (
 };
 
 Home.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IHomePageProps> => {
-    const store: Store<IRootState, IBlogAction> = context.store;
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<HomePageProps> => {
+    const store: Store<RootState, BaseAction> = context.store;
     const state = store.getState();
 
     const {
@@ -87,17 +87,17 @@ Home.getInitialProps = async (
         currentPage,
         postsLimit,
         loadingPosts,
-        hasMorePost,
+        hasMorePost
     } = state.posts;
 
     if (context.isServer || !posts || posts.length === 0) {
-        store.dispatch<IBlogAction>({
+        store.dispatch<BaseAction>({
             type: actionTypes.LOAD_POSTS_CALL,
             data: {
                 page: null,
                 limit: postsLimit,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }
     return {

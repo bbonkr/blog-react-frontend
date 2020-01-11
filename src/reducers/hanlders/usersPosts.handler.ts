@@ -1,16 +1,16 @@
-import { IUsersPostsState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IListResult, IPostModel } from '../../typings/dto';
+import { UsersPostsState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { ListResult, PostModel } from '../../typings/dto';
 import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface IUserHandlerValue {
-    draft: IUsersPostsState;
-    action: IBlogAction;
+    draft: UsersPostsState;
+    action: BaseAction;
 }
 
 export class UsersPostsHandler {
-    private draft: IUsersPostsState;
-    private action: IBlogAction;
+    private draft: UsersPostsState;
+    private action: BaseAction;
 
     constructor(value: IUserHandlerValue) {
         this.draft = value.draft;
@@ -30,7 +30,7 @@ export class UsersPostsHandler {
 
     public loadUsersPostsDone(): void {
         const { records, total, user, page, username } = this.action
-            .data as IListResult<IPostModel>;
+            .data as ListResult<PostModel>;
         records.forEach((v) => {
             const postIndex = this.draft.usersPosts.findIndex(
                 (x) => x.id === v.id,

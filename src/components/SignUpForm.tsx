@@ -10,7 +10,7 @@ import Router from 'next/router';
 import { ErrorMessageWrapper } from '../styledComponents/Wrapper';
 import { actionTypes } from '../reducers/actionTypes';
 import { SignUpFormValidator } from '../helpers/SignUpFormValidator';
-import { IRootState, IUserState } from '../typings/reduxStates';
+import { RootState, UserState } from '../typings/reduxStates';
 
 const formValidator = new SignUpFormValidator();
 
@@ -53,7 +53,7 @@ const SignUpForm: FunctionComponent = () => {
         signUpInProcess,
         signUpFailMessage,
         signUpSuccess,
-    } = useSelector<IRootState, IUserState>((s) => s.user);
+    } = useSelector<RootState, UserState>((s) => s.user);
 
     useEffect(() => {
         if (signUpSuccess) {

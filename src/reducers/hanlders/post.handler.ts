@@ -1,14 +1,14 @@
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IPostState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { PostState } from '../../typings/reduxStates';
 
 export interface IPostHandlerValue {
-    draft: IPostState;
-    action: IBlogAction;
+    draft: PostState;
+    action: BaseAction;
 }
 
 export class PostHandler {
-    private draft: IPostState;
-    private action: IBlogAction;
+    private draft: PostState;
+    private action: BaseAction;
 
     constructor(value: IPostHandlerValue) {
         this.draft = value.draft;

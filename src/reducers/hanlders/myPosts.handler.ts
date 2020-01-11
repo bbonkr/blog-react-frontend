@@ -1,15 +1,15 @@
-import { IMyPostsState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IListResult, IPostModel } from '../../typings/dto';
+import { MyPostsState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { ListResult, PostModel } from '../../typings/dto';
 
 export interface IMeHandlerValue {
-    draft: IMyPostsState;
-    action: IBlogAction;
+    draft: MyPostsState;
+    action: BaseAction;
 }
 
 export class MyPostsHanlder {
-    private draft: IMyPostsState;
-    private action: IBlogAction;
+    private draft: MyPostsState;
+    private action: BaseAction;
 
     constructor(value: IMeHandlerValue) {
         this.draft = value.draft;
@@ -27,11 +27,11 @@ export class MyPostsHanlder {
         this.draft.myPostsErrorReason = '';
     }
 
-    public loadMyPostsDone(action: IBlogAction): void {
+    public loadMyPostsDone(action: BaseAction): void {
         this.draft.myPostsLoading = false;
 
-        const resultData: IListResult<IPostModel> = action.data as IListResult<
-            IPostModel
+        const resultData: ListResult<PostModel> = action.data as ListResult<
+            PostModel
         >;
 
         resultData.records.forEach((v) => {

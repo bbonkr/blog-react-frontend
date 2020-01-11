@@ -2,10 +2,10 @@ import produce from 'immer';
 import { ShowNotification } from '../components/ShowNotification';
 import { actionTypes } from './actionTypes';
 import { PostHandler } from './hanlders/post.handler';
-import { IPostState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { PostState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 
-export const initialState: IPostState = {
+export const initialState: PostState = {
     writingPost: false,
 
     /** like post */
@@ -19,7 +19,7 @@ export const initialState: IPostState = {
  * @param {*} update Likers 가 업데이트된 Post object
  */
 
-const reducer = (state: IPostState = initialState, action: IBlogAction) =>
+const reducer = (state: PostState = initialState, action: BaseAction) =>
     produce(state, (draft) => {
         // https://lannstark.github.io/nodejs/console/3
         // console.log('\u001b[34mdispatch ==> \u001b[0m', action.type);

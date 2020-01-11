@@ -1,18 +1,18 @@
-import React, { useCallback, FunctionComponent } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { PageHeader, Divider, Timeline, Button, Card, Icon } from 'antd';
-import moment from 'moment';
-import MeLayout from '../../components/MeLayout';
-import { ContentWrapper } from '../../styledComponents/Wrapper';
-import { withAuth } from '../../utils/auth';
-import Router from 'next/router';
-import { actionTypes } from '../../reducers/actionTypes';
-import { IRootState, IMeState } from '../../typings/reduxStates';
-import { IPageProps } from '../../typings/IPageProps';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { ButtonFullWidth } from '../../styledComponents/Buttons';
+import React, { useCallback, FunctionComponent } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { PageHeader, Divider, Timeline, Button, Card, Icon } from "antd";
+import moment from "moment";
+import MeLayout from "../../components/MeLayout";
+import { ContentWrapper } from "../../styledComponents/Wrapper";
+import { withAuth } from "../../utils/auth";
+import Router from "next/router";
+import { actionTypes } from "../../reducers/actionTypes";
+import { RootState, MeState } from "../../typings/reduxStates";
+import { PageProps } from "../../typings/PageProps";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../../typings/BaseAction";
+import { ButtonFullWidth } from "../../styledComponents/Buttons";
 
 const Liked: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -21,8 +21,8 @@ const Liked: FunctionComponent = () => {
         likedPostsLoading,
         likedPostsHasMore,
         likedPostsLimit,
-        likedPostPage,
-    } = useSelector<IRootState, IMeState>((s) => s.me);
+        likedPostPage
+    } = useSelector<RootState, MeState>(s => s.me);
 
     const onClickLoadMore = useCallback(() => {
         if (likedPostsHasMore) {
@@ -31,54 +31,57 @@ const Liked: FunctionComponent = () => {
                 data: {
                     page: (likedPostPage || 0) + 1,
                     limit: likedPostsLimit,
-                    keyword: '',
-                },
+                    keyword: ""
+                }
             });
         }
     }, [dispatch, likedPostsHasMore, likedPostsLimit, likedPostPage]);
 
     const onClickOpnePost = useCallback(
-        (post) => () => {
+        post => () => {
             const username = `@${post.user.username}`;
             const slug = encodeURIComponent(post.slug);
 
             Router.push(`/users/${username}/posts/${slug}`);
         },
-        [],
+        []
     );
 
     return (
         <MeLayout>
             <ContentWrapper>
-                <PageHeader title='Liked posts' />
+                <PageHeader title="Liked posts" />
                 <Divider />
                 <Timeline
                     pending={likedPostsLoading}
                     reverse={false}
-                    mode='left'>
-                    {likedPosts.map((likePost) => {
+                    mode="left"
+                >
+                    {likedPosts.map(likePost => {
                         return (
                             <Timeline.Item key={likePost.slug}>
                                 <Card
                                     title={`Liked at ${moment(
-                                        likePost.createdAt,
-                                    ).format('YYYY-MM-DD HH:mm:ss')}`}
+                                        likePost.createdAt
+                                    ).format("YYYY-MM-DD HH:mm:ss")}`}
                                     extra={
                                         <Button
-                                            type='primary'
-                                            onClick={onClickOpnePost(likePost)}>
+                                            type="primary"
+                                            onClick={onClickOpnePost(likePost)}
+                                        >
                                             Opne
                                         </Button>
-                                    }>
+                                    }
+                                >
                                     <Card.Meta
                                         title={likePost.title}
                                         description={
                                             <span>
-                                                <Icon type='clock-circle-o' />
+                                                <Icon type="clock-circle-o" />
                                                 {` ${moment(
                                                     likePost.createdAt,
-                                                    'YYYY-MM-DD HH:mm:ss',
-                                                ).fromNow()}`}{' '}
+                                                    "YYYY-MM-DD HH:mm:ss"
+                                                ).fromNow()}`}{" "}
                                             </span>
                                         }
                                     />
@@ -89,10 +92,11 @@ const Liked: FunctionComponent = () => {
                     })}
                 </Timeline>
                 <ButtonFullWidth
-                    type='primary'
+                    type="primary"
                     loading={likedPostsLoading}
                     onClick={onClickLoadMore}
-                    disabled={!likedPostsHasMore}>
+                    disabled={!likedPostsHasMore}
+                >
                     Load more
                 </ButtonFullWidth>
             </ContentWrapper>
@@ -101,8 +105,8 @@ const Liked: FunctionComponent = () => {
 };
 
 Liked.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IPageProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<PageProps> => {
     const state = context.store.getState();
     const { likedPostsLimit } = state.me;
 
@@ -111,8 +115,8 @@ Liked.getInitialProps = async (
         data: {
             page: null,
             limit: likedPostsLimit,
-            keyword: '',
-        },
+            keyword: ""
+        }
     });
 
     return {};

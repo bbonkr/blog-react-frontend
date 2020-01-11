@@ -1,85 +1,65 @@
 import createSagaMiddleware from 'redux-saga';
-import { createStore, compose, applyMiddleware, Store } from 'redux';
+import { createStore, compose, applyMiddleware, Store, Middleware } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import storage from 'redux-persist/lib/storage';
+import { persistStore, persistReducer } from 'redux-persist';
 import { rootReducer } from '../reducers';
 import { rootSaga } from '../sagas';
 import { MakeStoreOptions } from 'next-redux-wrapper';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IRootState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
+import { RootState } from '../typings/reduxStates';
 import axios from 'axios';
 import { appOptions } from '../config/appOptions';
 import getConfig from 'next/config';
+import { createLogger } from 'redux-logger';
+import { setAccessTokenMiddleware } from './setAccessTokenMiddleware';
+import { loggingMiddleware } from './loggingMiddleware';
 
 const { publicRuntimeConfig } = getConfig();
 
-export const configureStore = (
-    initialState: IRootState,
-    options: MakeStoreOptions,
-): Store<IRootState, IBlogAction> => {
-    const isProd = process.env.NODE_ENV === 'production';
+interface ReduxStore {
+    store?: Store;
+}
 
-    const sagaMiddleware = createSagaMiddleware();
-    const middlewares = [setTokenMiddleware, loggingMiddleware, sagaMiddleware];
+const bindMiddlewares = (middleware: Middleware[]) => {
+    const isProduction = process.env.NODE_ENV === 'production';
+    if (!isProduction) {
+        const reduxLoggerMiddleware = createLogger();
+        const middlewareIncludesReduxLogger = [...middleware, reduxLoggerMiddleware];
 
-    const composeEnhancers =
-        (!options.isServer &&
-            typeof window === 'object' &&
-            window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
-            window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})) ||
-        compose;
-
-    const enhancers = isProd
-        ? compose(applyMiddleware(...middlewares))
-        : composeEnhancers(applyMiddleware(...middlewares));
-
-    const store: Store<IRootState, IBlogAction> = createStore(
-        rootReducer,
-        initialState,
-        enhancers,
-    );
-
-    store.sagaTask = sagaMiddleware.run(rootSaga);
-
-    return store;
-};
-
-const loggingMiddleware = (store) => (next) => (action) => {
-    // 액션확인
-    // console.log(action);
-
-    if (publicRuntimeConfig.env !== 'production') {
-        console.debug('\u001b[34m[REDUX]: dispatch ==> \u001b[0m', action.type);
+        return composeWithDevTools(applyMiddleware(...middlewareIncludesReduxLogger));
     }
 
-    next(action);
+    return applyMiddleware(...middleware);
 };
 
-const setTokenMiddleware = (store: Store<IRootState, IBlogAction>) => (
-    next,
-) => (action: IBlogAction) => {
-    if (/_CALL$/.test(action.type)) {
-        const state = store.getState();
-        const { token } = state.user;
+export const configureStore = (initialState: RootState, options: MakeStoreOptions): Store<RootState, BaseAction> => {
+    const sagaMiddleware = createSagaMiddleware();
+    const middlewares = [setAccessTokenMiddleware, loggingMiddleware, sagaMiddleware];
+    const returnValue: ReduxStore = {};
 
-        // console.debug(
-        //     '\u001b[34m[REDUX]: Set token middleware ==> \u001b[0m',
-        //     action.type,
-        // );
-
-        axios.defaults = {
-            ...axios.defaults,
-            baseURL: `${appOptions.apiBaseUrl}/api`,
-            timeout: 180000,
+    if (options.isServer) {
+        returnValue.store = createStore(rootReducer, initialState, bindMiddlewares(middlewares));
+    } else {
+        const persistConfig = {
+            key: 'root',
+            storage,
+            blacklist: [
+                'form',
+                'connection',
+                //'initialization',
+                'messaging',
+            ],
         };
 
-        if (token) {
-            axios.defaults.headers = {
-                ...axios.defaults.headers,
-                Authorization: `bearer ${token}`,
-            };
+        const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-            // console.debug('[AXIOS] request config:', axios.defaults);
-        }
+        returnValue.store = createStore(persistedReducer, initialState, bindMiddlewares(middlewares));
+        const persistedStore = persistStore(returnValue.store);
+        returnValue.store.persistStore = persistedStore;
     }
 
-    next(action);
+    returnValue.store.sagaTask = sagaMiddleware.run(rootSaga);
+
+    return returnValue.store;
 };

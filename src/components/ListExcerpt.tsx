@@ -3,8 +3,8 @@ import React, {
     useState,
     FunctionComponent,
     useCallback,
-    useMemo,
-} from 'react';
+    useMemo
+} from "react";
 import {
     Button,
     Divider,
@@ -14,22 +14,22 @@ import {
     Spin,
     Row,
     Col,
-    List,
-} from 'antd';
-import StackGrid from 'react-stack-grid';
-import moment from 'moment';
-import IconText from './IconText';
-import LinkCategory from './LinkCategory';
-import LinkTag from './LinkTag';
-import LinkSinglePost from './LinkSinglePost';
-import LinkUsersPosts from './LinkUsersPosts';
-import UserAvatar from './UserAvatar';
-import IconLike from './IconLike';
-import { IPostModel } from '../typings/dto';
-import { appOptions } from '../config/appOptions';
-import { ButtonFullWidth } from '../styledComponents/Buttons';
-import { IPageProps } from '../typings/IPageProps';
-import styled from 'styled-components';
+    List
+} from "antd";
+import StackGrid from "react-stack-grid";
+import moment from "moment";
+import IconText from "./IconText";
+import LinkCategory from "./LinkCategory";
+import LinkTag from "./LinkTag";
+import LinkSinglePost from "./LinkSinglePost";
+import LinkUsersPosts from "./LinkUsersPosts";
+import UserAvatar from "./UserAvatar";
+import IconLike from "./IconLike";
+import { PostModel } from "../typings/dto";
+import { appOptions } from "../config/appOptions";
+import { ButtonFullWidth } from "../styledComponents/Buttons";
+import { PageProps } from "../typings/PageProps";
+import styled from "styled-components";
 
 const CroppedFigure = styled.figure`
     max-width: 10rem;
@@ -47,71 +47,71 @@ const CroppedFigure = styled.figure`
     }
 `;
 
-export interface IListExceptProps extends IPageProps {
-    posts: IPostModel[];
+export interface ListExceptProps extends PageProps {
+    posts: PostModel[];
     loading: boolean;
     hasMore: boolean;
     postsCount?: number;
     loadMoreHandler: () => void;
 }
 
-const ListExcerpt: FunctionComponent<IListExceptProps> = ({
+const ListExcerpt: FunctionComponent<ListExceptProps> = ({
     posts,
     loading,
     hasMore,
     loadMoreHandler,
-    postsCount,
+    postsCount
 }) => {
     // const { me } = useSelector<IRootState, IUserState>(s => s.user);
     const [documentElementWidth, setDocumentElementWidth] = useState(0);
 
     const stackGridColumnWidth = useMemo(() => {
-        let columnWidth = '100%';
+        let columnWidth = "100%";
 
         // if (documentElementWidth > 576) {
         //     columnWidth = '50%';
         // }
 
         if (documentElementWidth > 768) {
-            columnWidth = '50%'; //'33.33%';
+            columnWidth = "50%"; //'33.33%';
         }
 
         if (documentElementWidth > 992) {
-            columnWidth = '33.33%'; // '25.0%';
+            columnWidth = "33.33%"; // '25.0%';
         }
 
         if (documentElementWidth > 1200) {
-            columnWidth = '25.0%'; //'20%';
+            columnWidth = "25.0%"; //'20%';
         }
 
         return columnWidth;
     }, [documentElementWidth]);
 
     const hideCoverImage = useMemo(() => {
-        return stackGridColumnWidth === '100%';
+        return stackGridColumnWidth === "100%";
     }, [documentElementWidth]);
 
     useEffect(() => {
         setDocumentElementWidth(window.document.documentElement.clientWidth);
 
-        const images = document.getElementsByTagName('img');
+        const images = document.getElementsByTagName("img");
 
         for (let i = 0; i < images.length; i++) {
             const img = images.item(i);
-            if (img.src.startsWith('/')) {
+            if (img.src.startsWith("/")) {
                 img.src = `${appOptions.apiBaseUrl}${img.src}`;
             }
         }
         const onResize = () => {
             setDocumentElementWidth(
-                window.document.documentElement.clientWidth,
+                window.document.documentElement.clientWidth
             );
         };
 
-        window.addEventListener('resize', onResize);
+        window.addEventListener("resize", onResize);
 
         return () => {
-            window.removeEventListener('resize', onResize);
+            window.removeEventListener("resize", onResize);
         };
     }, []);
 
@@ -226,18 +226,18 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
     //     });
     // };
 
-    const renderPostsWithList = (posts: IPostModel[]) => {
+    const renderPostsWithList = (posts: PostModel[]) => {
         return (
             <List
-                style={{ backgroundColor: '#FFFFFF' }}
+                style={{ backgroundColor: "#FFFFFF" }}
                 bordered={true}
-                itemLayout='vertical'
-                size='large'
+                itemLayout="vertical"
+                size="large"
                 dataSource={posts}
-                renderItem={(post: IPostModel) => {
+                renderItem={(post: PostModel) => {
                     const { title, excerpt, createdAt } = post;
                     let coverSrc = post.coverImage;
-                    if (coverSrc && coverSrc.startsWith('/')) {
+                    if (coverSrc && coverSrc.startsWith("/")) {
                         coverSrc = `${appOptions.apiBaseUrl}${coverSrc}`;
                     }
                     return (
@@ -245,7 +245,7 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                             key={post.slug}
                             actions={[
                                 <IconText
-                                    type='eye'
+                                    type="eye"
                                     text={`${
                                         post.accessLogs &&
                                         post.accessLogs.length > 0
@@ -253,7 +253,7 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                                             : 0
                                     }`}
                                 />,
-                                <IconLike post={post} />,
+                                <IconLike post={post} />
                             ]}
                             extra={
                                 !hideCoverImage &&
@@ -262,7 +262,8 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                                         <img src={coverSrc} alt={post.title} />
                                     </CroppedFigure>
                                 )
-                            }>
+                            }
+                        >
                             <List.Item.Meta
                                 avatar={
                                     <LinkUsersPosts user={post.user}>
@@ -275,15 +276,16 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                                             level={3}
                                             ellipsis={{
                                                 rows: 2,
-                                                expandable: false,
-                                            }}>
+                                                expandable: false
+                                            }}
+                                        >
                                             {title}
                                         </Typography.Title>
                                     </LinkSinglePost>
                                 }
                                 description={
                                     post.categories &&
-                                    post.categories.map((category) => {
+                                    post.categories.map(category => {
                                         return (
                                             <LinkCategory
                                                 key={category.slug}
@@ -296,13 +298,14 @@ const ListExcerpt: FunctionComponent<IListExceptProps> = ({
                             />
 
                             <Typography.Paragraph
-                                ellipsis={{ rows: 4, expandable: false }}>
+                                ellipsis={{ rows: 4, expandable: false }}
+                            >
                                 {post.excerpt}
                             </Typography.Paragraph>
                             {/* <Divider /> */}
                             <div>
                                 {post.tags &&
-                                    post.tags.map((v) => {
+                                    post.tags.map(v => {
                                         return <LinkTag tag={v} key={v.slug} />;
                                     })}
                             </div>

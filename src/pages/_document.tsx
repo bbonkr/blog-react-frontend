@@ -1,38 +1,38 @@
-import React from 'react';
+import React from "react";
 import Document, {
     Head,
     Main,
     NextScript,
     DocumentContext,
     DocumentInitialProps,
-    DocumentProps,
-} from 'next/document';
-import { ServerStyleSheet } from 'styled-components';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IRootState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IPageProps } from '../typings/IPageProps';
-import { appOptions } from '../config/appOptions';
+    DocumentProps
+} from "next/document";
+import { ServerStyleSheet } from "styled-components";
+import { NextJSContext } from "next-redux-wrapper";
+import { RootState } from "../typings/reduxStates";
+import { BaseAction } from "../typings/BaseAction";
+import { PageProps } from "../typings/PageProps";
+import { appOptions } from "../config/appOptions";
 
-export interface IBlogDocumentProps extends IPageProps, DocumentInitialProps {
+export interface BlogDocumentPageProps extends PageProps, DocumentInitialProps {
     // helmet: HelmetData;
     // styleTags: React.ReactElement<{}>[];
     isProduction: boolean;
 }
 
-class BlogDocument extends Document<IBlogDocumentProps> {
+class BlogDocument extends Document<BlogDocumentPageProps> {
     public static async getInitialProps(
-        ctx: DocumentContext & NextJSContext<IRootState, IBlogAction>,
-    ): Promise<IBlogDocumentProps> {
+        ctx: DocumentContext & NextJSContext<RootState, BaseAction>
+    ): Promise<BlogDocumentPageProps> {
         const styleSheet = new ServerStyleSheet();
         const originalRenderPage = ctx.renderPage;
-        const isProduction = process.env.NODE_ENV === 'production';
+        const isProduction = process.env.NODE_ENV === "production";
 
         try {
             ctx.renderPage = () =>
                 originalRenderPage({
-                    enhanceApp: (App) => (props) =>
-                        styleSheet.collectStyles(<App {...props} />),
+                    enhanceApp: App => props =>
+                        styleSheet.collectStyles(<App {...props} />)
                 });
 
             const initialProps = await Document.getInitialProps(ctx);
@@ -45,7 +45,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                         {styleSheet.getStyleElement()}
                     </>
                 ),
-                isProduction,
+                isProduction
             };
         } finally {
             styleSheet.seal();
@@ -61,7 +61,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
     private addGoogleAnalyticsScript() {
         if (!this.hasGoogleAnalyticsTraceId()) {
             return {
-                __html: null,
+                __html: null
             };
         }
 
@@ -72,7 +72,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
               gtag('js', new Date());
 
               gtag('config', '${appOptions.googleAnalyticsTraceId}');
-            `,
+            `
         };
     }
 
@@ -85,13 +85,13 @@ class BlogDocument extends Document<IBlogDocumentProps> {
 
         // const { htmlAttributes, bodyAttributes, ...helmet } = this.props.helmet;
 
-        const prefixDir = '/_next/';
-        const cssFiles = this.props.files.filter((v) => v.endsWith('.css'));
+        const prefixDir = "/_next/";
+        const cssFiles = this.props.files.filter(v => v.endsWith(".css"));
 
         // const htmlAttrs = htmlAttributes.toComponent();
         // const bodyAttrs = bodyAttributes.toComponent();
 
-        const prod = process.env.NODE_ENV === 'production';
+        const prod = process.env.NODE_ENV === "production";
         /* IE 지원하려면 true */
         const ieSupport = false;
 
@@ -99,7 +99,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
         // {...htmlAttrs} {...bodyAttrs}
         // console.debug('[APP] styles: ', this.props.styles);
         return (
-            <html lang='ko'>
+            <html lang="ko">
                 <Head>
                     {this.props.styles}
                     {/* {this.props.styleTags && this.props.styleTags.map((v) => v)} */}
@@ -125,7 +125,7 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                     <Main />
                     {/** IE supports */ this.props.isProduction &&
                         ieSupport && (
-                            <script src='https://polyfill.io/v3/polyfill.min.js?features=es7%2Ces6%2Ces5%2Ces2017%2Ces2016%2Ces2015' />
+                            <script src="https://polyfill.io/v3/polyfill.min.js?features=es7%2Ces6%2Ces5%2Ces2017%2Ces2016%2Ces2015" />
                         )}
                     <NextScript />
 
@@ -134,7 +134,8 @@ class BlogDocument extends Document<IBlogDocumentProps> {
                             <>
                                 <script
                                     async
-                                    src={`https://www.googletagmanager.com/gtag/js?id=${appOptions.googleAnalyticsTraceId}`}></script>
+                                    src={`https://www.googletagmanager.com/gtag/js?id=${appOptions.googleAnalyticsTraceId}`}
+                                ></script>
                                 <script
                                     dangerouslySetInnerHTML={this.addGoogleAnalyticsScript()}
                                 />

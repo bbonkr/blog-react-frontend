@@ -1,18 +1,18 @@
-import React, { useEffect, FunctionComponent } from 'react';
-import { Card, Divider, Avatar, Typography, Icon, PageHeader } from 'antd';
-import LinkCategory from './LinkCategory';
-import LinkTag from './LinkTag';
-import LinkSinglePost from './LinkSinglePost';
-import UserAvatar from './UserAvatar';
-import moment from 'moment';
-import LinkUsersPosts from './LinkUsersPosts';
-import IconLike from './IconLike';
-import { IPostModel } from '../typings/dto';
-import Prism from 'prismjs';
+import React, { useEffect, FunctionComponent } from "react";
+import { Card, Divider, Avatar, Typography, Icon, PageHeader } from "antd";
+import LinkCategory from "./LinkCategory";
+import LinkTag from "./LinkTag";
+import LinkSinglePost from "./LinkSinglePost";
+import UserAvatar from "./UserAvatar";
+import moment from "moment";
+import LinkUsersPosts from "./LinkUsersPosts";
+import IconLike from "./IconLike";
+import { PostModel } from "../typings/dto";
+import Prism from "prismjs";
 // import {} from 'prism/plugins'
-import { appOptions } from '../config/appOptions';
-import Loading from './Loading';
-import Paragraph from 'antd/lib/skeleton/Paragraph';
+import { appOptions } from "../config/appOptions";
+import Loading from "./Loading";
+import Paragraph from "antd/lib/skeleton/Paragraph";
 // import prismjsShowLanguage from 'prismjs/plugins/show-language/prism-show-language';
 // import prismjsLineNumbers from 'prismjs/plugins/line-numbers/prism-line-numbers';
 
@@ -21,11 +21,11 @@ import Paragraph from 'antd/lib/skeleton/Paragraph';
 // import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 // import '../styles/singlepost.css';
 
-export interface ISinglePostProps {
-    post: IPostModel;
+export interface SinglePostProps {
+    post: PostModel;
 }
 
-const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
+const SinglePost: FunctionComponent<SinglePostProps> = ({ post }) => {
     useEffect(() => {
         Prism.highlightAll();
         // prismjsShowLanguage();
@@ -57,7 +57,7 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
     }, []);
 
     let coverImage = post.coverImage;
-    if (coverImage && coverImage.startsWith('/')) {
+    if (coverImage && coverImage.startsWith("/")) {
         coverImage = `${appOptions.apiBaseUrl}${coverImage}`;
     }
 
@@ -65,7 +65,7 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
     let html =
         post.html &&
         post.html.replace(findImgSrcRegex, (imgTag, imgTagSrc) => {
-            if (imgTag && imgTagSrc && imgTagSrc.startsWith('/')) {
+            if (imgTag && imgTagSrc && imgTagSrc.startsWith("/")) {
                 let url = imgTagSrc;
                 url = `${appOptions.apiBaseUrl}${url}`;
 
@@ -81,7 +81,8 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                     post.coverImage && (
                         <img src={`${coverImage}`} alt={`${post.title}`} />
                     )
-                }>
+                }
+            >
                 <Card.Meta
                     avatar={
                         <LinkUsersPosts user={post.user}>
@@ -90,21 +91,21 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                     }
                     title={
                         <div>
-                            <div style={{ float: 'left' }}>
+                            <div style={{ float: "left" }}>
                                 <LinkSinglePost post={post}>
                                     <Typography.Title level={3} ellipsis={true}>
                                         {post.title}
                                     </Typography.Title>
                                 </LinkSinglePost>
                             </div>
-                            <div style={{ float: 'right' }}>
+                            <div style={{ float: "right" }}>
                                 <IconLike post={post} />
                             </div>
                         </div>
                     }
                     description={
                         post.categories &&
-                        post.categories.map((category) => {
+                        post.categories.map(category => {
                             return (
                                 <LinkCategory
                                     key={category.slug}
@@ -115,12 +116,12 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                         })
                     }
                 />
-                <Divider orientation='right'>
+                <Divider orientation="right">
                     <span>
-                        <Icon type='clock-circle' />{' '}
+                        <Icon type="clock-circle" />{" "}
                         {moment(
                             new Date(post.createdAt),
-                            'YYYY-MM-DD HH:mm:ss',
+                            "YYYY-MM-DD HH:mm:ss"
                         ).fromNow()}
                     </span>
                 </Divider>
@@ -128,14 +129,14 @@ const SinglePost: FunctionComponent<ISinglePostProps> = ({ post }) => {
                 <div
                     className={`article-post`}
                     dangerouslySetInnerHTML={{
-                        __html: html,
+                        __html: html
                     }}
                 />
 
                 <Divider dashed={true} />
 
                 {post.tags &&
-                    post.tags.map((v) => {
+                    post.tags.map(v => {
                         return <LinkTag key={v.slug} tag={v} />;
                     })}
             </Card>

@@ -1,29 +1,29 @@
 import {
-    IPostModel,
-    ICategoryModel,
-    ITagModel,
-    IUserModel,
-    IImageModel,
+    PostModel,
+    CategoryModel,
+    TagModel,
+    UserModel,
+    ImageModel,
 } from './dto';
 
-export interface IRootState {
-    user: IUserState;
-    post: IPostState;
-    category: ICategoryState;
-    settings?: ISettingState;
-    me: IMeState;
-    myPosts: IMyPostsState;
-    myCategories: IMyCategoriesState;
-    mediaFiles: IMediaFilesState;
-    posts: IPostsState;
-    tagPosts: ITagPostsState;
-    userCategoryPosts: IUserCategoryPostsState;
-    searchPosts: ISearchPostsState;
-    usersPosts: IUsersPostsState;
-    singlePost: ISinglePostState;
+export interface RootState {
+    user: UserState;
+    post: PostState;
+    category: CategoryState;
+    settings?: SettingState;
+    me: MeState;
+    myPosts: MyPostsState;
+    myCategories: MyCategoriesState;
+    mediaFiles: MediaFilesState;
+    posts: PostsState;
+    tagPosts: TagPostsState;
+    userCategoryPosts: UserCategoryPostsState;
+    searchPosts: SearchPostsState;
+    usersPosts: UsersPostsState;
+    singlePost: SinglePostState;
 }
 
-export interface IMeState {
+export interface MeState {
     // myPost: IPostModel;
     // loadingMyPost: boolean;
 
@@ -47,7 +47,7 @@ export interface IMeState {
     // categoriesCurrentPage: number;
 
     // tag
-    tags: ITagModel[];
+    tags: TagModel[];
     loadingTags: boolean;
 
     TagsErrorReason?: string;
@@ -72,7 +72,7 @@ export interface IMeState {
     sideMenuCollapsed: boolean;
 
     // liked
-    likedPosts: IPostModel[];
+    likedPosts: PostModel[];
     likedPostsLoading: boolean;
     likedPostsKeyword?: string;
     likedPostsErrorReason?: string;
@@ -92,12 +92,12 @@ export interface IMeState {
     statReadErrorReason?: string;
 }
 
-export interface ICategoryState {
-    categories: ICategoryModel[];
+export interface CategoryState {
+    categories: CategoryModel[];
     loadingCategories: boolean;
 }
 
-export interface IPostState {
+export interface PostState {
     /** posts */
     // posts: IPostModel[];
     // /** posts loading */
@@ -162,13 +162,13 @@ export interface IPostState {
     likePostErrorMessage?: string;
 }
 
-export interface ISettingState {
+export interface SettingState {
     currentUrl: string;
     // baseUrl: string;
 }
 
-export interface IUserState {
-    me: IUserModel;
+export interface UserState {
+    me: UserModel;
     signInFailMessage?: string;
     signInInProcess: boolean;
     token?: string;
@@ -213,8 +213,8 @@ export interface IUserState {
     unregisterSuccess: boolean;
 }
 
-export interface IPostsState {
-    posts: IPostModel[];
+export interface PostsState {
+    posts: PostModel[];
     /** posts loading */
     loadingPosts: boolean;
     hasMorePost: boolean;
@@ -225,38 +225,38 @@ export interface IPostsState {
     searchKeyword: string;
 }
 
-export interface ITagPostsState {
+export interface TagPostsState {
     /** tag posts */
-    tagPosts: IPostModel[];
+    tagPosts: PostModel[];
     // tagPostsPageToken: string;
     tagPostsLoading: boolean;
     tagPostsErrorReason?: string;
     tagPostsHasMore: boolean;
     tagPostsKeyword: string;
-    currentTag: ITagModel;
+    currentTag: TagModel;
     currentTagSlug: string;
     hasMorePost: boolean;
     postsLimit: number;
     currentPage?: number;
 }
 
-export interface IUserCategoryPostsState {
-    userCategoryPosts: IPostModel[];
+export interface UserCategoryPostsState {
+    userCategoryPosts: PostModel[];
     // userCategoryPostsPageToken?: string;
     userCategoryPostsLoading: boolean;
     userCategoryPostsErrorReason?: string;
     userCategoryPostsHasMore: boolean;
     userCategoryPostsKeyword?: string;
     currentUserCategory?: string; // 현재 사용자 분류; `${user}${category}`; 데이터 소스 초기화에 사용
-    userCategoryPostsUser: IUserModel;
-    userCategoryPostsCategory: ICategoryModel;
+    userCategoryPostsUser: UserModel;
+    userCategoryPostsCategory: CategoryModel;
     postsLimit: number;
     currentPage?: number;
 }
 
-export interface ISearchPostsState {
+export interface SearchPostsState {
     /** search posts */
-    searchPosts: IPostModel[];
+    searchPosts: PostModel[];
     // searchPostsPageToken?: string;
     searchPostsLoading: boolean;
     searchPostsErrorReason?: string;
@@ -266,21 +266,21 @@ export interface ISearchPostsState {
     searchPostsCurrentPage: number;
 }
 
-export interface IUsersPostsState {
+export interface UsersPostsState {
     /** users posts */
-    usersPosts: IPostModel[];
+    usersPosts: PostModel[];
     // usersPostsPageToken?: string;
     currentPage?: number;
     loadingUsersPosts: boolean;
     loadUsersPostsErrorReason?: string;
     hasMoreUsersPosts: boolean;
-    currentUser?: IUserModel;
+    currentUser?: UserModel;
     currentUsername?: string; // 현재 선택된 사용자; 데이터 소스 초기화에 사용
     postsLimit: number;
 }
 
-export interface ISinglePostState {
-    singlePost?: IPostModel;
+export interface SinglePostState {
+    singlePost?: PostModel;
     loadSinglePostErrorReason?: string;
 
     /** post loading  */
@@ -289,9 +289,9 @@ export interface ISinglePostState {
     // currentCategory?: string;
 }
 
-export interface IMyPostsState {
+export interface MyPostsState {
     // myPosts
-    myPosts: IPostModel[];
+    myPosts: PostModel[];
     myPostsLoading: boolean;
     myPostsLimit: number;
     myPostsHasMore: boolean;
@@ -301,7 +301,7 @@ export interface IMyPostsState {
     myPostsErrorReason?: string;
 
     // myPost
-    myPost: IPostModel;
+    myPost: PostModel;
     myPostLoading: boolean;
     myPostErrorReason?: string;
 
@@ -309,8 +309,8 @@ export interface IMyPostsState {
     writePostErrorReason?: string;
 }
 
-export interface IMyCategoriesState {
-    categories: ICategoryModel[];
+export interface MyCategoriesState {
+    categories: CategoryModel[];
     categoriesLoading: boolean;
     categoriesErrorReason?: string;
     categoriesHasMore: boolean;
@@ -319,9 +319,9 @@ export interface IMyCategoriesState {
     categoriesCurrentPage: number;
 }
 
-export interface IMediaFilesState {
+export interface MediaFilesState {
     // media
-    mediaFiles: IImageModel[];
+    mediaFiles: ImageModel[];
     // mediaFilesNextPageToken?: string;
     mediaFilesSearchKeyword?: string;
     mediaFilesCurrentPage?: number;

@@ -1,10 +1,10 @@
-import { ISearchPostsState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
+import { SearchPostsState } from '../typings/reduxStates';
+import { BaseAction } from '../typings/BaseAction';
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
 import { applyUpdatedPostLikers } from './helpers/updatePostLikers';
 
-export const initialState: ISearchPostsState = {
+export const initialState: SearchPostsState = {
     searchPosts: [],
     searchPostsLoading: false,
     searchPostsErrorReason: '',
@@ -15,8 +15,8 @@ export const initialState: ISearchPostsState = {
 };
 
 export const searchPosts = (
-    state: ISearchPostsState = initialState,
-    action: IBlogAction,
+    state: SearchPostsState = initialState,
+    action: BaseAction,
 ) =>
     produce(state, (draft) => {
         switch (action.type) {

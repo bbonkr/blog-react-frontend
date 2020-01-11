@@ -1,52 +1,49 @@
-import React, { Fragment } from 'react';
-import App, { AppContext, AppInitialProps } from 'next/app';
-import Router from 'next/router';
-import { Store } from 'redux';
-import withRedux, { NextJSAppContext, NextJSContext } from 'next-redux-wrapper';
-import withReduxSaga from 'next-redux-saga';
-import { Provider } from 'react-redux';
-import Helmet, { HelmetProps } from 'react-helmet';
-import AppLayout from '../components/AppLayout';
-import { configureStore } from '../store';
-import { normalizeReturnUrl } from '../helpers/stringHelper';
-import { appOptions } from '../config/appOptions';
-import { IPageProps } from '../typings/IPageProps';
-import { actionTypes } from '../reducers/actionTypes';
-import { IRootState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
-import { NextPageContext } from 'next';
-import { trackPageView } from '../helpers/trackPageView';
+import React, { Fragment } from "react";
+import App, { AppContext, AppInitialProps } from "next/app";
+import Router from "next/router";
+import { Store } from "redux";
+import withRedux, { NextJSAppContext, NextJSContext } from "next-redux-wrapper";
+import withReduxSaga from "next-redux-saga";
+import { Provider } from "react-redux";
+import Helmet, { HelmetProps } from "react-helmet";
+import AppLayout from "../components/AppLayout";
+import { configureStore } from "../store";
+import { normalizeReturnUrl } from "../helpers/stringHelper";
+import { appOptions } from "../config/appOptions";
+import { PageProps } from "../typings/PageProps";
+import { actionTypes } from "../reducers/actionTypes";
+import { RootState } from "../typings/reduxStates";
+import { BaseAction } from "../typings/BaseAction";
+import { NextPageContext } from "next";
+import { trackPageView } from "../helpers/trackPageView";
 
-import 'antd/dist/antd.css';
-import '../styles/styles.scss';
+import "antd/dist/antd.css";
+import "../styles/styles.scss";
 
-export interface IBlogAppProp extends IPageProps {
+export interface BlogAppPageProps extends PageProps {
     Component: Element;
     store: Store;
-    pageProps?: IPageProps;
+    pageProps?: PageProps;
     returnUrl?: string;
 }
 
 // type BlogAppContext = AppContext & NextJSAppContext;
 
-class BlogApp extends App<IBlogAppProp> {
+class BlogApp extends App<BlogAppPageProps> {
     public static async getInitialProps(
-        context: AppContext & NextJSAppContext,
+        context: AppContext & NextJSAppContext
     ): Promise<AppInitialProps> {
-        // console.debug('[APP] _app getInitialProps');
-        // const { ctx, Component } = context;
-
-        const ctx: NextPageContext & NextJSContext<IRootState, IBlogAction> =
+        const ctx: NextPageContext & NextJSContext<RootState, BaseAction> =
             context.ctx;
         const Component = context.Component;
 
-        let pageProps: IPageProps = {};
+        let pageProps: PageProps = {};
 
         const state = ctx.store.getState();
-        const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
+        const cookie = ctx.isServer ? ctx.req.headers.cookie : "";
 
         const { me, token } = state.user;
-        let url: string = '';
+        let url: string = "";
 
         // HTTP 요청시 쿠키 추가
         // if (ctx.isServer && cookie) {
@@ -55,7 +52,7 @@ class BlogApp extends App<IBlogAppProp> {
 
             if (!me && token) {
                 ctx.store.dispatch({
-                    type: actionTypes.ME_CALL,
+                    type: actionTypes.ME_CALL
                 });
             }
         }
@@ -76,7 +73,7 @@ class BlogApp extends App<IBlogAppProp> {
 
             ctx.store.dispatch({
                 type: actionTypes.SET_CURRENT_URL,
-                data: { url },
+                data: { url }
             });
         }
 
@@ -90,99 +87,62 @@ class BlogApp extends App<IBlogAppProp> {
         return { pageProps };
     }
 
-    // private handleRouteChangeComplete(url) {
-    //     // console.info(`[ROUTER]: routeChangeComplete ==> ${url}`);
-
-    //     trackPageView(url);
-    // }
-
-    // componentDidMount() {
-    //     console.info('[APP]: _app componentDidMount');
-    //     Router.events.on('routeChangeComplete', this.handleRouteChangeComplete);
-    // }
-
-    // componentWillUnmount() {
-    //     Router.events.off(
-    //         'routeChangeComplete',
-    //         this.handleRouteChangeComplete,
-    //     );
-    // }
-
     public render() {
         const { Component, store, pageProps, returnUrl } = this.props;
         const fbAdmin = appOptions.fbAdmin;
-        const siteName = appOptions.title || 'nodeblog';
+        const siteName = appOptions.title || "blog Service";
 
         const helmetProps: HelmetProps = {
-            title: 'NodeBlog',
-            htmlAttributes: { lang: 'ko' },
+            title: siteName,
+            htmlAttributes: { lang: "ko" },
             meta: [
-                { charSet: 'UTF-8' },
+                { charSet: "UTF-8" },
                 {
-                    name: 'viewport',
+                    name: "viewport",
                     content:
-                        'width=device-width,minimum-scale=1,initial-scale=1',
+                        "width=device-width,minimum-scale=1,initial-scale=1"
                 },
-                { httpEquiv: 'X-UA-Compatible', content: 'IE-edge' },
-                { name: 'description', content: siteName },
-                { name: 'og:title', content: siteName },
-                { name: 'og:site_name', content: '' },
-                { name: 'og:description', content: siteName },
-                { name: 'og:type', content: 'website' },
-                { name: 'fb:admins', content: fbAdmin },
+                { httpEquiv: "X-UA-Compatible", content: "IE-edge" },
+                { name: "description", content: siteName },
+                { name: "og:title", content: siteName },
+                { name: "og:site_name", content: "" },
+                { name: "og:description", content: siteName },
+                { name: "og:type", content: "website" },
+                { name: "fb:admins", content: fbAdmin },
                 {
-                    name: 'og:site_name',
-                    content: siteName,
-                },
+                    name: "og:site_name",
+                    content: siteName
+                }
             ],
             link: [
                 {
-                    rel: 'shortcut icon',
-                    href: '/favicon.ico',
-                    type: 'image/x-icon',
+                    rel: "shortcut icon",
+                    href: "/favicon.ico",
+                    type: "image/x-icon"
                 },
                 {
-                    rel: 'apple-touch-icon',
-                    href: '/bbon-icon.png',
-                    sizes: '512x512',
+                    rel: "apple-touch-icon",
+                    href: "/bbon-icon.png",
+                    sizes: "512x512"
                 },
                 // users-posts users
                 {
-                    rel: 'me',
-                    href: 'https://www.facebook.com/bbonkr',
+                    rel: "me",
+                    href: "https://www.facebook.com/bbonkr"
                 },
                 {
-                    rel: 'author',
-                    type: 'text/plain',
-                    href: '/humans.txt',
-                },
-                // {
-                //     rel: 'stylesheet',
-                //     href:
-                //         'https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.css',
-                // },
-                // {
-                //     rel: 'stylesheet',
-                //     href:
-                //         'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css',
-                //     type: 'text/css',
-                // },
-                // {
-                //     rel: 'stylesheet',
-                //     href:
-                //         'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css',
-                //     type: 'text/css',
-                // },
+                    rel: "author",
+                    type: "text/plain",
+                    href: "/humans.txt"
+                }
             ],
             script: [
                 {
                     src:
-                        'https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.js',
-                },
-            ],
+                        "https://cdnjs.cloudflare.com/ajax/libs/antd/3.18.2/antd.js"
+                }
+            ]
         };
-
-        // console.info('[APP] _app render');
 
         return (
             <Fragment>

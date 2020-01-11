@@ -1,4 +1,4 @@
-import { IDictionary } from '../typings/IDictionary';
+import { Dictionary } from '../typings/Dictionary';
 
 /**
  * URL과 쿼리 정보를 사용해서 URL을 작성합니다.
@@ -9,7 +9,7 @@ import { IDictionary } from '../typings/IDictionary';
  */
 export const normalizeReturnUrl = (
     pathname: string = '',
-    query: IDictionary<any> = {},
+    query: Dictionary<any> = {},
 ) => {
     let url = pathname;
     if (!!query) {

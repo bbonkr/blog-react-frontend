@@ -1,25 +1,25 @@
-import React, { useCallback, FunctionComponent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Head from 'next/head';
-import DefaultLayout from '../../components/DefaultLayout';
-import { ContentWrapper } from '../../styledComponents/Wrapper';
-import ListExcerpt from '../../components/ListExcerpt';
-import { PageHeader, Divider, Spin, Skeleton } from 'antd';
-import UserAvatar from '../../components/UserAvatar';
-import LinkUsersPosts from '../../components/LinkUsersPosts';
-import { actionTypes } from '../../reducers/actionTypes';
-import { IRootState, IUserCategoryPostsState } from '../../typings/reduxStates';
-import { appOptions } from '../../config/appOptions';
+import React, { useCallback, FunctionComponent } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Head from "next/head";
+import DefaultLayout from "../../components/DefaultLayout";
+import { ContentWrapper } from "../../styledComponents/Wrapper";
+import ListExcerpt from "../../components/ListExcerpt";
+import { PageHeader, Divider, Spin, Skeleton } from "antd";
+import UserAvatar from "../../components/UserAvatar";
+import LinkUsersPosts from "../../components/LinkUsersPosts";
+import { actionTypes } from "../../reducers/actionTypes";
+import { RootState, UserCategoryPostsState } from "../../typings/reduxStates";
+import { appOptions } from "../../config/appOptions";
 // import Helmet from 'react-helmet';
 
-export interface IUserCategoryPostsProps {
+export interface UserCategoryPostsPageProps {
     user: string;
     category: string;
 }
 
-const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
+const UserCategoryPosts: FunctionComponent<UserCategoryPostsPageProps> = ({
     user,
-    category,
+    category
 }) => {
     const siteName = appOptions.title;
     const dispatch = useDispatch();
@@ -30,9 +30,9 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
         postsLimit,
         userCategoryPostsCategory,
         userCategoryPostsUser,
-        currentPage,
-    } = useSelector<IRootState, IUserCategoryPostsState>(
-        (s) => s.userCategoryPosts,
+        currentPage
+    } = useSelector<RootState, UserCategoryPostsState>(
+        s => s.userCategoryPosts
     );
 
     const onClickLoadMore = useCallback(() => {
@@ -48,8 +48,8 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
                 category: category,
                 page: (currentPage || 0) + 1,
                 limit: postsLimit,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }, [category, dispatch, postsLimit, user, currentPage]);
 
@@ -69,7 +69,7 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
         <>
             <Head>
                 <title>{title}</title>
-                <meta name='og:title' content={title} />
+                <meta name="og:title" content={title} />
             </Head>
             <DefaultLayout>
                 <ContentWrapper>
@@ -79,7 +79,8 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
                                 <div>
                                     <span>CATEGORY: </span>
                                     <LinkUsersPosts
-                                        user={userCategoryPostsUser}>
+                                        user={userCategoryPostsUser}
+                                    >
                                         <UserAvatar
                                             user={userCategoryPostsUser}
                                         />
@@ -105,14 +106,14 @@ const UserCategoryPosts: FunctionComponent<IUserCategoryPostsProps> = ({
     );
 };
 
-UserCategoryPosts.getInitialProps = async (context) => {
+UserCategoryPosts.getInitialProps = async context => {
     const state = context.store.getState();
     const { user, category } = context.query;
     const {
         userCategoryPosts,
         postsLimit,
-        currentUserCategory,
-    }: IUserCategoryPostsState = state.userCategoryPosts;
+        currentUserCategory
+    }: UserCategoryPostsState = state.userCategoryPosts;
 
     if (
         context.isServer ||
@@ -129,8 +130,8 @@ UserCategoryPosts.getInitialProps = async (context) => {
                 // pageToken: null,
                 // page: null,
                 limit: postsLimit,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }
     return { user, category };

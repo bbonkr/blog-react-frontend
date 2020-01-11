@@ -1,8 +1,8 @@
 import { FormValidationResult } from './FormValidationResult';
 import { FormValidator } from './FormValidator';
-import { IChangeInfoFormValues } from '../typings/IValidatorInputValues';
+import { ChangeInfoFormValues } from '../typings/ValidatorInputValues';
 export class ChangeInfoValidator extends FormValidator {
-    public validate(formData: IChangeInfoFormValues) {
+    public validate(formData: ChangeInfoFormValues) {
         const result: FormValidationResult = new FormValidationResult([
             this.checkEmail(formData),
             this.checkUsername(formData),

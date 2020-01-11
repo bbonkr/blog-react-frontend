@@ -1,13 +1,13 @@
 import { FormValidationResult } from './FormValidationResult';
 import { FormValidator } from './FormValidator';
 import {
-    ISignupFormValues,
-    IFormValidationResult,
-} from '../typings/IValidatorInputValues';
+    SignupFormValues,
+    FormValidationResultValue,
+} from '../typings/ValidatorInputValues';
 
 export class SignUpFormValidator extends FormValidator {
-    public validate(formValues: ISignupFormValues): IFormValidationResult {
-        const validationResult: IFormValidationResult = new FormValidationResult(
+    public validate(formValues: SignupFormValues): FormValidationResultValue {
+        const validationResult: FormValidationResultValue = new FormValidationResult(
             [
                 this.checkEmail(formValues),
                 this.checkPassword(formValues),

@@ -1,16 +1,16 @@
-import { ISinglePostState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IPostModel } from '../../typings/dto';
+import { SinglePostState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { PostModel } from '../../typings/dto';
 import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface ISinglePostHandlerValue {
-    draft: ISinglePostState;
-    action: IBlogAction;
+    draft: SinglePostState;
+    action: BaseAction;
 }
 
 export class SinglePostHandler {
-    private draft: ISinglePostState;
-    private action: IBlogAction;
+    private draft: SinglePostState;
+    private action: BaseAction;
 
     constructor(value: ISinglePostHandlerValue) {
         this.draft = value.draft;
@@ -27,7 +27,7 @@ export class SinglePostHandler {
 
     // LOAD_SINGLE_POST_DONE
     public loadSinglePostDone(): void {
-        this.draft.singlePost = this.action.data.post as IPostModel;
+        this.draft.singlePost = this.action.data.post as PostModel;
         this.draft.loadingPost = false;
     }
 

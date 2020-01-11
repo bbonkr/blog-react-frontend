@@ -1,16 +1,16 @@
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IListResult, IPostModel } from '../../typings/dto';
-import { IPostsState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { ListResult, PostModel } from '../../typings/dto';
+import { PostsState } from '../../typings/reduxStates';
 import { applyUpdatedPostLikers } from '../helpers/updatePostLikers';
 
 export interface IPostHandlerValue {
-    draft: IPostsState;
-    action: IBlogAction;
+    draft: PostsState;
+    action: BaseAction;
 }
 
 export class PostsHandler {
-    private draft: IPostsState;
-    private action: IBlogAction;
+    private draft: PostsState;
+    private action: BaseAction;
 
     constructor(value: IPostHandlerValue) {
         this.draft = value.draft;
@@ -28,7 +28,7 @@ export class PostsHandler {
     }
 
     public loadPostsDone(): void {
-        const resultData = this.action.data as IListResult<IPostModel>;
+        const resultData = this.action.data as ListResult<PostModel>;
         const { records, total, limit, keyword, page } = resultData;
 
         records.forEach((v) => {

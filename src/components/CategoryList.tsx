@@ -1,10 +1,10 @@
-import React, { FunctionComponent } from 'react';
-import { List, Badge } from 'antd';
-import Link from 'next/link';
-import { ICategoryModel } from '../typings/dto';
+import React, { FunctionComponent } from "react";
+import { List, Badge } from "antd";
+import Link from "next/link";
+import { CategoryModel } from "../typings/dto";
 
-export interface ICategoryListProps {
-    categories: ICategoryModel[];
+export interface CategoryListProps {
+    categories: CategoryModel[];
 }
 
 /**
@@ -12,13 +12,11 @@ export interface ICategoryListProps {
  *
  * @param {array} 분류 데이터
  */
-const CategoryList: FunctionComponent<ICategoryListProps> = ({
-    categories,
-}) => {
+const CategoryList: FunctionComponent<CategoryListProps> = ({ categories }) => {
     return (
         <List
             dataSource={categories}
-            renderItem={(item) => {
+            renderItem={item => {
                 return (
                     <List.Item
                         extra={
@@ -26,13 +24,15 @@ const CategoryList: FunctionComponent<ICategoryListProps> = ({
                                 count={item.posts ? item.posts.length : 0}
                                 overflowCount={999}
                             />
-                        }>
+                        }
+                    >
                         <Link
                             href={{
-                                pathname: '/category',
-                                query: { slug: item.slug },
+                                pathname: "/category",
+                                query: { slug: item.slug }
                             }}
-                            as={`/category/${item.slug}`}>
+                            as={`/category/${item.slug}`}
+                        >
                             <a>{item.name}</a>
                         </Link>
                     </List.Item>

@@ -1,15 +1,15 @@
-import { ICategoryState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IListResult, ICategoryModel } from '../../typings/dto';
+import { CategoryState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { ListResult, CategoryModel } from '../../typings/dto';
 
 export interface ICategoryHanlderValue {
-    draft: ICategoryState;
-    action: IBlogAction;
+    draft: CategoryState;
+    action: BaseAction;
 }
 
 export class CategoryHanlder {
-    private draft: ICategoryState;
-    private action: IBlogAction;
+    private draft: CategoryState;
+    private action: BaseAction;
 
     constructor(value: ICategoryHanlderValue) {
         this.draft = value.draft;
@@ -17,7 +17,7 @@ export class CategoryHanlder {
     }
 
     public loadCategoriesDone(): void {
-        const actionData = this.action.data as IListResult<ICategoryModel>;
+        const actionData = this.action.data as ListResult<CategoryModel>;
         const { records, total } = actionData;
         this.draft.categories = records;
         this.draft.loadingCategories = false;

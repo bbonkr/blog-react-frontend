@@ -1,28 +1,28 @@
 /**
  * users/:user/posts
  */
-import React, { useCallback, FunctionComponent, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import DefaultLayout from '../../components/DefaultLayout';
-import { ContentWrapper } from '../../styledComponents/Wrapper';
-import ListExcerpt from '../../components/ListExcerpt';
-import { actionTypes } from '../../reducers/actionTypes';
-import { IRootState, IUsersPostsState } from '../../typings/reduxStates';
-import { PageHeader, Divider, Spin, Skeleton } from 'antd';
-import LinkUsersPosts from '../../components/LinkUsersPosts';
-import UserAvatar from '../../components/UserAvatar';
-import { appOptions } from '../../config/appOptions';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { IPageProps } from '../../typings/IPageProps';
-import Head from 'next/head';
+import React, { useCallback, FunctionComponent, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import DefaultLayout from "../../components/DefaultLayout";
+import { ContentWrapper } from "../../styledComponents/Wrapper";
+import ListExcerpt from "../../components/ListExcerpt";
+import { actionTypes } from "../../reducers/actionTypes";
+import { RootState, UsersPostsState } from "../../typings/reduxStates";
+import { PageHeader, Divider, Spin, Skeleton } from "antd";
+import LinkUsersPosts from "../../components/LinkUsersPosts";
+import UserAvatar from "../../components/UserAvatar";
+import { appOptions } from "../../config/appOptions";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../../typings/BaseAction";
+import { PageProps } from "../../typings/PageProps";
+import Head from "next/head";
 
-export interface IUsersPostsProps extends IPageProps {
+export interface UsersPostsPageProps extends PageProps {
     user: string;
 }
 
-const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
+const UsersPosts: FunctionComponent<UsersPostsPageProps> = ({ user }) => {
     const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
@@ -32,8 +32,8 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
         currentUser,
         currentUsername,
         currentPage,
-        postsLimit,
-    } = useSelector<IRootState, IUsersPostsState>((s) => s.usersPosts);
+        postsLimit
+    } = useSelector<RootState, UsersPostsState>(s => s.usersPosts);
 
     const title: string = useMemo(() => {
         return `${currentUser && currentUser.displayName}'s posts | ${
@@ -48,8 +48,8 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
                 user: user,
                 page: (currentPage || 0) + 1,
                 limit: postsLimit,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }, [dispatch, postsLimit, user, currentPage]);
 
@@ -99,8 +99,8 @@ const UsersPosts: FunctionComponent<IUsersPostsProps> = ({ user }) => {
 };
 
 UsersPosts.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IUsersPostsProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<UsersPostsPageProps> => {
     const state = context.store.getState();
 
     const user: string = context.query.user as string;
@@ -120,12 +120,12 @@ UsersPosts.getInitialProps = async (
                 user: user,
                 // page: null,
                 limit: postsLimit,
-                keyword: '',
-            },
+                keyword: ""
+            }
         });
     }
     return {
-        user: user,
+        user: user
     };
 };
 

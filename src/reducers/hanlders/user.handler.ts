@@ -1,16 +1,16 @@
-import { IUserState } from '../../typings/reduxStates';
-import { IBlogAction } from '../../typings/IBlogAction';
-import { ISigninResult, IUserModel } from '../../typings/dto';
+import { UserState } from '../../typings/reduxStates';
+import { BaseAction } from '../../typings/BaseAction';
+import { ISigninResult, UserModel } from '../../typings/dto';
 import { ShowNotification } from '../../components/ShowNotification';
 
 export interface IUserHandlerValue {
-    draft: IUserState;
-    action: IBlogAction;
+    draft: UserState;
+    action: BaseAction;
 }
 
 export class UserHandler {
-    private draft: IUserState;
-    private action: IBlogAction;
+    private draft: UserState;
+    private action: BaseAction;
 
     constructor(value: IUserHandlerValue) {
         this.draft = value.draft;
@@ -26,7 +26,7 @@ export class UserHandler {
     }
 
     public meDone(): void {
-        const actionData = this.action.data as IUserModel;
+        const actionData = this.action.data as UserModel;
         this.draft.me = actionData;
     }
 
@@ -92,7 +92,7 @@ export class UserHandler {
 
     // CHANGE_INFO_DONE
     public changeInfoDone(): void {
-        const actionData = this.action.data as IUserModel;
+        const actionData = this.action.data as UserModel;
 
         this.draft.loadingChangeInfo = false;
         this.draft.changeInfoSuccess = true;

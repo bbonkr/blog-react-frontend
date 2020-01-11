@@ -1,26 +1,26 @@
-import React, { useCallback, FunctionComponent } from 'react';
-import Head from 'next/head';
-import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Divider, PageHeader, Spin, Skeleton } from 'antd';
-import ListExcerpt from '../components/ListExcerpt';
-import DefaultLayout from '../components/DefaultLayout';
-import { ContentWrapper } from '../styledComponents/Wrapper';
-import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, ITagPostsState } from '../typings/reduxStates';
-import Helmet from 'react-helmet';
-import { appOptions } from '../config/appOptions';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IPageProps } from '../typings/IPageProps';
-import Router from 'next/router';
+import React, { useCallback, FunctionComponent } from "react";
+import Head from "next/head";
+import { useSelector, useDispatch } from "react-redux";
+import PropTypes from "prop-types";
+import { Divider, PageHeader, Spin, Skeleton } from "antd";
+import ListExcerpt from "../components/ListExcerpt";
+import DefaultLayout from "../components/DefaultLayout";
+import { ContentWrapper } from "../styledComponents/Wrapper";
+import { actionTypes } from "../reducers/actionTypes";
+import { RootState, TagPostsState } from "../typings/reduxStates";
+import Helmet from "react-helmet";
+import { appOptions } from "../config/appOptions";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { BaseAction } from "../typings/BaseAction";
+import { PageProps } from "../typings/PageProps";
+import Router from "next/router";
 
-export interface ITagProps extends IPageProps {
+export interface TagPageProps extends PageProps {
     slug: string;
 }
 
-const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
+const Tag: FunctionComponent<TagPageProps> = ({ slug }) => {
     const siteName = appOptions.title;
     const dispatch = useDispatch();
     const {
@@ -29,8 +29,8 @@ const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
         tagPostsHasMore,
         postsLimit,
         currentTag,
-        currentPage,
-    } = useSelector<IRootState, ITagPostsState>((s) => s.tagPosts);
+        currentPage
+    } = useSelector<RootState, TagPostsState>(s => s.tagPosts);
 
     const loadMoreHandler = useCallback(() => {
         dispatch({
@@ -38,9 +38,9 @@ const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
             data: {
                 page: (currentPage || 0) + 1,
                 limit: postsLimit || 10,
-                keyword: '',
-                tag: slug,
-            },
+                keyword: "",
+                tag: slug
+            }
         });
     }, [dispatch, currentPage, postsLimit, slug]);
 
@@ -85,16 +85,16 @@ const Tag: FunctionComponent<ITagProps> = ({ slug }) => {
 };
 
 Tag.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<ITagProps> => {
-    const slug = decodeURIComponent((context.query.slug as string) || '');
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<TagPageProps> => {
+    const slug = decodeURIComponent((context.query.slug as string) || "");
     const state = context.store.getState();
     // const slug = decodeURIComponent(context.query.slug);
     const {
         postsLimit,
         tagPosts,
-        currentTagSlug,
-    }: ITagPostsState = state.tagPosts;
+        currentTagSlug
+    }: TagPostsState = state.tagPosts;
 
     if (
         context.isServer ||
@@ -108,9 +108,9 @@ Tag.getInitialProps = async (
                 // page: null,
                 // pageToken: null,
                 limit: postsLimit,
-                keyword: '',
-                tag: slug,
-            },
+                keyword: "",
+                tag: slug
+            }
         });
     }
 

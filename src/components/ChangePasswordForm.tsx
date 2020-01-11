@@ -3,15 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 import { ChangePasswordValidator } from '../helpers/ChangePasswordValidator';
 import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, IUserState } from '../typings/reduxStates';
+import { RootState, UserState } from '../typings/reduxStates';
 
 const validator: ChangePasswordValidator = new ChangePasswordValidator();
 
 const ChangePasswordForm = () => {
     const dispatch = useDispatch();
     const { loadingChangePassword, changePasswordSuccess } = useSelector<
-        IRootState,
-        IUserState
+        RootState,
+        UserState
     >((s) => s.user);
     const [currentPassword, setCurrentPassword] = useState('');
     const [

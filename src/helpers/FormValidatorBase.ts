@@ -1,5 +1,5 @@
-import { IDictionary } from '../typings/IDictionary';
+import { Dictionary } from '../typings/Dictionary';
 import { FormValidationResult } from './FormValidationResult';
 export abstract class FormValidatorBase {
-    public abstract validate(formData: IDictionary<any>): FormValidationResult;
+    public abstract validate(formData: Dictionary<any>): FormValidationResult;
 }

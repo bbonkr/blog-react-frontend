@@ -1,20 +1,20 @@
-import React, { FunctionComponent } from 'react';
-import Error from 'next/error';
-import { ContentWrapper } from '../styledComponents/Wrapper';
-import DefaultLayout from '../components/DefaultLayout';
-import { NextPageContext } from 'next';
-import { NextJSContext } from 'next-redux-wrapper';
-import { IRootState } from '../typings/reduxStates';
-import { IBlogAction } from '../typings/IBlogAction';
-import { IPageProps } from '../typings/IPageProps';
-import Head from 'next/head';
-import { appOptions } from '../config/appOptions';
+import React, { FunctionComponent } from "react";
+import Error from "next/error";
+import { ContentWrapper } from "../styledComponents/Wrapper";
+import DefaultLayout from "../components/DefaultLayout";
+import { NextPageContext } from "next";
+import { NextJSContext } from "next-redux-wrapper";
+import { RootState } from "../typings/reduxStates";
+import { BaseAction } from "../typings/BaseAction";
+import { PageProps } from "../typings/PageProps";
+import Head from "next/head";
+import { appOptions } from "../config/appOptions";
 
-export interface IBlogErrorProps extends IPageProps {
+export interface BlogErrorPageProps extends PageProps {
     statusCode?: number;
 }
 
-const BlogError: FunctionComponent<IBlogErrorProps> = ({ statusCode }) => {
+const BlogError: FunctionComponent<BlogErrorPageProps> = ({ statusCode }) => {
     // console.log('statusCode', statusCode);
 
     return (
@@ -35,15 +35,15 @@ const BlogError: FunctionComponent<IBlogErrorProps> = ({ statusCode }) => {
 };
 
 BlogError.getInitialProps = async (
-    context: NextPageContext & NextJSContext<IRootState, IBlogAction>,
-): Promise<IBlogErrorProps> => {
+    context: NextPageContext & NextJSContext<RootState, BaseAction>
+): Promise<BlogErrorPageProps> => {
     const statusCode = context.res
         ? context.res.statusCode
         : context.err
         ? context.err.statusCode
         : null;
     return {
-        statusCode,
+        statusCode
     };
 };
 

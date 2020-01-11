@@ -1,10 +1,10 @@
-import { IBlogAction } from '../typings/IBlogAction';
+import { BaseAction } from '../typings/BaseAction';
 import produce from 'immer';
 import { actionTypes } from './actionTypes';
-import { ITagPostsState } from '../typings/reduxStates';
+import { TagPostsState } from '../typings/reduxStates';
 import { TagPostsHandler } from './hanlders/tagPosts.handler';
 
-export const initialState: ITagPostsState = {
+export const initialState: TagPostsState = {
     /** tag posts */
     tagPosts: [],
     tagPostsLoading: false,
@@ -18,7 +18,7 @@ export const initialState: ITagPostsState = {
     currentPage: 1,
 };
 
-const reducer = (state: ITagPostsState = initialState, action: IBlogAction) =>
+const reducer = (state: TagPostsState = initialState, action: BaseAction) =>
     produce(state, (draft) => {
         const handler = new TagPostsHandler({ draft, action });
         switch (action.type) {

@@ -1,4 +1,4 @@
-export interface IAppOptions {
+export interface AppOptions {
     title: string;
     description?: string;
     fbAdmin?: string;

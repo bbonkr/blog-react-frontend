@@ -1,10 +1,10 @@
-import { ISinglePostState } from '../typings/reduxStates';
+import { SinglePostState } from '../typings/reduxStates';
 import produce from 'immer';
-import { IBlogAction } from '../typings/IBlogAction';
+import { BaseAction } from '../typings/BaseAction';
 import { actionTypes } from './actionTypes';
 import { SinglePostHandler } from './hanlders/singlePost.handler';
 
-export const initialState: ISinglePostState = {
+export const initialState: SinglePostState = {
     /** singlePost */
     singlePost: null,
     loadSinglePostErrorReason: '',
@@ -15,8 +15,8 @@ export const initialState: ISinglePostState = {
 };
 
 export const singlePost = (
-    state: ISinglePostState = initialState,
-    action: IBlogAction,
+    state: SinglePostState = initialState,
+    action: BaseAction,
 ) =>
     produce(state, (draft) => {
         const handler = new SinglePostHandler({ draft, action });

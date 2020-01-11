@@ -5,7 +5,7 @@ import DefaultLayout from '../components/DefaultLayout';
 import { ContentWrapper } from '../styledComponents/Wrapper';
 import { SignUpFormValidator } from '../helpers/SignUpFormValidator';
 import { actionTypes } from '../reducers/actionTypes';
-import { IRootState, IUserState } from '../typings/reduxStates';
+import { RootState, UserState } from '../typings/reduxStates';
 import Head from 'next/head';
 import { appOptions } from '../config/appOptions';
 
@@ -13,7 +13,7 @@ const signUpFormValidator = new SignUpFormValidator();
 
 const RequestResetPassword: FunctionComponent = () => {
     const dispatch = useDispatch();
-    const { requestResetPasswordLoading } = useSelector<IRootState, IUserState>(
+    const { requestResetPasswordLoading } = useSelector<RootState, UserState>(
         (s) => s.user,
     );
 

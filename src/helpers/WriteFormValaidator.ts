@@ -1,30 +1,30 @@
-import { IValidationResult } from '../typings/IValidationResult';
+import { ValidationResultValue } from '../typings/ValidationResultValue';
 import { ValidationResult } from './ValidationResult';
 import { FormValidationResult } from './FormValidationResult';
 import { FormValidatorBase } from './FormValidatorBase';
 import {
-    ITitleFormValue,
-    IMarkdownFormValue,
-    ICategoriesFormValue,
-    IWriteformValue,
-} from '../typings/IValidatorInputValues';
+    TitleFormValue,
+    MarkdownFormValue,
+    CategoriesFormValue,
+    WriteFormValue,
+} from '../typings/ValidatorInputValues';
 
 export class WriteFormValaidator extends FormValidatorBase {
-    public checkTitle(formData: ITitleFormValue): IValidationResult {
+    public checkTitle(formData: TitleFormValue): ValidationResultValue {
         const { title } = formData;
         if (!title || title.trim().length === 0) {
             return ValidationResult.fail('Please input a title');
         }
         return ValidationResult.success;
     }
-    public checkMarkdown(formData: IMarkdownFormValue): IValidationResult {
+    public checkMarkdown(formData: MarkdownFormValue): ValidationResultValue {
         const { markdown } = formData;
         if (!markdown || markdown.trim().length === 0) {
             return ValidationResult.fail('Please write a your content.');
         }
         return ValidationResult.success;
     }
-    public checkCategory(formData: ICategoriesFormValue): IValidationResult {
+    public checkCategory(formData: CategoriesFormValue): ValidationResultValue {
         const { categories } = formData;
         if (!categories || categories.length === 0) {
             return ValidationResult.fail(
@@ -33,7 +33,7 @@ export class WriteFormValaidator extends FormValidatorBase {
         }
         return ValidationResult.success;
     }
-    public validate(formData: IWriteformValue): FormValidationResult {
+    public validate(formData: WriteFormValue): FormValidationResult {
         const result = new FormValidationResult([
             this.checkTitle(formData),
             this.checkMarkdown(formData),
