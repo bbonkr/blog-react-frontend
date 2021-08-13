@@ -29,7 +29,7 @@
         "helmet": "^3.21.1",
         "immer": "^8.0.1",
         "morgan": "^1.9.1",
-        "next": "^9.0.6",
+        "next": "^11.1.0",
         "next-redux-saga": "^4.0.2",
         "next-redux-wrapper": "^3.0.0-alpha.2",
         "node-sass": "^4.12.0",
